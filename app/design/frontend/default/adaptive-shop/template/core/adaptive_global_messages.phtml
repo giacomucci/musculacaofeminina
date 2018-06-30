@@ -1,0 +1,48 @@
+<?php if($this->getMessagesBlock()->getMessageCollection()->count()): ?>
+
+    <div id="adaptive_global_messages" style="display: none">
+        <?php echo $this->getMessagesBlock()->getGroupedHtml(); ?>
+    </div>
+
+	<?php $this->getMessagesBlock()->getMessageCollection()->clear(); ?>
+
+	<script type="text/javascript">
+		
+		;(function($, window, document, undefined) {
+		    var $win = $(window);
+		    var $doc = $(document);
+		
+		    $win.load(function() {
+		        
+		        /* Exibe a barra de mensagens se aplicável */
+		        $("#adaptive_global_messages").slideDown(600);
+		        $('#barra-topo').addClass('active');
+				
+				
+				/* Adicionar o botão de editar e fechar */
+				$('.success-msg ul').append('<li><a class="edit-cart" href="/checkout/cart/">EDITAR CARRINHO</a></li>')
+									.append('<li><a class="fechar-pedido" href="/checkout/onepage/">FINALIZAR COMPRA</a></li>')
+									.append('<li><a href="#" id="adaptive_global_messages_close" title="<?php echo $this->__('Hide messages') ?>">×</a></li>');
+				
+				$('.error-msg ul').append('<li><a href="#" id="adaptive_global_messages_close" title="<?php echo $this->__('Hide messages') ?>">×</a></li>');
+				
+				
+				/* Evento para fechar a barra de mensagens */
+				$('#adaptive_global_messages_close').click(function(event){
+					
+			    	event.preventDefault();
+			    	
+			    	$("#adaptive_global_messages").slideUp(600);
+			    	$('#barra-topo').delay(300).removeClass('active');
+			    
+			    });
+			    	
+		    	
+		    });
+		    		
+		
+		    
+		})(jQuery, window, document);
+	
+	</script>
+<?php endif; ?>

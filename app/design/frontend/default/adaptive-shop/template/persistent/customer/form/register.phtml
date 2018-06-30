@@ -1,0 +1,505 @@
+<?php
+/**
+ *
+ * @category   Inovarti
+ * @package    Inovarti_Onestepcheckout
+ * @author     Suporte <suporte@inovarti.com.br>
+ */
+?>
+
+<style>
+    p.required{font-size:11px;text-align:right;color:#EB340A;}
+    .form-list li{margin:0 0 8px;width:100%;height:auto;display:inline-block;}
+    .form-list .input-box{display:block;clear:both;}
+    .form-list input.input-text,
+    .form-list select{width:90%;}
+    .form-list li.wide .input-box{width:100%;}
+    .form-list li.wide input.input-text,
+    .form-list li.wide select{width:90%;}
+    .form-list .field{width:50%;}
+    .form-list .field .input-box{width:100%;}
+    .form-list .customer-dob .dob-year select{width:134px;}
+    .form-list .customer-dob .dob-day select,
+    .form-list .customer-dob .dob-month select{width:46px;}
+    .form-list .customer-dob select{display:block;width:74px;}
+</style>
+
+<div id="colunas12" class="page-title">
+    <p class="cor bold fs-25">Criar Conta</p>
+</div>
+
+<?php echo $this->getChildHtml('form_fields_before') ?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<form action="<?php echo $this->getPostActionUrl() ?>" method="post" id="form-validate" autocomplete="off">
+    <?php echo $this->getBlockHtml('formkey'); ?>
+    <div id="colunas6">
+        <input type="hidden" name="success_url" value="http://bling.musculacaofeminina.com.br/customer/account/" />
+        <input type="hidden" name="error_url" value="<?php echo $this->getErrorUrl() ?>" />
+        <ul class="form-list">
+
+            <li class="control fields tipopessoa">
+                <div>
+                    <label for="fisica" class="f-l txt fs-12"><input type="radio" name="tipopessoa" value="1" id="fisica" class="radio" title="CPF" checked="checked"/><?php echo $this->__('Individual person') ?></label>
+                </div>
+                <div>
+                    <label for="juridica" class="f-l txt fs-12"><input type="radio" name="tipopessoa" value="0" id="juridica" class="radio" title="CNPJ"/><?php echo $this->__('Legal Entity') ?></label>
+                </div>
+            </li>
+
+            <li style="display:none;">
+                <?php echo $this->getLayout()->createBlock('customer/widget_name')->setObject($this->getFormData())->setForceUseCustomerAttributes(true)->toHtml() ?>
+            </li>
+            <?php $_taxvat = $this->getLayout()->createBlock('customer/widget_taxvat') ?>
+            <?php if ($_taxvat->isEnabled()): ?>
+                <li class="short clear"><?php echo $_taxvat->setTaxvat($this->getFormData()->getTaxvat())->toHtml() ?></li>
+            <?php endif ?>
+
+            <li class="short clear wide">
+                <ul style="display:block;">
+                    <?php $_dob = $this->getLayout()->createBlock('customer/widget_dob') ?>
+                    <?php if ($_dob->isEnabled()): ?>
+                        <li><?php echo $_dob->setDate($this->getFormData()->getDob())->toHtml() ?></li>
+                    <?php endif ?>
+                    <?php $_gender = $this->getLayout()->createBlock('customer/widget_gender') ?>
+                    <?php if ($_gender->isEnabled()): ?>
+                        <!--<li class="short"><?php //echo $_gender->setGender($this->getFormData()->getGender())->toHtml() ?></li>-->
+                    <?php endif ?>
+                </ul>
+            </li>
+        </ul>
+
+        <ul class="form-list pessoa-juridica"  id="dados-pj" style="display: none;">
+            <li class="short clear">
+                <div class="">
+                    <label for="textinput" class="txt fs-12"><em>*</em>Nome Fantasia</label>
+                    <input type="text" title="nome_fanstasia" class="d-b op-i txt fs-14 input-text" name="nomefantasia" id="nomefantasia" value="">
+                </div>
+            </li>
+            <li class="short">
+                <div class="">
+                    <label for="textinput" class="txt fs-12"><em>*</em>Razão Social</label>
+                    <input type="text" title="razao_social" class="d-b op-i txt fs-14 input-text" name="razaosocial" id="razaosocial" value="">
+                </div>
+            </li>
+            <li class="short clear">
+                <div class="">
+                    <label for="textinput" class="txt fs-12"><em>*</em>CNPJ</label>
+                    <input type="text" title="cnpj" class="d-b op-i txt fs-14 input-text" name="cnpj" id="cnpj" value="">
+                </div>
+            </li>
+            <li class="short">
+                <div class="">
+                    <label for="textinput" class="txt fs-12"><em>*</em>Inscrição Estadual</label>
+                    <input type="text" title="inscricao_estadual" class="d-b op-i txt fs-14 input-text" name="insestadual" id="insestadual" value="">
+                </div>
+            </li>
+        </ul>
+
+        <ul class="form-list">
+            <li class="short clear">
+                <div class="">
+                    <label for="email_address" class="txt fs-12 required"><em>*</em><?php echo $this->__('Email Address') ?></label>
+                    <input type="text" name="email" id="email_address" value="<?php echo $this->escapeHtml($this->getFormData()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="emailClient d-b op-i txt fs-14 input-text validate-email validate-email-exist required-entry" />
+                </div>
+            </li>
+            <li class="short">
+                <div class="">
+                    <label for="password" class="txt fs-12 required"><em>*</em><?php echo $this->__('Password') ?></label>
+                    <input type="password" name="password" id="password" title="<?php echo $this->__('Password') ?>" class="nn-password d-b op-i txt fs-14 input-text required-entry validate-password" />
+                    <input style="display:none;" type="password" name="confirmation" title="<?php echo $this->__('Confirm Password') ?>" id="confirmation" class="nn-confirm-password d-b op-i txt fs-14 input-text required-entry validate-cpassword" />
+                </div>
+            </li>
+            <?php echo $this->getChildHtml('form.additional.info'); ?>
+            <?php echo $this->getChildHtml('persistent.remember.me'); ?>
+            <li>
+                <?php if ($this->isNewsletterEnabled()): ?>
+                    <div class="checkbox">
+                        <input type="checkbox" style="float: left;" name="is_subscribed" title="<?php echo $this->__('Sign Up for Newsletter') ?>" value="1" id="is_subscribed"<?php if ($this->getFormData()->getIsSubscribed()): ?> checked="checked"<?php endif; ?> class="checkbox" />
+                        <label for="is_subscribed" class="fs-12 txt bold f-l"><?php echo $this->__('Sign Up for Newsletter') ?></label>
+                    </div>
+                <?php endif ?>
+            </li>
+        </ul>
+        <?php echo $this->getChildHtml('persistent.remember.me.tooltip'); ?>
+
+    </div>
+    <div id="colunas6">
+        <?php //if ($this->getShowAddressFields()): ?>
+
+        <input type="hidden" name="create_address" value="1" />
+        <!--<h2 class="legend"><?php echo $this->__('Address Information') ?></h2>-->
+        <ul class="form-list">
+
+
+            <li class="fields short">
+                <label for="telephone" class="txt fs-12 required"><em>*</em><?php echo $this->__('Telephone') ?></label>
+                <div class="input-box">
+                    <input type="text" name="telephone" title="<?php echo $this->__('Telephone') ?>" class="d-b op-i txt fs-14 input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('telephone') ?>" id="telephone" value="<?php echo $this->getFormData()->getTelephone(); ?>" autocomplete="off"/>
+                </div>
+            </li>
+            <li class="fields short">
+                <label for="fax" class="txt fs-12 "><?php echo $this->__('Fax') ?></label>
+                <div class="input-box">
+                    <input type="text" name="fax" title="<?php echo $this->__('Fax') ?>" class="d-b op-i txt fs-14 input-text" id="fax" value="<?php echo $this->getFormData()->getFax(); ?>" autocomplete="off"/>
+                </div>
+            </li>
+            <li class="fields short clear">
+                <label for="zip" class="txt fs-12 required"><em>*</em><?php echo $this->__('Zip/Postal Code') ?></label>
+                <div class="input-box">
+                    <input type="text" title="<?php echo $this->__('Zip/Postal Code') ?>" name="postcode" id="postcode" class="d-b op-i txt fs-14 input-text validate-zip-br <?php echo $this->helper('customer/address')->getAttributeValidationClass('postcode') ?>" value="<?php echo $this->escapeHtml($this->getFormData()->getPostcode()) ?>" onblur="javascript:buscarEndereco('register');"/>
+                </div>
+            </li>
+            <?php $_streetValidationClass = $this->helper('customer/address')->getAttributeValidationClass('street'); ?>
+            <li class="wide short">
+                <label for="street_1" class="txt fs-12 required"><em>*</em><?php echo $this->__('Street Address') ?></label>
+                <div class="input-box">
+                    <input type="text" name="street[]" value="<?php echo $this->escapeHtml($this->getFormData()->getStreet(1)) ?>" title="<?php echo $this->__('Street Address') ?>" id="street_1" class="d-b op-i txt fs-14 input-text <?php echo $_streetValidationClass ?>" />
+                </div>
+            </li>
+            <?php $_streetValidationClass = trim(str_replace('required-entry', '', $_streetValidationClass)); ?>
+            <?php for ($_i = 2, $_n = $this->helper('customer/address')->getStreetLines(); $_i <= $_n; $_i++): ?>
+                <li class="wide short <?php if ($_i == 2 or $_i == 4): ?> clear<?php endif; ?>">
+                    <div class="input-box">
+                        <label for="street<?php echo $_i ?>" class="txt fs-12<?php if ($_i != 3): ?> required<?php endif; ?>"><?php if ($_i != 3): ?> <em>*</em> <?php endif; ?><?php echo $this->__('Street Address '.$_i) ?></label>
+                        <input type="text" name="street[<?php echo $_i ?>]" value="<?php echo $this->escapeHtml($this->getFormData()->getStreet($_i)) ?>" title="<?php echo $this->__('Street Address %s', $_i) ?>" id="street_<?php echo $_i ?>" class="d-b op-i txt fs-14 input-text <?php if ($_i != 3): ?>required-entry<?php endif; ?> <?php echo $_streetValidationClass ?>" />
+                    </div>
+                </li>
+            <?php endfor; ?>
+            <li class="fields short">
+                <label for="city" class="txt fs-12 required"><em>*</em><?php echo $this->__('City') ?></label>
+                <div class="input-box">
+                    <input type="text" name="city" value="<?php echo $this->escapeHtml($this->getFormData()->getCity()) ?>" title="<?php echo $this->__('City') ?>" class="d-b op-i txt fs-14 input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('city') ?>" id="city" />
+                </div>
+            </li>
+            <li class="fields short clear">
+                <label for="region_id" class="txt fs-12 required"><em>*</em><?php echo $this->__('State/Province') ?></label>
+                <div class="input-box">
+                    <select id="region_id" name="region_id" title="<?php echo $this->__('State/Province') ?>" class="validate-select">
+                        <option value=""><?php echo $this->__('Please select region, state or province') ?></option>
+                    </select>
+                    <script type="text/javascript">
+                        //<![CDATA[
+                        $('region_id').setAttribute('defaultValue', "<?php echo $this->getFormData()->getRegionId() ?>");
+                        //]]>
+                    </script>
+                    <input type="text" id="region" name="region" value="<?php echo $this->escapeHtml($this->getRegion()) ?>" title="<?php echo $this->__('State/Province') ?>" class="input-text <?php echo $this->helper('customer/address')->getAttributeValidationClass('region') ?>" style="display:none;" />
+                </div>
+            </li>
+            <li class="fields short clear" style="display:none;">
+                <div class="field">
+                    <label for="country" class="txt fs-12 required"><em>*</em><?php echo $this->__('Country') ?></label>
+                    <div class="input-box">
+                        <?php echo $this->getCountryHtmlSelect() ?>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <input type="hidden" name="default_billing" value="1" />
+        <input type="hidden" name="default_shipping" value="1" />
+        <?php //endif; ?>
+
+        <div class="buttons-set clear">
+            <br />
+            <p class="f-l required"><?php echo $this->__('* Required Fields') ?></p><br />
+            <button type="submit" title="<?php echo $this->__('Submit') ?>" class="bt fs-14 d-b bold tt-u radius td-n"><span><span class="cor-sec">Enviar</span></span></button>
+        </div>
+        <?php if (Mage::helper('checkout')->isContextCheckout()): ?>
+            <input name="context" type="hidden" value="checkout" />
+        <?php endif; ?>
+    </div>
+    <div id="colunas6">
+
+    </div>
+
+</form>
+<script type="text/javascript">countryRegions = <?php echo $this->helper('directory')->getRegionJson() ?></script>
+<script type="text/javascript">
+    //<![CDATA[
+    (function($) {
+        var buscacepurl = "<?php echo Mage::getUrl('onestepcheckout/index/buscaCep') ?>";
+        var customer_status = "<?php echo Mage::getSingleton('customer/session')->isLoggedIn() ?>";
+        buscarEndereco = function(whatform) {
+            if (whatform == "register") {
+                postcode    = jQuery('#postcode').val();
+                street_1    = jQuery('#street_1');
+                street_2    = jQuery('#street_2');
+                street_4    = jQuery('#street_4');
+                city        = jQuery('#city');
+                region      = jQuery('#region');
+                region_id      = jQuery('#region_id');
+            }
+            jQuery.ajax({
+                type:'GET',
+                url:  buscacepurl+'meio/cep/cep/' + postcode,
+                success: function(data){
+                    if(data){
+                        var addressData = jQuery.parseJSON(data);
+                        var addressUfId = addressData.ufid;
+                        var addressRegion = countryRegions['BR'][addressUfId]['name'];
+
+                        if(addressData.logradouro != "undefined"){
+                            street_1.val(addressData.logradouro);
+                            street_4.val(addressData.bairro);
+                            city.val(addressData.cidade);
+                            region.val(addressRegion);
+                            region_id.val(addressUfId);
+                        }else {
+                            street_1.val('');
+                            street_4.val('');
+                            city.val('');
+                            region.val('');
+                        }
+                    }
+                    street_2.focus();
+                },
+                error: function(){
+                    jQuery(street_1).val("");
+                    jQuery(street_4).val("");
+                    jQuery(city).val("");
+                    jQuery(region).val("");
+                },
+            });
+        };
+    })(jQuery);
+    //]]>
+</script>
+<script type="text/javascript">
+    //<![CDATA[
+    var dataForm = new VarienForm('form-validate', true);
+    dataForm.submit = function(button, url) {
+        if (this.validator.validate()) {
+            if (button && button != 'undefined') {
+                button.disabled = true;
+            }
+        }
+    }.bind(dataForm);
+    <?php if ($this->getShowAddressFields()): ?>
+    //new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+    <?php endif; ?>
+    new RegionUpdater('country', 'region', 'region_id', <?php echo $this->helper('directory')->getRegionJson() ?>, undefined, 'zip');
+
+    $$("input[name*='tipopessoa']").invoke('on', 'click', function() {
+
+        setTipopessoaArea(this.value);
+
+    });
+
+    function setTipopessoaArea(arg) {
+        if (arg == 'Jurídica') {
+            $$('#dados-pj').first().show();
+        } else {
+            $$('#dados-pj').first().hide();
+        }
+    }
+
+
+    Validation.add('validate-zip-br', 'Entre com um cep válido: 99999-999', function(v) {
+        return Validation.get('IsEmpty').test(v) || /^([0-9]){5}([-])([0-9]){3}$/.test(v);
+    });
+    Validation.add('validate-phone-br', 'Por favor insira um número de telefone válido. por exemplo (xx) x4567-8900.', function(v) {
+        return Validation.get('IsEmpty').test(v) || /^(\()?\d{2}(\))?(-|\s)?\d{5}(-|\s)\d{4}|(\()?\d{2}(\))?(-|\s)?\d{4}(-|\s)\d{4}$/.test(v);
+    });
+
+    if ($('taxvat')) {
+        $('taxvat').addClassName('validate-taxvat');
+        $('taxvat').observe('keyup', function(event) {
+            mascara(this, mdocumento);
+        });
+    }
+
+    if ($('telephone')) {
+        $('telephone').addClassName('validate-phone-br');
+        $('telephone').observe('keyup', function(event) {
+            this.maxLength = 15;
+            mascara(this, mtel);
+        });
+    }
+    if ($('postcode')) {
+        $('postcode').observe('keyup', function(event) {
+            mascara(this, mcep);
+        });
+    }
+    if ($('fax')) {
+        $('fax').addClassName('validate-phone-br');
+        $('fax').observe('keyup', function(event) {
+            this.maxLength = 15;
+            mascara(this, mtel);
+        });
+    }
+    if ($('street_1')) {
+        $('street_1').observe('keyup', function(event) {
+            this.maxLength = 40;
+        });
+    }
+    if ($('street_2')) {
+        $('street_2').observe('keyup', function(event) {
+            this.maxLength = 5;
+            mascara(this, sonumeros);
+        });
+    }
+    if ($('street_3')) {
+        $('street_3').observe('keyup', function(event) {
+            this.maxLength = 20;
+        });
+    }
+    if ($('street_4')) {
+        $('street_4').observe('keyup', function(event) {
+            this.maxLength = 20;
+        });
+    }
+    if ($('city')) {
+        $('city').observe('keyup', function(event) {
+            this.maxLength = 30;
+        });
+    }
+
+    //]]>
+
+    jQuery( ".nn-password" )
+        .keyup(function() {
+            var value = jQuery( this ).val();
+            jQuery( ".nn-confirm-password" ).val( value );
+        })
+        .keyup();
+    //]]>
+
+    jQuery.noConflict();
+    function mascara(o, f) {
+        v_obj = o
+        v_fun = f
+        setTimeout("execmascara()", 1)
+    }
+    function execmascara() {
+        v_obj.value = v_fun(v_obj.value)
+    }
+    function mdocumento(v) {
+        v = v.replace(/\D/g, "");
+        if (v.length <= 11) {
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        } else {
+            v = v.replace(/^(\d{2})(\d)/, "$1.$2");
+            v = v.replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3");
+            v = v.replace(/\.(\d{3})(\d)/, ".$1/$2");
+            v = v.replace(/(\d{4})(\d)/, "$1-$2");
+        }
+        return v;
+    }
+    function mdata(v) {
+        v = v.replace(/\D/g, "")
+        v = v.replace(/(\d{2})(\d)/, "$1/$2")
+        v = v.replace(/(\d{2})(\d)/, "$1/$2")
+        return v
+    }
+    function mtel(v) {
+        v = v.replace(/\D/g, "");
+        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+        v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+        return v;
+    }
+    function mcep(v) {
+        v = v.replace(/\D/g, "");
+        v=v.replace(/^(\d{5})(\d)/,"$1-$2")
+        return v;
+    }
+    function sonumeros(v) {
+        v = v.replace(/\D/g, "");
+        return v;
+    }
+    function checkMail(mail) {
+        var er = new RegExp(/^[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]{2,}\.[A-Za-z0-9]{2,}(\.[A-Za-z0-9])?/);
+        if (typeof (mail) == "string") {
+            if (er.test(mail)) {
+                return true;
+            }
+        } else if (typeof (mail) == "object") {
+            if (er.test(mail.value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    function PulaCampo(fields) {
+        if (fields.value.length == fields.maxLength) {
+            for (var i = 0; i < fields.form.length; i++) {
+                if (fields.form[i] == fields && fields.form[(i + 1)] && fields.form[(i + 1)].type != "hidden") {
+                    fields.form[(i + 1)].focus();
+                    break;
+                }
+            }
+        }
+    }
+    function validaCPF(cpf, pType) {
+        var cpf_filtrado = "", valor_1 = " ", valor_2 = " ", ch = "";
+        var valido = false;
+        for (i = 0; i < cpf.length; i++) {
+            ch = cpf.substring(i, i + 1);
+            if (ch >= "0" && ch <= "9") {
+                cpf_filtrado = cpf_filtrado.toString() + ch.toString()
+                valor_1 = valor_2;
+                valor_2 = ch;
+            }
+            if ((valor_1 != " ") && (!valido))
+                valido = !(valor_1 == valor_2);
+        }
+        if (!valido)
+            cpf_filtrado = "12345678912";
+        if (cpf_filtrado.length < 11) {
+            for (i = 1; i <= (11 - cpf_filtrado.length); i++) {
+                cpf_filtrado = "0" + cpf_filtrado;
+            }
+        }
+        if (pType <= 1) {
+            if ((cpf_filtrado.substring(9, 11) == checkCPF(cpf_filtrado.substring(0, 9))) && (cpf_filtrado.substring(11, 12) == "")) {
+                return true;
+            }
+        }
+        if ((pType == 2) || (pType == 0)) {
+            if (cpf_filtrado.length >= 14) {
+                if (cpf_filtrado.substring(12, 14) == checkCNPJ(cpf_filtrado.substring(0, 12))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    function checkCNPJ(vCNPJ) {
+        var mControle = "";
+        var aTabCNPJ = new Array(5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2);
+        for (i = 1; i <= 2; i++) {
+            mSoma = 0;
+            for (j = 0; j < vCNPJ.length; j++)
+                mSoma = mSoma + (vCNPJ.substring(j, j + 1) * aTabCNPJ[j]);
+            if (i == 2)
+                mSoma = mSoma + (2 * mDigito);
+            mDigito = (mSoma * 10) % 11;
+            if (mDigito == 10)
+                mDigito = 0;
+            mControle1 = mControle;
+            mControle = mDigito;
+            aTabCNPJ = new Array(6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3);
+        }
+        return((mControle1 * 10) + mControle);
+    }
+    function checkCPF(vCPF) {
+        var mControle = ""
+        var mContIni = 2, mContFim = 10, mDigito = 0;
+        for (j = 1; j <= 2; j++) {
+            mSoma = 0;
+            for (i = mContIni; i <= mContFim; i++)
+                mSoma = mSoma + (vCPF.substring((i - j - 1), (i - j)) * (mContFim + 1 + j - i));
+            if (j == 2)
+                mSoma = mSoma + (2 * mDigito);
+            mDigito = (mSoma * 10) % 11;
+            if (mDigito == 10)
+                mDigito = 0;
+            mControle1 = mControle;
+            mControle = mDigito;
+            mContIni = 3;
+            mContFim = 11;
+        }
+
+        return((mControle1 * 10) + mControle);
+    }
+</script>

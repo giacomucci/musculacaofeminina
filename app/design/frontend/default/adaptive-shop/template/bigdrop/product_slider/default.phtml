@@ -1,0 +1,118 @@
+<?php
+/**
+ * Custom Product Sliders
+ * Default template
+ *
+ * @category Bigdrop
+ * @package  Bigdrop_ProductSlider
+ * @author   Pavel Panchyshnyy <pavel.p@bigdropinc.com>
+ * @license  http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
+?>
+<?php /** @var $this Bigdrop_ProductSlider_Block_Slider_Abstract */ ?>
+<?php $products = $this->getSliderCollection() ?>
+<?php $helper   = $this->helper('catalog/output') ?>
+<?php if (count($products)): ?>
+
+	<div id="carousel-home">
+		<div class="title_carousel">
+			<h1><?php /* @noEscape */ echo $this->getSliderTitle(); ?></h1>
+		</div>
+
+		<div class="carousel_prod">
+			<div class="wrapper-categoria owl-carousel">
+				<?php $i = 0 ?>
+	            <?php foreach ($products as $product): ?>
+
+	                <div id="colunas3" class="prod">
+	                    <div class="nova-h">
+
+                            <?php if($product->getData('brinde')): ?>
+                                <div class="tag-brinde">
+                                    <div class="aviso oferta">GANHE BRINDE <i class="fa fa-search"></i></div>
+                                    <div class="dropdown-content dropdown-menu col-sm-12 oferta-imperdivel">
+                                        <?php echo $product->getData('brinde'); ?>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php if(!$product->isSaleable()): ?>
+                                <div class="tag-label">
+                                    <p class="novo">esgotado</p>
+                                </div>
+                            <?php endif; ?>
+
+	                        <a href="<?php /* @noEscape */ echo $product->getProductUrl() ?>" class="product-image">
+	                            <img class="img-prod" src="<?php /* @noEscape */ echo $this->helper('catalog/image')->init($product, 'thumbnail')->resize(263); ?>" width="263" height="263" alt="<?php echo $this->escapeHtml($product->getName()) ?>"/>
+	                        </a>
+	                   
+	                        <div id="info-prod">
+	                            <a class="fs-19 txt d-b bold" href="<?php /* @noEscape */ echo $product->getProductUrl() ?>" title="<?php echo $this->escapeHtml($product->getName()) ?>"><h2><?php echo $this->escapeHtml($product->getName()) ?></h2></a>
+	                            <div class="mob">
+	                            <div class="list-rating"></div>
+
+	                            <?php echo $this->getPriceHtml($product, true) ?>
+	                                <p class="txt fs-14" style="display:inline-block;">
+	                                
+	                                    <?php 
+	                                        if($product->isConfigurable()){
+												$_coreHelper = $this->helper('core');
+												$_id = $product->getId();
+												$_cpspHelper = Mage::helper('configurableproductssimpleprices');
+												list($spID, $_minimalPriceValue) = $_cpspHelper->getMinimalProductPrice($_id);
+												
+												$Preco = $_minimalPriceValue;
+											} else {
+												
+												$Preco = $product->getMinimalPrice();
+			
+											}
+	                                        $boleto = $Preco/100;
+	                                        $desc_boleto = $Preco - (6*$boleto);
+	                                                                    
+	                                        if($Preco > 0.00 and $Preco <= 59.99){
+	                                            $Parcelamento = 1;
+	                                        }
+	                                        else if($Preco >= 60 and $Preco <= 89.99){
+	                                            $Parcelamento = 2; 
+	                                            $Resultado = $Preco/ $Parcelamento;
+	                                            echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+	                                        }
+	                                        else if($Preco >= 90 and $Preco <= 119.99){
+	                                            $Parcelamento = 3; 
+	                                            $Resultado = $Preco/ $Parcelamento;
+	                                            echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+	                                        }
+	                                        else if($Preco >= 120){
+	                                            $Parcelamento = 4; 
+	                                            $Resultado = $Preco/ $Parcelamento;
+	                                            echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+	                                        }
+	                                        //echo '<p class="fs-14"><span class="cor bold">R$'.number_format($desc_boleto, 2, ',', '').'</span> no boleto banc&aacute;rio ou transfer&ecirc;ncia banc&aacute;ria</p>';
+	                                    ?>                                              
+	                                </p>    
+	                                <?php if(!$product->isGrouped()): ?>
+	                                <form action="<?php echo $this->getAddToCartUrl($product) ?>" method="post" id="product_addtocart_form_<?php echo $product->getId()?>"<?php if($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+	                                     <div class="list-qtd">
+	                                         <span class="less">-</span>
+	                                         <input style="width:22px;float:none;text-align:center;" class="op-i" type="text" name="qty" id="qty" maxlength="5" value="<?php echo ($this->getMinimalQty($product)?$this->getMinimalQty($product):1) ?>" aria-label="Quantidade"/> 
+	                                         <span class="more">+</span>        
+	                                     </div>
+	                                     <?php endif; ?>                                
+	                                    <div class="bt-nova">
+	                                        <a href="javascript:void(0)" title="Comprar" onclick="jQuery(this).parents('form').submit(); return false">Comprar</a>
+	                                    </div>
+	                                    <input type="submit" style="display: none"/>
+	                                </form>
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	                <?php if (++$i == 9) break; ?>
+	            <?php endforeach ?>
+	        </div>
+		</div>
+
+	</div>
+
+<?php endif; ?>

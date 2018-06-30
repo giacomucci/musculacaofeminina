@@ -1,0 +1,138 @@
+/**
+ * Colunas Tablet Landscape
+ */
+@media only screen and (min-width: 1024px) {
+  #wrapper {
+    padding: 0 8px;
+    width: 1008px !important;
+  }
+
+  #colunas12 {
+    width: 988px !important;
+  }
+
+  #wrapper-colunas9 {
+    width: 756px;
+  }
+
+  #colunas9 {
+    width: 736px;
+  }
+
+  #wrapper-colunas8 {
+    width: 672px;
+  }
+
+  #colunas8 {
+    width: 652px;
+  }
+
+  #colunas6 {
+    width: 484px;
+  }
+
+  #colunas4 {
+    width: 316px;
+  }
+
+  #colunas3 {
+    width: 232px;
+  }
+
+  .footer-h {
+    font-size: 14px;
+  }
+
+  .news-i {
+    width: 496px;
+  }
+
+  #gallery, #slide-images {
+    height: 364px !important;
+  }
+
+  .product-image-zoom a {
+    width: 484px !important;
+    height: 484px !important;
+  }
+  .product-image-zoom a img {
+    width: 484px !important;
+    height: 484px !important;
+  }
+  .product-image-zoom .mousetrap {
+    width: 484px !important;
+    height: 484px !important;
+  }
+
+  .fb iframe {
+    width: 218px !important;
+  }
+
+  .form-search > .search {
+    width: 230px;
+  }
+
+  .cart-success1 {
+    height: 50px;
+  }
+
+  .cart-success2 {
+    height: 115px;
+  }
+
+  .cart-empty1 {
+    height: 40px;
+  }
+
+  .cart-empty2 {
+    height: 105px;
+  }
+
+  .i-duvidas {
+    float: right;
+    display: block;
+    background: url(../../images/i-duvidas.png) center center no-repeat;
+    width: 208px;
+    height: 48px;
+    margin-right: 10px;
+  }
+
+  .box-related {
+    width: 758px;
+  }
+
+  .short {
+    float: left !important;
+    width: 152px !important;
+    margin-right: 5px !important;
+  }
+  .short .op-i {
+    width: 128px !important;
+  }
+
+  .logotipo-nutri a {
+    width: 233px;
+  }
+
+  #menu .banner-menu, #nav-top li div.atendimento {
+    display: block;
+  }
+
+  #dispositivos {
+    background-position: center -30px;
+  }
+
+  .promo-1 {
+    display: block !important;
+  }
+
+  .promo-2 {
+    display: none !important;
+  }
+
+  .tag-brinde .aviso.oferta {
+    background-position: 108px 2px;
+    background-size: 20px;
+    font-size: 12px;
+  }
+}

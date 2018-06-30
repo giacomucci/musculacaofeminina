@@ -1,0 +1,59 @@
+<?php
+/**
+ * Shoping cart top
+ *
+ * @see Mage_Checkout_Block_Cart_Sidebar
+ */
+?>
+<?php $_cartQty = $this->getSummaryCount() ?>
+	<li id="cart" class="f-r <?php if ($_cartQty>0): ?>cart-item<?php endif ?>" style="position:relative;">
+
+	<a href="<?php echo Mage::getUrl('checkout/cart', '_nosid'); ?>" style="position:absolute;z-index:999999;width: 50px;height: 50px;top: 0;"></a>
+    <?php if ($_cartQty>0): ?>
+        <?php if ($_cartQty==1): ?>
+            <span class="cart" style="position: absolute;color: #fff;right: -7px;top: 0px;"><?php echo $_cartQty ?></span>
+        <?php else: ?>
+            <span class="cart" style="position: absolute;color: #fff;right: -7px;top: 0px;"><?php echo $_cartQty ?></span>
+        <?php endif ?>
+    <?php endif ?>
+
+<?php if ($this->getIsNeedToDisplaySideBar()):?>
+
+    <div class="box-hover2">
+    <div class="box-cart cor fs-12">
+    <?php $_items = $this->getRecentItems() ?>
+    <?php if(count($_items)): ?>
+        <ul id="cart-sidebar" class="mini-products-list">
+        <?php foreach($_items as $_item): ?>
+            <?php echo $this->getItemHtml($_item) ?>
+        <?php endforeach; ?>
+        	<li>
+        	<?php if ($this->canApplyMsrp()): ?>
+        		<span class="map-cart-sidebar-total"><?php echo $this->__('ORDER TOTAL WILL BE DISPLAYED BEFORE YOU SUBMIT THE ORDER'); ?></span>
+            <?php else: ?>
+            	<span class="f-l d-b cor"><?php echo $this->__('Cart Subtotal:') ?> <span class="bold fs-14 cor"><?php echo Mage::helper('checkout')->formatPrice($this->getSubtotal()) ?></span></span>
+            <?php if ($_subtotalInclTax = $this->getSubtotalInclTax()): ?>
+            	<br />
+            	(<?php echo Mage::helper('checkout')->formatPrice($_subtotalInclTax) ?> <?php echo Mage::helper('tax')->getIncExcText(true) ?>)
+            <?php endif; ?>
+            <?php endif; ?>
+            
+
+            	<?php echo $this->getChildHtml('extra_actions') ?>
+            	<button type="button" title="<?php echo $this->__('Checkout') ?>" class="f-r bt2 d-b cor-sec bold tt-u radius td-n" onclick="setLocation('<?php echo $this->getCheckoutUrl() ?>')"><?php echo $this->__('Checkout') ?></button>
+   	        	<span><a class="f-r" href="<?php echo $this->getUrl('checkout/cart')?>" title="Editar carrinho">Editar carrinho</a></span>
+
+	       	</li>
+        </ul>
+        <script type="text/javascript">decorateList('cart-sidebar', 'none-recursive')</script>
+    <?php else: ?>
+    <ul>
+    	<li>
+        <span class="cor fs-14 bold d-b cart-empty">Nenhum item foi adicionado!</span>
+    	</li>
+    </ul>
+    <?php endif ?>
+    </div>
+    </div>
+<?php endif;?>
+	</li>

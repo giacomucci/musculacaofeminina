@@ -1,0 +1,175 @@
+<?php
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>">
+<head>
+	<?php echo $this->getChildHtml('head') ?>
+</head>
+
+<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+	<?php echo $this->getChildHtml('after_body_start') ?>
+    
+    <?php echo $this->getChildHtml('global_notices') ?>
+       
+    <?php echo $this->getChildHtml('header') ?>
+        
+    <?php echo $this->getChildHtml('global_messages') ?>
+	
+	<?php
+		$routeName = Mage::app()->getRequest()->getRouteName();
+		$identifier = Mage::getSingleton('cms/page')->getIdentifier();
+	?>	
+
+	<div id="full" <?php if($routeName != 'cms' && $identifier != 'home') { ?>class="no-home"<?php } ?>>
+
+		<div id="wrapper">
+			<?php if($routeName != 'cms' && $identifier != 'home') { ?>
+				<div id="colunas12">
+					<?php echo $this->getChildHtml('breadcrumbs') ?>
+				</div>
+			<?php } ?>
+			
+			<?php if(Mage::registry('current_category')):?>
+		
+
+				<?php if(Mage::registry('current_category')->getId() == 191 ):?>
+
+					<?php echo $this->getChildHtml('content') ?>
+				
+				<?php else : ?>
+
+					<div id="colunas12">
+						<?php $categoryImage = Mage::getModel('catalog/layer')->getCurrentCategory()->getImage();?>
+						<?php $categoryName = Mage::getSingleton('catalog/layer')->getCurrentCategory()->getName() ?>
+	                    	
+	                    <?php if($categoryImage): ?>
+	                    	<img src="<?php echo Mage::getBaseUrl('media').'catalog/category/'.$categoryImage  ?>"  style="max-width:100%;height:auto" class="img-catalog" alt="<?php echo $categoryName ?>" title="<?php echo $categoryName ?>"/>
+	                    <?php endif ?>		
+					</div>
+
+					<div id="colunas3" class="p-top col-lateral">
+						<?php if($routeName != 'cms' && $identifier != 'home') { ?>
+						
+							<?php echo $this->getChildHtml('left') ?>
+
+							<div class="banner_left entrega_brasil">
+								<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_entrega_brasil')->toHtml(); ?>
+							</div>
+						
+						<?php } else{ ?>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_1')->toHtml(); ?>
+							</div>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_2')->toHtml(); ?>
+							</div>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_3')->toHtml(); ?>
+							</div>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_4')->toHtml(); ?>
+							</div>
+						<?php } ?>
+					</div>
+
+					<div id="wrapper-colunas9" class="<?php if($routeName == 'cms' && $identifier == 'home') { ?>homepage<?php } ?>">
+						<?php if($routeName != 'cms' && $identifier != 'home') { ?>
+							<?php echo $this->getChildHtml('content') ?>					
+						<?php } else{ ?>
+							<?php echo $this->getChildHtml('content') ?>		
+						<?php } ?>
+					</div>
+
+				<?php endif; ?>
+
+			<?php else: ?>
+
+					<div id="colunas3" class="p-top">
+
+						<?php if($routeName != 'cms' && $identifier != 'home') { ?>
+
+							<?php echo $this->getChildHtml('left') ?>				
+						<?php } else{ ?>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_1')->toHtml(); ?>
+							</div>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_2')->toHtml(); ?>
+							</div>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_3')->toHtml(); ?>
+							</div>
+							<div class="banner_left">
+							<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banner_left_4')->toHtml(); ?>
+							</div>
+						<?php } ?>				
+					</div>
+
+					<div id="wrapper-colunas9" class="<?php if($routeName == 'cms' && $identifier == 'home') { ?>homepage<?php } ?>">
+						<?php if($routeName != 'cms' && $identifier != 'home') { ?>
+							<?php echo $this->getChildHtml('content') ?>					
+						<?php } else{ ?>
+							<?php echo $this->getChildHtml('content') ?>		
+						<?php } ?>
+					</div>
+			
+			<?php endif; ?>
+		</div>
+	</div>
+   	
+   	<?php echo $this->getChildHtml('footer') ?>
+    
+    <?php echo $this->getChildHtml('before_body_end') ?>
+
+    <?php echo $this->getAbsoluteFooter() ?>
+
+    <script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>infinite/jquery.ias.min.js"></script>
+
+    <script type="text/javascript">
+        var ias  = jQuery.ias({
+            container 	: ".wrapper-categoria",
+            item		: ".prod",
+            pagination	: ".pages",
+            next		: ".pages a.next",
+            loader	: "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA); ?>images/loading.svg' style='margin-left:48%'/>"
+        });
+
+        ias.on('rendered', function(items) {
+            $j(".list-qtd span.less").on("click", function() {
+                var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+                return qtd_current--, 0 >= qtd_current && (qtd_current = 1), qtd_current > 9 || (qtd_current = qtd_current),$j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+            });
+            $j(".list-qtd span.more").on("click", function() {
+                var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+                return qtd_current++, qtd_current > 9 || (qtd_current = qtd_current), $j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+            });
+        });
+
+        ias.extension(new IASSpinnerExtension({
+            src: '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>images/loading.svg',
+        }));
+
+        ias.extension(new IASTriggerExtension({offset: 1, text: 'Veja mais Produtos'}));
+    </script>
+
+    <script type="text/javascript">
+		$j = jQuery.noConflict();
+
+		$j(document).ready(function() {
+		    $j(".list-qtd span.less").on("click", function() {
+	            var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+	            return qtd_current--, 0 >= qtd_current && (qtd_current = 1), qtd_current > 9 || (qtd_current = qtd_current),$j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+	        });
+	        $j(".list-qtd span.more").on("click", function() {
+	            var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+	            return qtd_current++, qtd_current > 9 || (qtd_current = qtd_current), $j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+	        });
+		})
+	</script>
+
+</body>
+</html>

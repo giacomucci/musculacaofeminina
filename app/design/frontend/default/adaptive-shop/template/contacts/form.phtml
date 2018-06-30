@@ -1,0 +1,70 @@
+<?php
+/**
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div id="colunas12">
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->getGroupedHtml() ?></div>
+
+    <!--<h1 class="cor bold"><?php //echo Mage::helper('contacts')->__('Contact Us') ?></h1>-->
+</div>
+<div id="colunas12">
+<div class="page-nutrii page-nutrii2">
+	<h3 class="fs-25">Fale Conosco</h3>
+	<br />
+	<div class="box-nutrii-cont1">
+		<div>
+			<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN); ?>frontend/default/adaptive-shop/images/contact_chat.svg" title="Chat Online" width="61" height="61" />
+			<p class="contp1">CHAT ONLINE</p>
+		</div>
+	</div>
+	<div class="box-nutrii-cont2">
+		<div>
+			<img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN); ?>frontend/default/adaptive-shop/images/contact_phone.svg" title="Atendimento" width="61" height="61" />
+			<p  class="contp1">ATENDIMENTO</p>
+			<p class="contp2">(16) 3114-2231<br /></p>
+			<p class="contp3">De segunda a sexta-feira<br />das 8:30 às 18:30</p>
+		</div>
+	</div>
+	<br />
+	<p class="txt fs-14 clear">Se voc&ecirc; deseja obter mais informa&ccedil;&otilde;es sobre algum de nossos produtos ou<br /> sobre alguma compra efetuada, por favor, entre em contato conosco pelo formul&aacute;rio abaixo. Obrigado!</p>
+	<br />
+<form action="<?php echo $this->getFormAction(); ?>" id="contactForm" method="post">
+    <div class="fieldset">
+        <ul class="form-list">
+            <li>
+                <div class="input-box">
+                    <input name="name" id="name" title="<?php echo Mage::helper('contacts')->__('Name') ?>" value="<?php echo $this->htmlEscape($this->helper('contacts')->getUserName()) ?>" class="input-text required-entry d-b op-i txt fs-14" type="text" placeholder="*Nome" />
+                </div>
+                <div class="input-box">
+                    <input name="email" id="email" title="<?php echo Mage::helper('contacts')->__('Email') ?>" value="<?php echo $this->htmlEscape($this->helper('contacts')->getUserEmail()) ?>" class="input-text required-entry validate-email d-b op-i txt fs-14" type="text" placeholder="*E-mail" />
+                </div>
+            </li>
+            <li>
+                <div class="input-box">
+                    <input name="telephone" id="telephone" title="<?php echo Mage::helper('contacts')->__('Telephone') ?>" value="" class="input-text d-b op-i txt fs-14" type="text" placeholder="Telefone" />
+                </div>
+            </li>
+            <li>
+                <div class="input-box">
+                    <textarea name="comment" id="comment" title="<?php echo Mage::helper('contacts')->__('Comment') ?>" class="required-entry input-text op-t txt fs-14" cols="5" rows="3" placeholder="Comentário"></textarea><br />
+                    <p class="required txt fs-11 f-l clear"><?php echo Mage::helper('contacts')->__('* Required Fields') ?></p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="buttons-set">
+        <input type="text" name="hideit" id="hideit" value="" style="display:none !important;" />
+        <button type="submit" title="<?php echo Mage::helper('contacts')->__('Submit') ?>" class="button bt radius cor-sec tt-u fs-14 bold td-n"><?php echo Mage::helper('contacts')->__('Submit') ?></button>
+    </div>
+</form>
+</div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var contactForm = new VarienForm('contactForm', true);
+//]]>
+</script>

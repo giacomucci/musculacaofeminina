@@ -1,0 +1,128 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+/**
+ * Template for Mage_Page_Block_Html
+ */
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<?php echo $this->getLang() ?>" lang="<?php echo $this->getLang() ?>">
+
+<head>
+	<?php echo $this->getChildHtml('head') ?>
+</head>
+
+<body<?php echo $this->getBodyClass()?' class="'.$this->getBodyClass().'"':'' ?>>
+	
+	<?php echo $this->getChildHtml('after_body_start') ?>
+    
+    <?php echo $this->getChildHtml('global_notices') ?>
+    
+    <?php echo $this->getChildHtml('header') ?>
+
+	<?php echo $this->getChildHtml('global_messages') ?>
+
+    <?php
+        $routeName = Mage::app()->getRequest()->getRouteName();
+        $identifier = Mage::getSingleton('cms/page')->getIdentifier();
+    ?>
+
+
+
+    <?php if($routeName != 'cms' && $identifier != 'home'): ?>
+
+        <div id="full" class="no-home">
+            <div id="wrapper">
+
+                <div id="colunas12">
+                    <?php echo $this->getChildHtml('breadcrumbs') ?>
+                </div>
+
+                <?php echo $this->getChildHtml('content') ?>
+            </div>
+        </div>
+
+    <?php else: ?>
+
+        <div id="full" class="no-home">
+
+            <?php echo $this->getChildHtml('content') ?>
+
+        </div>
+
+    <?php endif ?>
+
+	<?php echo $this->getChildHtml('footer') ?>
+    
+    <?php echo $this->getChildHtml('before_body_end') ?>
+
+    <?php echo $this->getAbsoluteFooter() ?>
+
+	<script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>infinite/jquery.ias.min.js"></script>
+    
+    <script type="text/javascript">
+		var ias  = jQuery.ias({
+		  container 	: ".wrapper-categoria",
+		  item		: ".prod",
+		  pagination	: ".pages",
+		  next		: ".pages a.next",
+		  loader	: "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA); ?>images/loading.svg' style='margin-left:48%'/>"
+		});
+		
+		ias.on('rendered', function(items) {
+		    $j(".list-qtd span.less").on("click", function() {
+	            var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+	            return qtd_current--, 0 >= qtd_current && (qtd_current = 1), qtd_current > 9 || (qtd_current = qtd_current),$j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+	        });
+	        $j(".list-qtd span.more").on("click", function() {
+	            var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+	            return qtd_current++, qtd_current > 9 || (qtd_current = qtd_current), $j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+	        });
+		});
+				
+		ias.extension(new IASSpinnerExtension({
+			src: '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>images/loading.svg',
+		}));
+
+		ias.extension(new IASTriggerExtension({offset: 1, text: 'Veja mais Produtos'})); 
+	</script>
+
+    <script type="text/javascript">
+		$j = jQuery.noConflict();
+
+		$j(document).ready(function() {
+		    $j(".list-qtd span.less").on("click", function() {
+	            var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+	            return qtd_current--, 0 >= qtd_current && (qtd_current = 1), qtd_current > 9 || (qtd_current = qtd_current),$j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+	        });
+	        $j(".list-qtd span.more").on("click", function() {
+	            var qtd_current = parseInt($j(this).parents(".list-qtd").find("input").val());
+	            return qtd_current++, qtd_current > 9 || (qtd_current = qtd_current), $j(this).parents(".list-qtd").find("input").val(qtd_current), !1
+	        });
+		})
+	</script>
+</body>
+
+</html>

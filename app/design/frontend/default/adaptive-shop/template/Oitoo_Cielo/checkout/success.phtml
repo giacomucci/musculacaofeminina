@@ -1,0 +1,23 @@
+<?php
+$order = mage::getModel('sales/order')->load($this->getOrderId(),'increment_id');
+$valorfrete = $order->getShippingAmount();
+$valordesconto = $order->getDiscountAmount();
+$valortotal = $order->getGrandTotal();
+
+//envia o email do pedido
+$this->sendEmailOrder();
+?>
+
+<div id="colunas6" class="cart-success1 m-top">
+    <p class="fs-20">Pedido realizado <span class="bold">com sucesso!</span></p>
+    <p class="txt bold fs-25 obg">Obrigado!</p>
+</div>
+
+<div id="colunas6" class="cart-success2 m-top">
+    <h2 class="cor bold sub-title"><?php echo $this->__('Thank you for your purchase!') ?></h2>
+    <br />
+    <p class="txt fs-16"><?php echo $this->__("Número do pedido:"); ?> <span class="bold" style="color:#3b2705"><?php echo  $this->escapeHtml($this->getOrderId()) ?></span></p>
+    <p class="txt fs-16"><?php echo $this->__("A confirmação do pedido foi enviada para o e-mail"); ?> <span class="bold"><?php echo $order->getCustomerEmail() ?></span></p>
+</div>
+
+<div id="colunas12"></div>

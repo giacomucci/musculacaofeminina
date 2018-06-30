@@ -1,0 +1,99 @@
+<!--@subject # {{var order.increment_id}} | Pedido enviado @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$billing.getName()":"Guest Customer Name",
+"var store.getFrontendName()":"Store Name",
+"var shipment.increment_id":"Shipment Id",
+"var order.increment_id":"Order Id",
+"var order.billing_address.format('html')":"Billing Address",
+"var payment_html":"Payment Details",
+"var order.shipping_address.format('html')":"Shipping Address",
+"var order.shipping_description":"Shipping Description",
+"layout handle=\"sales_email_order_shipment_items\" shipment=$shipment order=$order":"Shipment Items Grid",
+"block type='core/template' area='frontend' template='email/order/shipment/track.phtml' shipment=$shipment order=$order":"Shipment Track Details",
+"var comment":"Shipment Comment"}
+@-->
+<!--@styles
+@-->
+
+{{template config_path="design/email/header"}}
+
+<table width="580" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-spacing: 0; margin-top:30px; background-color:#FFF;">
+    <tbody>
+    <tr>
+        <td valign="top" style="border:none; background-color:#823486; color:#FFF; font-size:25px; font-weight:bold; text-align:center; padding: 40px 0;" colspan="2">
+            Pedido Enviado!
+        </td>
+    </tr>
+    <tr align="center">
+        <td valign="top" style="border:none;" colspan="2">
+            <p style="color:#8A4178; font-weight:normal; font-size:20px; margin:20px 0px; padding:0 70px; text-align: left; font-weight:bold;">
+                Olá, {{htmlescape var=$order.getCustomerName()}}!
+            </p>
+            <p style="color:#9E9E9E; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 70px; text-align: left; line-height:20px;">
+                Seu pedido já foi enviado para a transportadora e em breve chegará ao seu endereço de entrega.<br />
+                {{block type='core/template' area='frontend' template='email/order/shipment/track.phtml' shipment=$shipment order=$order}}
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" style="border:none; text-align:center;" colspan="2">
+            <img src="http://www.musculacaofeminina.com.br/-img-email-transacional/status-3-pedido-enviado.png" width="487" height="111" alt="Pedido Recebido" style="margin: 20px 0 15px; width:440px; height:auto;" />
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" style="border:none; text-align:center;" colspan="2">
+            <p style="color:#9E9E9E; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 70px; text-align: left; line-height:20px;">
+                Pedido #{{var order.increment_id}}
+            </p>
+        </td>
+    </tr>
+    <tr style="line-height:22px;">
+        <td valign="top" style="color:#9E9E9E;font-weight:normal;font-size:13px;margin:0px 0px 20px;padding:0px 70px;" width="675px" colspan="2">
+            {{layout area="frontend" handle="sales_email_order_items" invoice=$invoice order=$order}}
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" style="border:none;" colspan="2">
+            <hr style="background-color: #e1e1e1; border: medium none; height: 1px; margin: 30px 70px 40px;" />
+        </td>
+    </tr>
+    <tr>
+        <td valign="top" style="color: #9E9E9E; font-size: 12px; margin: 0 0 20px; padding: 0 20px 0 70px; text-align: left; width: 50%;" width="290px" font-weight:normal;>
+            <strong style="color:#BD74AB; font-size:14px;">Endereço de Cobrança</strong><br /><br />
+            {{var order.billing_address.format('html')}}
+            <br /><br />
+            <strong style="color:#BD74AB; font-size:14px;">Endereço de Entrega</strong><br /><br />
+            {{var order.shipping_address.format('html')}}
+        </td>
+        <td valign="top" style="color: #9E9E9E; font-size: 12px; margin: 0 0 20px; padding: 0 70px 0 20px; text-align: left; width: 50%;" width="290px" font-weight:normal;>
+            <strong style="color:#BD74AB; font-size:14px;">Forma de Pagamento</strong><br /><br />
+            {{var payment_html}}
+            <br /><br />
+            <strong style="color:#BD74AB; font-size:14px;">Forma de Envio</strong><br /><br />
+            {{var order.shipping_description}}
+        </td>
+    </tr>
+
+    <tr>
+        <td valign="top" style="border:none;" colspan="2">
+            <hr style="background-color: #e1e1e1; border: medium none; height: 1px; margin: 40px 70px 20px;" />
+        </td>
+    </tr>
+
+    <tr align="center">
+        <td valign="top" style="border:none;" colspan="2">
+            <p style="color:#9E9E9E; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 70px; text-align: center; line-height:20px;">
+                Obrigado pela sua compra e volte sempre!
+            </p>
+            <a href="https://www.musculacaofeminina.com.br/sales/order/view/order_id/{{var order.id}}" style="border: 2px solid #BD74AB;border-radius: 50px;color: #BD74AB;padding: 10px 20px 11px;text-decoration: none;">Visite nosso site</a>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+{{template config_path="design/email/footer"}}

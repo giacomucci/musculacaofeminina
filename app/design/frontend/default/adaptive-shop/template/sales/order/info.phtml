@@ -1,0 +1,100 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php /** @var $this Mage_Sales_Block_Order_Info */ ?>
+<div id="colunas9">
+<?php $_order = $this->getOrder() ?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <h1 class="cor bold"><?php echo $this->__('Order #%s - %s', $_order->getRealOrderId(), $_order->getStatusLabel()) ?></h1>
+    <?php echo $this->getChildHtml('buttons') ?>
+</div>
+
+<div id="colunas9">
+<p class="txt fs-14 bold order-date"><?php echo $this->__('Order Date: %s', $this->formatDate($_order->getCreatedAtStoreDate(), 'long')) ?></p>
+<br />
+<?php if (!$_order->getIsVirtual()): ?>
+<div class="col2-set order-info-box">
+    <div class="col-1">
+        <div class="box">
+            <div class="box-title">
+                <h2 class="cor bold"><?php echo $this->__('Shipping Address') ?></h2>
+            </div>
+            <div class="box-content">
+                <address class="txt fs-14"><?php echo $_order->getShippingAddress()->format('html') ?></address>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-2">
+        <div class="box">
+            <div class="box-title">
+                <h2 class="cor bold"><?php echo $this->__('Shipping Method') ?></h2>
+            </div>
+            <div class="box-content txt fs-14">
+                <?php if ($_order->getShippingDescription()): ?>
+                    <?php echo $this->escapeHtml($_order->getShippingDescription()) ?>
+                <?php else: ?>
+                    <p><?php echo $this->helper('sales')->__('No shipping information available'); ?></p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<?php endif; ?>
+<div class="col2-set order-info-box">
+    <div class="col-1">
+        <div class="box">
+            <div class="box-title">
+                <h2 class="cor bold"><?php echo $this->__('Billing Address') ?></h2>
+            </div>
+            <div class="box-content txt fs-14">
+                <address><?php echo $_order->getBillingAddress()->format('html') ?></address>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="col-2">
+        <div class="box box-payment">
+            <div class="box-title">
+                <h2 class="cor bold"><?php echo $this->__('Payment Method') ?></h2>
+            </div>
+            <div class="box-content txt fs-14">
+                <?php echo $this->getPaymentInfoHtml() ?>
+                <?php 
+// Segunda via Boleto
+if ((strpos ( $this->getPaymentInfoHtml (), "Boleto" ) !== false) && ($_order->getStatus () == $this->__ ( Mage::getStoreConfig ( 'payment/boleto_bancario/order_status' ) ))) {
+	echo "<a href=\"" . $this->getUrl ( 'boleto/standard/view/order_id/' . $_order->getId () ) . "\" class=\"cor bold link-cart\" onclick=\"this.target='_blank'\">" . $this->__ ( ' Gerar 2&#170; Via do Boleto' ) . "</a>";
+}
+// Segunda via Boleto ?>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</div>

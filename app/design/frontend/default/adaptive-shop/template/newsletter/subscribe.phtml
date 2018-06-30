@@ -1,0 +1,15 @@
+<?php
+/**
+ */
+?>
+	<div class="form-news d-b">
+    	<form action="<?php echo $this->getFormActionUrl() ?>" method="post" id="newsletter-validate-detail">
+           	<input type="text" name="email" id="newsletter" value="" class="f-l news-i txt fs-14 d-b input-text required-entry validate-email" autocomplete="off" placeholder="Digite seu email" maxlength="100">
+            <input type="submit" value="assinar" class="fs-16 d-b bt-n f-l cor-sec bold news-b">
+        </form>
+    <script type="text/javascript">
+    //<![CDATA[
+        var newsletterSubscriberFormDetail = new VarienForm('newsletter-validate-detail');
+    //]]>
+    </script>
+	</div>

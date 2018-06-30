@@ -1,0 +1,36 @@
+<?php
+
+$_order = Mage::registry('current_order');
+$orderid=$_order->getId();
+$orders=Mage::getModel('onestepcheckout/onestepcheckout')->getCollection()->addFieldToFilter('sales_order_id',$orderid);
+$class_orders=get_class($orders);	
+$o = '';
+$comment = '';
+
+if (count($orders) != 0):
+
+	foreach($orders as $order)	
+	{
+		$o = $order; break;		
+	}
+
+	$comment = $o->getMoipCustomercommentInfo();
+
+endif
+?>
+
+<?php if($comment != ''): ?>
+<div class="box-right">
+	<div class="entry-edit">
+		<div class="entry-edit-head">
+			<h4 class="icon-head head-shipping-method"><?php echo $this->helper('onestepcheckout')->__('Customer Order Comment') ?></h4>
+		</div>
+		<fieldset>
+		
+			<?php echo nl2br($comment, 1); ?>
+		
+		</fieldset>
+	</div>
+</div>
+<div class="clear"></div>
+<?php endif ?>

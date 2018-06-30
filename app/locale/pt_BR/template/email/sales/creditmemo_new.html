@@ -1,0 +1,47 @@
+<!--@subject # {{var order.increment_id}} | Reembolso @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"htmlescape var=$order.getCustomerName()":"Customer Name",
+"var store.getFrontendName()":"Store Name",
+"store url=\"customer/account/\"":"Customer Account Url",
+"var creditmemo.increment_id":"Credit Memo Id",
+"var order.increment_id":"Order Id",
+"var order.billing_address.format('html')":"Billing Address",
+"payment_html":"Payment Details",
+"var order.shipping_address.format('html')":"Shipping Address",
+"var order.shipping_description":"Shipping Description",
+"layout handle=\"sales_email_order_creditmemo_items\" creditmemo=$creditmemo order=$order":"Credit Memo Items Grid",
+"var comment":"Credit Memo Comment"}
+@-->
+<!--@styles
+@-->
+
+
+{{template config_path="design/email/header"}}
+
+<table width="580" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-spacing: 0; margin-top:30px; background-color:#FFF;">
+  <tbody>
+  <tr>
+    <td valign="top" style="border:none; background-color:#823486; color:#FFF; font-size:25px; font-weight:bold; text-align:center; padding: 40px 0;" colspan="2">
+      # {{var order.increment_id}} | Reembolso
+    </td>
+  </tr>
+    <tr align="center">
+      <td valign="top" style="border:none;" colspan="2">
+      	<p style="color:#BD74AB; font-family:Arial; font-weight:bold; font-size:18px; margin:20px 0px; padding:0 50px;">Olá, {{htmlescape var=$order.getCustomerName()}}!</p>
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 90px;">O reembolso do pedido <span class="no-link">#{{var order.increment_id}}</span> foi realizado com sucesso.</p>
+      </td>
+    </tr>
+  <tr align="center">
+    <td valign="top" style="border:none;" colspan="2">
+      <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 5px; padding:0 90px;">Em caso de dúvidas, entre em contato com nossa<br /><a style="font-weight:bold; text-decoration:underline;color:#9E9E9E;" href="">Central de Atendimento</a>.</p>
+      <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 5px; padding:0 90px;">Atenciosamente,</p>
+      <p style="color:#BD74AB; font-family:Arial; font-weight:bold; font-size:14px; margin:0px 0px 20px; padding:0 90px;">Musculação Feminina</p>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+{{template config_path="design/email/footer"}}

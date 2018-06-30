@@ -1,0 +1,116 @@
+<?php
+/**
+ * Template for displaying Maximum price from associated products as regular price on product page
+ */
+?>
+<?php
+$_product = $this->getProduct();
+$_store = $_product->getStore();
+$_id = $_product->getId(); 
+$_cpspHelper = $this->helper('configurableproductssimpleprices');
+$lodedProduct = Mage::getModel('catalog/product')->load($_product->getId()); 
+$_configurableSimple = $_cpspHelper->isEnable($lodedProduct);
+$_controllerName = Mage::app()->getRequest()->getControllerName(); 
+$_listControllers = array('category','product','result','advanced','index','cart','product_compare'); 
+if($lodedProduct->getTypeId() != 'configurable' || !$_configurableSimple || ($_configurableSimple && !in_array($_controllerName, $_listControllers))){ 
+	echo $this->setTemplate('catalog/product/price.phtml')->toHtml();
+	return;
+}
+
+$_coreHelper = $this->helper('core');
+$_taxHelper = $this->helper('tax');
+
+$_cpspHelper->setUpStaticData($lodedProduct);
+$class = '';
+$_maxExclTaxOld = 0;
+$_maxInclTaxOld = 0;
+$_maxExclTax = 0;
+$_maxInclTax = 0;	 
+?>
+	<?php 
+		$class = ' style="clear:both;"';
+		list($maxSpId, $_maximumPriceValue) = $_cpspHelper->getMaximumProductPrice($_id);
+		
+		if(is_array($maxSpId)) $maxSpId = array_shift($maxSpId);
+		if($maxSpId != null && $maxSpId != 0) $_sProductMax = Mage::getModel('catalog/product')->load($maxSpId);
+		
+		$_maximumPriceValue = $_store->roundPrice($_store->convertPrice($_maximumPriceValue));
+		//$_maximumPriceValue = Mage::helper('core')->currency($_maximumPriceValue,false,false);
+		// echo $_sProductMax->getPrice();
+        // echo $_sProductMax->getFinalPrice();
+		if ($_sProductMax && $_maximumPriceValue) {
+			$_maxExclTax = $_taxHelper->getPrice($_sProductMax, $_maximumPriceValue);
+			$_maxInclTax = $_taxHelper->getPrice($_sProductMax, $_maximumPriceValue, true);
+
+			if($_sProductMax->getFinalPrice() < $_sProductMax->getPrice()) {
+                $_maxExclTaxOld = $_taxHelper->getPrice($_sProductMax, $_sProductMax->getPrice());
+                $_maxInclTaxOld = $_taxHelper->getPrice($_sProductMax, $_sProductMax->getPrice(), true);
+
+                $_maxExclTax = $_taxHelper->getPrice($_sProductMax, $_sProductMax->getFinalPrice());
+                $_maxInclTax = $_taxHelper->getPrice($_sProductMax, $_sProductMax->getFinalPrice(), true);
+            }
+            
+			$maxPrice = $_maximumPriceValue;
+		}
+
+	?>
+	<?php if ($maxPrice): ?>
+		<?php if(!$this->getShowRange()): ?>
+		<div class="price-box">
+		<?php endif; ?>
+			<?php if($this->getShowRange()): ?>
+                <span class="price-label"><strong><?php echo $this->__('To:') ?></strong></span>
+            <?php endif; ?>
+			<?php if ($_taxHelper->displayBothPrices()): ?>
+				<span class="price-excluding-tax">
+					<span class="label"><?php echo $this->helper('tax')->__('Excl. Tax:') ?></span>
+					<span class="regular-price"
+						  id="price-excluding-tax-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>">
+						<span class="price"><?php echo $_coreHelper->currency($_maxExclTax, false) ?></span>
+					</span>
+				</span>
+				<span class="price-including-tax">
+					<span class="label"><?php echo $this->helper('tax')->__('Incl. Tax:') ?></span>
+					<span class="regular-price"
+						  id="price-including-tax-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>">
+						<span class="price"><?php echo $_coreHelper->currency($_maxInclTax, false) ?></span>
+					</span>
+				</span>
+			<?php else: ?>
+				<?php
+				$_maxShowPrice = $_maxInclTax;
+				$_maxShowPriceOld = $_maxInclTaxOld;
+
+				if (!$_taxHelper->displayPriceIncludingTax()) {
+					$_maxShowPrice = $_maxExclTax;
+					$_maxShowPriceOld = $_maxExclTaxOld;
+				}
+				?>
+				<?php if($_sProductMax->getFinalPrice() < $_sProductMax->getPrice()) : ?>
+					<span class="old-price price" id="product-price-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>"  style="text-decoration: line-through; font-size:13px;">
+						<?php if($this->getShowRange()): ?>
+							<?php echo $_coreHelper->currency($_maxShowPriceOld, false) ?>
+						<?php else: ?>
+							<span class="price"><?php echo $_coreHelper->currency($_maxShowPriceOld, false) ?></span>
+						<?php endif; ?>
+					</span>
+					<span class="special-price price" id="product-price-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>" style="font-size:13px;">
+						<?php if($this->getShowRange()): ?>
+							<?php echo $_coreHelper->currency($_maxShowPrice, false) ?>
+						<?php else: ?>
+							<span class="price"><?php echo $_coreHelper->currency($_maxShowPrice, false) ?></span>
+						<?php endif; ?>
+					</span>
+				<?php else: ?>
+					<span class="regular-price price" id="product-price-<?php echo $_id ?><?php echo $this->getIdSuffix() ?>" style="font-size:13px;">
+						<?php if($this->getShowRange()): ?>
+							<?php echo $_coreHelper->currency($_maxShowPrice, false) ?>
+						<?php else: ?>
+							<span class="price"><?php echo $_coreHelper->currency($_maxShowPrice, false) ?></span>
+						<?php endif; ?>
+					</span>
+				<?php endif; ?>
+			<?php endif; ?>
+		</div>
+    <?php endif; ?>
+

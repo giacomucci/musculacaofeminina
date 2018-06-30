@@ -1,0 +1,290 @@
+<?xml version="1.0"?>
+<config>
+    <tabs>
+        <b4mtab translate="label">
+            <label>BEST4MAGE EXTENSIONS</label>
+            <sort_order>200</sort_order>
+        </b4mtab>
+    </tabs>
+    <sections>
+        <cpsp translate="label">
+            <label>Best4Mage CPSP</label>
+            <tab>b4mtab</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>100</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+            <groups>
+                <settings translate="label">
+                    <label>Basic Options</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>10</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <enable translate="label">
+                            <label>Enable</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </enable>
+                        <product_level translate="label">
+                            <label>Use product level settings
+                                <![CDATA[<script type="text/javascript">document.observe('dom:loaded', function() { $('cpsp_basic_product_level').observe('change', cpspOnProductLevel); function cpspOnProductLevel() { if($('cpsp_basic_product_level').value == 1) { $('row_cpsp_infoupdate_update_fields_product_level').show(); if($('cpsp_infoupdate_update_fields_product_level').value == 1) {$('row_cpsp_infoupdate_update_fields').hide();} else {$('row_cpsp_infoupdate_update_fields').show();} } else { $('row_cpsp_infoupdate_update_fields_product_level').hide(); $('row_cpsp_infoupdate_update_fields').show();  } } cpspOnProductLevel(); });</script>]]></label>
+                            <frontend_type>select</frontend_type>
+                            <comment>Notice: If you set it to 'Yes', don't forget to activate CPSP at product level.</comment>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </product_level>
+                    </fields>
+                </settings>
+                <dropdown translate="label">
+                    <label>Dropdown Options</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>20</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <price_format translate="label">
+                            <label>Price Format</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>configurableproductssimpleprices/system_config_source_priceformates</source_model>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </price_format>
+                        <choose_formate translate="label">
+                            <label>Remove Decimal Point</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </choose_formate>
+                        <expand_prices translate="label">
+                            <label>Expand with show prices</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </expand_prices>
+                        <show_stock translate="label">
+                            <label>Show Stock</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>configurableproductssimpleprices/system_config_source_stocks</source_model>
+                        </show_stock>
+                        <show_last_price translate="label">
+                            <label>Show Price in Last Attribute</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </show_last_price>
+                    </fields>
+                </dropdown>
+                <price translate="label">
+                    <label>Price Options</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>30</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <show_price_range>
+                            <label>Show Price Range</label>
+                            <comment>This will display Price in "From..To.." format. If set to Yes, Show Lowest Price setting will be ignored.</comment>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </show_price_range>
+                        <show_lowest translate="label">
+                            <label>Show Lowest Price
+                                <![CDATA[<script type="text/javascript">document.observe('dom:loaded', function() { $('cpsp_price_show_lowest').observe('change', cpspOnShowLowest); function cpspOnShowLowest() { if($('cpsp_price_show_lowest').value == 1) { $('row_cpsp_price_use_tier_lowest').show(); $('row_cpsp_price_use_preselection').show(); $('row_cpsp_price_use_out_of_stock_product').show(); $('row_cpsp_price_switch_price_visibility').show(); } else { $('row_cpsp_price_use_tier_lowest').hide(); $('row_cpsp_price_use_preselection').hide(); $('row_cpsp_price_use_out_of_stock_product').hide(); $('row_cpsp_price_switch_price_visibility').hide();} } cpspOnShowLowest(); });</script>]]>
+                            </label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </show_lowest>
+                        <use_preselection translate="label">
+                            <label>Use preselection with Lowest Price</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </use_preselection>
+                        <use_tier_lowest translate="label">
+                            <label>Use Lowest Tier Price</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </use_tier_lowest>
+                        <use_out_of_stock_product translate="label">
+                            <label>Use Lowest Price of Out of Stock Products</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>40</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </use_out_of_stock_product>
+                        <hide_same_lowest translate="label">
+                            <label>Show Default Price for Same Simple Price</label>
+                            <comment>Set this option to "Yes" might affect the performance.</comment>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>50</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </hide_same_lowest>
+                        <show_maxregular translate="label">
+                            <label>Show Maximum Price As Regular Price</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>60</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </show_maxregular>
+                        <enable_tier translate="label">
+                            <label>Enable Configurable Tier Price</label>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>70</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </enable_tier>
+                        <switch_price_visibility translate="label">
+                            <label>Switch Price Visibility</label>
+                            <comment>It will switch visibility of Main Price and 'Price From' on product page. If any option is selected it'll hide 'Price From' and display Main Price and vice-versa when option is not selected.</comment>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>45</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </switch_price_visibility>
+                    </fields>
+                </price>
+                <redirect_options translate="label">
+                    <label>Product Page Options</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>35</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <redirect_to_cp>
+                            <label>Redirect Simple products to Configurable Product</label>
+                            <comment>Note : Please note that the simple product have must been assigned to only one configurable product.</comment>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </redirect_to_cp>
+                        <change_url>
+                            <label>Change URL to simple product's URL on selecting the options.</label>
+                            <comment></comment>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </change_url>
+                    </fields>
+                </redirect_options>
+                <infoupdate translate="label">
+                    <label>Simple Product Information Switching Options</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>40</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <update_fields_product_level>
+                            <label>Use product level setting for Labels to be updated
+                                <![CDATA[<script type="text/javascript">document.observe('dom:loaded', function() { $('cpsp_infoupdate_update_fields_product_level').observe('change', cpspSwitchUpdateFields); function cpspSwitchUpdateFields() { if($('cpsp_infoupdate_update_fields_product_level').value == 1) { if($('cpsp_basic_product_level').value == 1) {$('row_cpsp_infoupdate_update_fields').hide();} else {$('row_cpsp_infoupdate_update_fields').show();} } else { $('row_cpsp_infoupdate_update_fields').show(); } } cpspSwitchUpdateFields(); });</script>]]></label>
+                            <comment>Notice: If you set it to 'Yes', your labels setting will be visible at product level.</comment>
+                            <frontend_type>select</frontend_type>
+                            <sort_order>89</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                        </update_fields_product_level>
+                        <update_fields translate="label">
+                            <label>Labels to be updated</label>
+                            <frontend_type>multiselect</frontend_type>
+                            <source_model>configurableproductssimpleprices/system_config_source_updatefields</source_model>
+                            <sort_order>90</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </update_fields>
+                    </fields>
+                </infoupdate>
+                <support_info translate="label">
+                    <label>Support Info</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>50</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <version translate="label">
+                            <label>Version</label>
+                            <frontend_type>label</frontend_type>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </version>
+                        <portal_link translate="label">
+                            <label>For support go to</label>
+                            <frontend_type>label</frontend_type>
+                            <frontend_model>configurableproductssimpleprices/system_config_form_fieldset_support</frontend_model>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </portal_link>
+                    </fields>
+                </support_info>
+            </groups>
+        </cpsp>
+    </sections>
+</config>

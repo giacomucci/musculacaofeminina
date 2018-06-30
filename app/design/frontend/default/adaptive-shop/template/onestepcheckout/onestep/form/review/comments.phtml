@@ -1,0 +1,23 @@
+<div id="onestepcheckout-review-comments">
+<?php /* @var $this Cdr_OrderComment_Block_Checkout_Onepage_Review_Commentfield */ 
+$block = new Cdr_OrderComment_Block_Checkout_Onepage_Review_Commentfield();
+?>
+
+<?php if ($block->isActive('iwd')) : ?>
+	<div id="onestepcheckout-review-comments-simple">
+	    <div>
+	        <div class="step-title"><h2>COMENTÁRIO DO PEDIDO</h2></div>
+	    	<textarea id="cdr_ordercomment" class="d-b op-t txt fs-14 input-text validation-passed" name="cdr_ordercomment" title="<?php echo $this->__('CDR Order Comment') ?>" rows="5" cols="10" maxlength="<?php echo $block->getMaxCommentSize(); ?>"></textarea>
+	    </div>
+	</div>
+	<script>
+	<?php if ($block->limitTextArea()): ?>
+			$('cdr_ordercomment').observe('keyup', function(event) {
+				var max = <?php echo $block->getMaxCommentSize(); ?>;
+				var current = event.element().value.length;
+				$('cdr_ordercomment-max-len').innerHTML = (max - current);
+			});
+	<?php endif; ?>
+	</script>
+<?php endif; ?>                        
+</div>

@@ -1,0 +1,114 @@
+<?php
+/** Product list template 
+* @see Mage_Catalog_Block_Product_List 
+**/
+?>
+
+<?php $this->_reviewsHelperBlock = $this->getLayout()->createBlock('review/helper');?>
+<?php $_productCollection=$this->getLoadedProductCollection(); ?>
+<?php $_helper = $this->helper('catalog/output'); ?>
+	
+<?php if(!$_productCollection->count()): ?>
+	<div id="colunas12">
+		<p class="note-msg proxima-nova"><?php echo $this->__('There are no products matching the selection.') ?></p>
+	</div>
+<?php else: ?>
+
+<div class="wrapper-categoria">
+	<?php $_collectionSize = $_productCollection->count() ?>
+	<?php $_columnCount = 4; ?>    
+
+	<?php $i=0; foreach ($_productCollection as $_product): $reqProductId = $_product->getId(); ?>
+	   
+	    <?php if ($i++%$_columnCount==0): ?>
+	    <?php endif ?>
+
+	    <div id="colunas3" class=" prod <?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+	        <div class="nova-h">
+
+                <?php if($product->getData('brinde')): ?>
+                    <div class="tag-brinde">
+                        <div class="aviso oferta">GANHE BRINDE <i class="fa fa-search"></i></div>
+                        <div class="dropdown-content dropdown-menu col-sm-12 oferta-imperdivel">
+                            <?php echo $product->getData('brinde'); ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <?php if(!$_product->isSaleable()): ?>
+                    <div class="tag-label">
+                        <p class="novo">esgotado</p>
+                    </div>
+                <?php endif; ?>
+
+				<a href="<?php echo $_product->getProductUrl()?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
+		        <img class="img-prod" src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(263); ?>" width="263" height="263" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>"/></a>
+		   
+		   		<div id="info-prod">
+					<a class="fs-19 txt d-b bold" href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><h2><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h2></a>
+					<div class="mob">
+					<div class="list-rating"><?php echo $this->_reviewsHelperBlock->getSummaryHtml($_product, false, false); ?></div>
+
+					<?php echo $this->getPriceHtml($_product, true) ?>
+						<p class="txt fs-14" style="display:inline-block;">
+
+                            <?php
+                            if($_product->isConfigurable()){
+								$_coreHelper = $this->helper('core');
+								$_id = $_product->getId();
+								$_cpspHelper = Mage::helper('configurableproductssimpleprices');
+								list($spID, $_minimalPriceValue) = $_cpspHelper->getMinimalProductPrice($_id);
+								
+								$Preco = $_minimalPriceValue;
+							} else {
+								
+								$Preco = $_product->getMinimalPrice();
+
+							}
+							
+                            $boleto = $Preco/100;
+                            $desc_boleto = $Preco - (6*$boleto);
+
+                            if($Preco > 0.00 and $Preco <= 59.99){
+                                $Parcelamento = 1;
+                            }
+                            else if($Preco >= 60 and $Preco <= 89.99){
+                                $Parcelamento = 2;
+                                $Resultado = $Preco/ $Parcelamento;
+                                echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+                            }
+                            else if($Preco >= 90 and $Preco <= 119.99){
+                                $Parcelamento = 3;
+                                $Resultado = $Preco/ $Parcelamento;
+                                echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+                            }
+                            else if($Preco >= 120){
+                                $Parcelamento = 4;
+                                $Resultado = $Preco/ $Parcelamento;
+                                echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+                            }
+                            //echo '<p class="fs-14"><span class="cor bold">R$'.number_format($desc_boleto, 2, ',', '').'</span> no boleto banc&aacute;rio ou transfer&ecirc;ncia banc&aacute;ria</p>';
+                            ?>
+                        </p>
+					    <?php if(!$_product->isGrouped()): ?>
+					    <form action="<?php echo $this->getAddToCartUrl($_product) ?>" method="post" id="product_addtocart_form_<?php echo $_product->getId()?>"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+							 <div class="list-qtd">
+								 <span class="less">-</span>
+								 <input style="width:22px;float:none;text-align:center;" class="op-i" type="text" name="qty" id="qty" maxlength="5" value="<?php echo ($this->getMinimalQty($_product)?$this->getMinimalQty($_product):1) ?>" aria-label="Quantidade"/>	
+								 <span class="more">+</span>		
+							 </div>
+							 <?php endif; ?>								
+							<div class="bt-nova">
+								<a href="javascript:void(0)" title="Comprar" onclick="document.getElementById('product_addtocart_form_<?php echo $_product->getId()?>').submit(); return false">Comprar</a>
+							</div>
+							<input type="submit" style="display: none"/>
+						</form>
+					</div>
+		   		</div>
+	        </div>
+	    </div>
+	<?php endforeach ?>
+
+    <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+</div>
+<?php endif; ?>

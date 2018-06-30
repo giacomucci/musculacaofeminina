@@ -1,0 +1,33 @@
+<!--@subject Alerta de produto em estoque @-->
+<!--@vars
+{"var customerName":"Customer Name",
+"var alertGrid":"Alert Data Grid"}
+@-->
+{{template config_path="design/email/header"}}
+
+<table width="580" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-spacing: 0; margin-top:30px; background-color:#FFF;">
+    <tbody>
+    <tr>
+        <td valign="top" style="border:none; background-color:#823486; color:#FFF; font-size:25px; font-weight:bold; text-align:center; padding: 40px 0;" colspan="2">
+            Alerta de produto em estoque
+        </td>
+    </tr>
+    <tr align="center">
+      <td valign="top" style="border:none;" colspan="2">
+      	<p style="color:#BD74AB; font-family:Arial; font-weight:bold; font-size:18px; margin:20px 0px; padding:0 50px;">Olá, {{var customerName}}!</p>
+
+<p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 90px;">{{var alertGrid}}</p>
+
+   </td>
+    </tr>
+    <tr align="center">
+        <td valign="top" style="border:none;" colspan="2">
+            <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 5px; padding:0 90px;">Em caso de dúvidas, entre em contato com nossa<br /><a style="font-weight:bold; text-decoration:underline;color:#9E9E9E;" href="">Central de Atendimento</a>.</p>
+            <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 5px; padding:0 90px;">Atenciosamente,</p>
+            <p style="color:#BD74AB; font-family:Arial; font-weight:bold; font-size:14px; margin:0px 0px 20px; padding:0 90px;">Musculação Feminina</p>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+{{template config_path="design/email/footer"}}

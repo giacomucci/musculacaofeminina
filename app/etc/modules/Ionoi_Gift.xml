@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <modules>
+        <Ionoi_Gift>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Mage_Rule />
+                <Mage_SalesRule />
+                <Mage_Tax />
+            </depends>
+        </Ionoi_Gift>
+    </modules>
+</config>

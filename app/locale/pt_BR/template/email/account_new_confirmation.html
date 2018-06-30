@@ -1,0 +1,50 @@
+<!--@subject Confirmação de conta @-->
+<!--@vars
+{"store url=\"\"":"Store Url",
+"var logo_url":"Email Logo Image Url",
+"var logo_alt":"Email Logo Image Alt",
+"store url=\"customer/account/\"":"Customer Account Url",
+"htmlescape var=$customer.name":"Customer Name",
+"var customer.email":"Customer Email",
+"store url=\"customer/account/confirm/\" _query_id=$customer.id _query_key=$customer.confirmation _query_back_url=$back_url":"Confirmation Url",
+"htmlescape var=$customer.password":"Customer password"}
+@-->
+
+<!--@styles
+@-->
+
+{{template config_path="design/email/header"}}
+
+<table width="580" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-spacing: 0; margin-top:30px; background-color:#FFF;">
+  <tbody>
+    <tr>
+      <td valign="top" style="border:none; background-color:#823486; color:#FFF; font-size:25px; font-weight:bold; text-align:center; padding: 40px 0;" colspan="2">
+        Confirmação de conta
+      </td>
+    </tr>
+    <tr align="center">
+      <td valign="top" style="border:none;" colspan="2">
+      	<p style="color:#BD74AB; font-family:Arial; font-weight:bold; font-size:18px; margin:20px 0px; padding:0 50px;">Olá, {{htmlescape var=$customer.name}}!</p>
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 90px;">Esse é o seu primeiro acesso e precisamos que você realize a validação de sua conta.</p>
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 90px;">Por favor, <a style="font-weight:bold; text-decoration:underline;color:#9E9E9E;" href="{{store url="customer/account/confirm/" _query_id=$customer.id _query_key=$customer.confirmation _query_back_url=$back_url}}">clique aqui</a> para confirmar seu cadastro!</p>
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 90px;">Nas próximas vezes, você já poderá acessar sua conta digitando apenas seu login (e-mail) e senha, podendo assim efetuar seus pedidos e prosseguir com uma nova compra. É muito mais rápido e prático!</p>
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 90px;">
+		<strong>Informações de Acesso</strong><br/>
+		E-mail: {{var customer.email}}<br/>
+		Senha: {{htmlescape var=$customer.password}}
+		</p>
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 20px; padding:0 90px;">Você sempre pode tirar dúvidas sobre o seu pedido conosco.<br />Não hesite em perguntar! :)</p>
+      </td>
+    </tr>
+    <tr align="center">
+      <td valign="top" style="border:none;" colspan="2">
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 5px; padding:0 90px;">Em caso de dúvidas, entre em contato com nossa<br /><a style="font-weight:bold; text-decoration:underline;color:#9E9E9E;" href="">Central de Atendimento</a>.</p>
+        <p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:0px 0px 5px; padding:0 90px;">Atenciosamente,</p>
+        <p style="color:#BD74AB; font-family:Arial; font-weight:bold; font-size:14px; margin:0px 0px 20px; padding:0 90px;">Musculação Feminina</p>
+       </td>
+    </tr>
+  </tbody>
+</table>
+
+
+{{template config_path="design/email/footer"}}

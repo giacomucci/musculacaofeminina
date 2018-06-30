@@ -1,0 +1,12 @@
+<?php
+/**
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+ $customer = Mage::getSingleton('customer/session')->getCustomer();
+?>
+<p class="hello_account"><?php echo $this->__('Hello, %s!', $customer->getFirstname()) ?></p>
+<br />
+<p class="txt_account">Esse &eacute; o seu Painel Geral. Aqui, voc&ecirc; poder&aacute; acompanhar seus pedidos e editar suas informa&ccedil;&otilde;es de cadastro.</p>

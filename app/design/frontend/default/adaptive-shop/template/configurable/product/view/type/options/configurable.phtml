@@ -1,0 +1,67 @@
+<?php
+$_product    = $this->getProduct();
+$_attributes = Mage::helper('core')->decorateArray($this->getAllowAttributes());
+?>
+<?php if ($_product->isSaleable() && count($_attributes)):?>
+
+    <?php foreach($_attributes as $_attribute): ?>
+        <label class="required cor fs-12"><?php echo $_attribute->getLabel() ?><em>*</em></label>
+        <div class="bundle-options">
+            <div class="input-box-bundle">
+                    <span class="dropdown-el prod-select-option">
+
+                        <?php $configs = $this->getRegularConfig()?>
+                        <?php foreach($configs['attributes'] as $config):?>
+                            <?php foreach($config['options'] as $value):?>
+                                <input type="radio" name="super_attribute[<?php echo $_attribute->getAttributeId() ?>]"
+                                       id="attribute<?php echo $value['id']?>"
+                                       class="validate-custom-configurable"
+                                       value="<?php echo $value['id']?>"/>
+                                <label class="label-radio-configurable" for="attribute<?php echo $value['id']?>" id="<?php echo (float)$value['price'] + (float) $_product->getPrice();?>">
+                                    <?php echo $value['label']?>
+                                </label>
+                            <?php endforeach;?>
+                        <?php endforeach;?>
+
+                    </span>
+            </div>
+            <div class="list-qtd list-qtd-configurable-product">
+                <span class="less">-</span>
+                <input style="width:48px !important;float:none;text-align:center;margin-top: 0px;" class="op-i" type="text" name="qty" id="qty" maxlength="6" value="<?php echo ($this->getMinimalQty($_product)?$this->getMinimalQty($_product):1) ?>" />
+                <span class="more">+</span>
+            </div>
+        </div>
+
+    <?php endforeach; ?>
+
+<?php endif;?>
+
+
+<script type="text/javascript">
+    jQuery(".validate-custom-configurable").first().prop('checked',true);
+</script>
+
+<script type="text/javascript">
+    var spConfig = new Product.Config(<?php echo $this->getJsonConfig() ?>);
+    document.observe("dom:loaded", function() {
+        var customValidation = false;
+        var priceFormat = <?php echo $this->helper('tax')->getPriceFormat(); ?>;
+        $$('.label-radio-configurable').each(function(el){
+            el.observe('click',function(event){
+                $$('span.price').each(function(elmn){
+                    elmn.update(formatCurrency(parseFloat(el.id), priceFormat)).innerHTML;
+                });
+            });
+        });
+        Validation.addAllThese([
+            ['validate-custom-configurable', 'This is a required field.', function(v) {
+                $$('.validate-custom-configurable').each(function(el){
+                    if (el.checked) {
+                        customValidation = true;
+                    }
+                });
+                return customValidation;
+            }]
+        ]);
+    });
+</script>

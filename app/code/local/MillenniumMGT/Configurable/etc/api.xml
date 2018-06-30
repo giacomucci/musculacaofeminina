@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config> 
+	<api>
+		<resources>
+			<configurable_connect translate="title">
+				<model>millenniummgt_configurable/connect_api</model>
+				<title>configurableconnect</title>                
+				<acl>configurable_data</acl>
+				<methods>
+					<link translate="title" module="millenniummgt_configurable">
+						<title>Conectar Simples no Configuravel</title>
+						<method>connectlink</method>
+					</link>
+				</methods>
+			</configurable_connect>		
+		</resources>
+		<v2>
+			<resources_function_prefix>
+				<configurable_connect>configurableConnetc</configurable_connect>
+			</resources_function_prefix>
+		</v2>
+		<acl>
+			<resources>
+				<configurable_data translate="title" module="millenniummgt_configurable">
+					<title>configurable data</title>
+					<sort_order>3</sort_order>               
+				</configurable_data>			
+			</resources>
+		</acl>
+	</api>
+</config>

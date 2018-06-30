@@ -1,0 +1,25 @@
+<?php $_helper = Mage::helper('catalog/category') ?>
+<?php $_categories = $_helper->getStoreCategories() ?>
+<?php $currentCategory = Mage::registry('current_category') ?>
+<?php if (count($_categories) > 0): ?>
+<!--	<ul id="cat" class="d-b fs-16 banner-bg">-->
+<!--        --><?php //foreach($_categories as $_category): ?>
+<!--            <li>-->
+<!--                --><?php //$_category = Mage::getModel('catalog/category')->load($_category->getId()) ?>
+<!--                --><?php //$_subcategories = $_category->getChildrenCategories() ?>
+<!--                <a href="--><?php //echo $_helper->getCategoryUrl($_category) ?><!--" title="--><?php //echo $this->htmlEscape($_category->getName()) ?><!--" class="cor f-l bold" >--><?php //echo $_category->getName() ?><!--<span class="f-r">--><?php //echo $_category->getProductCount() ?><!--</span></a>-->
+<!--                --><?php //$_category = Mage::getModel('catalog/category')->load($_category->getId()) ?>
+<!--                --><?php //$_subcategories = $_category->getChildrenCategories() ?>
+<!--                --><?php //if (count($_subcategories) > 0): ?>
+<!--                    <ul>-->
+<!--                        --><?php //foreach($_subcategories as $_subcategory): ?>
+<!--                            <li>-->
+<!--                                <a href="--><?php //echo $_helper->getCategoryUrl($_subcategory) ?><!--">--><?php //echo $_subcategory->getName() ?><!--<span class="f-r">--><?php //echo $_subcategory->getProductCount() ?><!--</span></a>-->
+<!--                            </li>-->
+<!--                        --><?php //endforeach; ?>
+<!--                    </ul>-->
+<!--                --><?php //endif; ?>
+<!--            </li>-->
+<!--        --><?php //endforeach; ?>
+<!--    </ul>-->
+<?php endif; ?>

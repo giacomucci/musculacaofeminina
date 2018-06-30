@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MillenniumMGT_Bundle>
+            <active>true</active>
+            <codePool>local</codePool>
+        </MillenniumMGT_Bundle>			
+    </modules>
+</config>

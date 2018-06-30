@@ -1,0 +1,133 @@
+/**
+ * Retina Displays
+ */
+@media all and (-webkit-min-device-pixel-ratio: 2) {
+  #dispositivos {
+    background-image: url(../../images/responsive-icon-retina.png);
+    background-size: 79px auto;
+  }
+
+  #mucci a {
+    background-image: url(../../images/mucci-retina.png);
+    background-size: 17px 17px;
+  }
+
+  .logotipo a {
+    background: url(../../images/logotipo-2x.png) no-repeat scroll center bottom transparent;
+    background-size: 242px 124px;
+  }
+
+  .info {
+    background: url(../../images/info-2x.png) no-repeat scroll left center transparent;
+    background-size: 18px 17px;
+  }
+
+  .pag {
+    background: url(../../images/pag-2x.png) no-repeat scroll left center transparent;
+    background-size: 17px 17px;
+  }
+
+  .social {
+    background: url(../../images/social-2x.png) no-repeat scroll left center transparent;
+    background-size: 18px 17px;
+  }
+
+  .news {
+    background: url(../../images/news-2x.png) no-repeat scroll left center transparent;
+    background-size: 17px 17px;
+  }
+
+  .cart-table .edit-cart {
+    background-image: url(../../images/edit-2x.png);
+    background-size: 19px 20px;
+  }
+  .cart-table .btn-remove {
+    background-image: url(../../images/del-2x.png);
+    background-size: 15px 20px;
+  }
+
+  .box-cart ul li .icons a {
+    background-image: url(../../images/del-t-2x.png);
+    background-size: 12px 16px;
+  }
+
+  .c-visa {
+    background-image: url(../../images/visa@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-master {
+    background-image: url(../../images/mastercard@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-boleto {
+    background-image: url(../../images/boleto@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-amex {
+    background-image: url(../../images/amex@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-diners {
+    background-image: url(../../images/diners@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-discover {
+    background-image: url(../../images/discover@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-elo {
+    background-image: url(../../images/elo@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-aura {
+    background-image: url(../../images/aura@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-jcb {
+    background-image: url(../../images/jcb@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .c-hipercard {
+    background-image: url(../../images/Hiper@2x.png);
+    background-size: 30px 20px;
+  }
+
+  .checkbox + .l-check span {
+    background: url(../../images/bt-select-2x.png) center center no-repeat;
+    background-size: 35px 35px;
+  }
+  .checkbox:checked + .l-check span {
+    background: url(../../images/bt-selected-2x.png) center center no-repeat;
+    background-size: 35px 35px;
+  }
+
+  .bt-nova a {
+    background: url(../../images/bt-nova@2x.png) center bottom no-repeat;
+    width: 150px;
+    height: 40px;
+    display: inline-block;
+    margin: 0 auto;
+    overflow: hidden;
+    text-indent: -1000em;
+    border-radius: 3px;
+    background-size: 150px 121px;
+  }
+
+  .prod:hover .nova-h .bt-nova a:hover {
+    background: url(../../images/bt-nova@2x.png) center center no-repeat;
+    background-size: 150px 121px;
+  }
+  .prod:active .nova-h .bt-nova a:active {
+    background: url(../../images/bt-nova@2x.png) center top no-repeat;
+    background-size: 150px 121px;
+  }
+}

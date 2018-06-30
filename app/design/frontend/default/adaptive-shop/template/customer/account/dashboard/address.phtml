@@ -1,0 +1,28 @@
+<?php
+/**
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div id="colunas9" class="border_top_account">
+	<h2 class="title_account ico_meus_enderecos">Meus Endereços
+	<a  style="float:right;padding-top: 3px;padding-bottom: 7px" class="btn_interno_account trans ico_gerenciar_enderecos mob" href="<?php echo $this->getAddressBookUrl() ?>"><?php echo $this->__('Manage Addresses') ?></a>
+	</h3>
+	
+</div>
+<div id="colunas4" class="account_info">
+		<h3 class="account_interno"><?php echo $this->__('Default Billing Address') ?></h3>
+	    <span><?php echo $this->getPrimaryBillingAddressHtml() ?></span>
+	    <br />
+	     <br />
+	    <a class="btn_interno_account trans ico_editar_account" href="<?php echo $this->getPrimaryBillingAddressEditUrl() ?>">Editar</a>
+	</div>
+    <div id="colunas4" class="account_info">
+	    <h3 class="account_interno"><?php echo $this->__('Default Shipping Address') ?></h3>
+	    <span><?php echo $this->getPrimaryShippingAddressHtml() ?></span>
+	    <br />
+	    <br />
+	    <a class="btn_interno_account trans ico_editar_account" href="<?php echo $this->getPrimaryShippingAddressEditUrl() ?>">Editar</a>
+    </div>

@@ -1,0 +1,45 @@
+<?php
+/**
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+<?php $_orders = $this->getOrders(); ?>
+		<div id="colunas9">
+	        <h2 class="title_account ico_meus_pedidos" style="border: 0px ">Meus Pedidos</h2>
+		</div>
+<?php //echo $this->getPagerHtml(); ?>
+<?php if($_orders->getSize()): ?>
+<div id="colunas9">
+	<?php $_odd = ''; ?>
+    <?php foreach ($_orders as $_order): ?>
+	<div class="item_pedido">
+		<div class="item_left">
+			<span class="pedido_num">Pedido <?php echo $_order->getRealOrderId() ?> - <?php echo $_order->getStatusLabel() ?></span>
+			<span class="data_pedido"><?php echo $this->formatDate($_order->getCreatedAtStoreDate()) ?></span>
+			<span class="pedido_destinatario"><span class="para_pedido">PARA</span> <?php echo $_order->getShippingAddress() ? $this->htmlEscape($_order->getShippingAddress()->getName()) : '&nbsp;' ?></span>			
+		</div>
+		<div class="item_right">
+			<span class="total_pedido">TOTAL DO PEDIDO <span class="valor_total_pedido"><?php echo $_order->formatPrice($_order->getGrandTotal()) ?></span></span>
+<!--
+			<?php if ($this->helper('sales/reorder')->canReorder($_order)) : ?>
+				<p class="recomprar_pedido"><a href="<?php echo $this->getReorderUrl($_order) ?>" class="btn_interno_account ico_recomprar"><?php echo $this->__('Reorder') ?></a></p>
+			<?php endif ?>
+-->
+				<p class="recomprar_pedido"><a href="<?php echo $this->getReorderUrl($_order) ?>" class="btn_interno_account ico_recomprar"><?php echo $this->__('Reorder') ?></a></p>
+			<p class="mais_detalhes_pedido"><a href="<?php echo $this->getViewUrl($_order) ?>" class="btn_interno_account ico_plus_detalhes"><?php echo $this->__('View Order') ?></a></p>			
+
+		</div>
+	</div>
+	<?php endforeach; ?>
+</div>
+<script type="text/javascript">decorateTable('my-orders-table');</script>
+<?php //echo $this->getPagerHtml(); ?>
+<?php else: ?>
+<div id="colunas9" class="account_info">
+    <p class="txt fs-14"><?php echo $this->__('You have placed no orders.'); ?></p>
+</div>
+<?php endif ?>

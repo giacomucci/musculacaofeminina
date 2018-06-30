@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:typens="urn:{{var wsdl.name}}" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/"
+        name="{{var wsdl.name}}" targetNamespace="urn:{{var wsdl.name}}">
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:Magento">
+			<import namespace="http://schemas.xmlsoap.org/soap/encoding/" schemaLocation="http://schemas.xmlsoap.org/soap/encoding/" />
+			<complexType name="BundleOptions">
+				<all>
+					<element name="title" type="xsd:string" />
+					<element name="option_id" type="xsd:string" />
+					<element name="delete" type="xsd:int" />
+					<element name="type" type="xsd:string" />
+					<element name="required" type="xsd:string" />
+					<element name="position" type="xsd:string" />
+				</all>
+			</complexType>
+			<complexType name="BundleOptionsArray">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="typens:BundleOptions[]" /> 
+					</restriction>
+				</complexContent>
+			</complexType>	
+			<complexType name="BundleSelections">
+				<all>
+					<element name="selection_id" type="xsd:string" />
+					<element name="option_id" type="xsd:string" />
+					<element name="product_id" type="xsd:int" />
+					<element name="delete" type="xsd:string" />
+					<element name="selection_price_value" type="xsd:string" />
+					<element name="selection_price_type" type="xsd:string" />
+					<element name="selection_qty" type="xsd:string" />
+					<element name="selection_can_change_qty" type="xsd:string" />
+					<element name="position" type="xsd:string" />
+				</all>
+			</complexType>
+			<complexType name="BundleSelectionsArray">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="typens:BundleSelections[]" />
+					</restriction>
+				</complexContent>
+			</complexType>				
+			<complexType name="BundleSelectionsArrayEntity">
+				<complexContent>
+					<restriction base="soapenc:Array">
+						<attribute ref="soapenc:arrayType" wsdl:arrayType="typens:BundleSelectionsArray[]" />
+					</restriction>
+				</complexContent>
+			</complexType>					
+		</schema>
+	</types>
+	<message name="objectmodeldeleteoRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="productId" type="xsd:string" />
+	</message>
+	<message name="objectmodeldeleteoResponse">
+		<part name="result" type="xsd:string" />
+	</message>
+	<message name="objectmodelcreateRequest">
+		<part name="sessionId" type="xsd:string"/>
+		<part name="bundleOptions" type="typens:BundleOptionsArray"/>
+		<part name="bundleSelections" type="typens:BundleSelectionsArrayEntity" />
+		<part name="productId" type="xsd:string" />
+		<part name="priceType" type="xsd:int" />
+		<part name="storeid" type="xsd:string" />
+	</message>
+	<message name="objectmodelcreateResponse">
+		<part name="result" type="xsd:string" />
+	</message>	
+	<portType name="{{var wsdl.handler}}PortType">
+		<operation name="objectmodeldeleteOptions">
+			<documentation>Desconectar opcoes do produto bundle</documentation>
+			<input message="typens:objectmodeldeleteoRequest" />
+			<output message="typens:objectmodeldeleteoResponse" />
+		</operation>
+		<operation name="objectmodelcreateBundle">
+			<documentation>Cesconectar opcoes do produto bundle</documentation>
+			<input message="typens:objectmodelcreateRequest" />
+			<output message="typens:objectmodelcreateResponse" />
+		</operation>		
+	</portType>
+	<binding name="{{var wsdl.handler}}Binding" type="typens:{{var wsdl.handler}}PortType">
+		<soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="objectmodeldeleteOptions">
+			<soap:operation soapAction="urn:{{var wsdl.handler}}Action" />
+			<input>
+				<soap:body namespace="urn:{{var wsdl.name}}" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body namespace="urn:{{var wsdl.name}}" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="objectmodelcreateBundle">
+			<soap:operation soapAction="urn:{{var wsdl.handler}}Action" />
+			<input>
+				<soap:body namespace="urn:{{var wsdl.name}}" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body namespace="urn:{{var wsdl.name}}" use="encoded" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>		
+	</binding>
+	<service name="{{var wsdl.name}}Service">
+		<port name="{{var wsdl.handler}}Port" binding="typens:{{var wsdl.handler}}Binding">
+			<soap:address location="{{var wsdl.url}}" />
+		</port>
+	</service>
+</definitions> 

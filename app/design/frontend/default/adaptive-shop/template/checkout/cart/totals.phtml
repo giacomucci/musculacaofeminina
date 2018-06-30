@@ -1,0 +1,77 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Shopping cart totals template
+ *
+ * @see Mage_Checkout_Block_Cart_Totals
+ * @var $this Mage_Checkout_Block_Cart_Totals
+ */
+?>
+<?php if ($this->canApplyMsrp()): ?>
+    <div class="cart-msrp-totals"><?php echo $this->__('ORDER TOTAL WILL BE DISPLAYED BEFORE YOU SUBMIT THE ORDER'); ?></div>
+<?php else: ?>
+    <table id="shopping-cart-totals-table" style="float: right;margin: 0 0 7px 0;width: 100%;">
+        <col />
+        <col width="1" />
+        <tfoot>
+            <?php echo $this->renderTotals('footer'); ?>
+        </tfoot>
+        <tbody>
+            <?php echo $this->renderTotals(); ?>
+        </tbody>
+    </table>
+<?php endif; ?>
+
+
+<div class="option_pagamento">
+	<?php 
+			$Preco = Mage::getSingleton('checkout/cart')->getQuote()->getGrandTotal();
+			$boleto = $Preco/100;
+			$desc_boleto = $Preco - (6*$boleto);
+						
+			if($Preco > 0.00 and $Preco <= 59.99){
+				$Parcelamento = 1;
+			}
+			else if($Preco >= 60 and $Preco <= 89.99){
+				$Parcelamento = 2; 
+				$Resultado = $Preco/ $Parcelamento;
+				echo '<div class="parcelamento-view-prod txt"><span class="txt">At&eacute; </span><span class="cor bold">'.$Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros</span> no cart&atilde;o de cr&eacute;dito</div>';
+			}
+			else if($Preco >= 90 and $Preco <= 119.99){
+				$Parcelamento = 3; 
+				$Resultado = $Preco/ $Parcelamento;
+				echo '<div class="parcelamento-view-prod txt"><span class="txt">At&eacute; </span><span class="cor bold">'.$Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros</span> no cart&atilde;o de cr&eacute;dito</div>';
+			}
+			else if($Preco >= 120) {
+                $Parcelamento = 4;
+                $Resultado = $Preco / $Parcelamento;
+                echo '<div class="parcelamento-view-prod txt"><span class="txt">At&eacute; </span><span class="cor bold">' . $Parcelamento . 'x R$' . number_format($Resultado, 2, ',', '') . ' sem juros</span> no cart&atilde;o de cr&eacute;dito</div>';
+            }
+			// echo '<p><span class="cor bold">R$'.number_format($desc_boleto, 2, ',', '').'</span> no boleto banc&aacute;rio ou transfer&ecirc;ncia banc&aacute;ria (6% de desconto)</p>';
+			?>
+</div>

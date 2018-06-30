@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<layout version="0.1.0">
+	<default>
+		<!-- Fix for Magento 1.9.3.x -->
+		<reference name="head">
+			<!-- The new product_options.js must be included. So removing first in case it is already included in current theme & then adding it to avoid double includes of the same file. -->
+			<action method="removeItem">
+				<type>js</type>
+				<name helper="configurableproductssimpleprices/data/removeOptionsJs" />
+			</action>
+			<action method="addJs">
+				<script helper="configurableproductssimpleprices/data/addOptionsJs" />
+			</action>
+		</reference>
+		<!-- Fix for Magento 1.9.3.x -->
+		<reference name="catalog_product_price_template">
+			<action method="addPriceBlockType">
+				<type>configurable</type>
+				<block>configurableproductssimpleprices/product_price</block>
+				<template>catalog/product/price.phtml</template>
+			</action>
+		</reference>
+		<reference name="wishlist_sidebar">
+			<action method="addPriceBlockType"><type>configurable</type><block>configurableproductssimpleprices/product_price</block><template>wishlist/render/item/price.phtml</template></action>
+		</reference>
+		<!-- <remove name="product.clone_prices"/> -->
+	</default>
+    <PRODUCT_TYPE_configurable>
+    	<reference name="head">
+			<action method="addItem"><type>js</type><name>best4mage/cpsp/jquery.history.min.js</name></action>
+			<action method="addItem"><type>js</type><name>best4mage/cpsp/es5-sham.js</name><params/><if>lt IE 9</if></action>
+			<action method="removeItem"><type>skin_js</type><name>js/configurableswatches/swatches-product.js</name></action>
+			<action method="addItem" ifconfig="configswatches/general/enabled"><type>skin_js</type><name>js/configurableswatches/swatches-product.js</name></action>
+		</reference>
+		<reference name="product.info.options.wrapper">
+			<block type="catalog/product_view_type_configurable" name="product.info.cpsp.configurable" before="options_configurable" template="configurableproductssimpleprices/configurable.phtml"/>
+			<block type="configurableproductssimpleprices/product_options" name="product.info.options" as="product_options" template="catalog/product/view/options.phtml">
+                    <action method="addOptionRenderer"><type>text</type><block>catalog/product_view_options_type_text</block><template>catalog/product/view/options/type/text.phtml</template></action>
+                    <action method="addOptionRenderer"><type>file</type><block>catalog/product_view_options_type_file</block><template>catalog/product/view/options/type/file.phtml</template></action>
+                    <action method="addOptionRenderer"><type>select</type><block>catalog/product_view_options_type_select</block><template>catalog/product/view/options/type/select.phtml</template></action>
+                    <action method="addOptionRenderer"><type>date</type><block>catalog/product_view_options_type_date</block><template>catalog/product/view/options/type/date.phtml</template></action>
+            </block>
+			<block type="configurableproductssimpleprices/product_options" name="simple.product.option" template="configurableproductssimpleprices/option.phtml" />
+		</reference>
+		<reference name="product.info.options.configurable">
+			<action method="unsetChild"><name>after</name></action>
+			<block type="core/text_list" name="product.info.options.configurable.after" as="after">
+				<block type="core/template" template="configurableproductssimpleprices/swatch-js.phtml" />
+			</block>
+        </reference>
+        
+	</PRODUCT_TYPE_configurable>
+	
+	<!-- <wishlist_index_index>
+		<reference name="customer.wishlist.item.cart">
+			<action method="addPriceBlockType"><type>configurable</type><block>configurableproductssimpleprices/product_price</block><template>catalog/product/price.phtml</template></action>
+		</reference>
+	</wishlist_index_index> -->
+</layout>

@@ -1,0 +1,1463 @@
+<?php
+
+$_cpspHelper = Mage::helper('configurableproductssimpleprices');
+
+$_currentItemId = $this->getRequest()->getParams('id');
+$_buyReq = unserialize($_cpspHelper->getItemBuyRequest($_currentItemId['id']));
+$_objBuyReq = new Varien_Object();
+$_objBuyReq->setData($_buyReq);
+
+$_product    = $this->getProduct();
+$_coreHelper = Mage::helper('core');
+$_helper = $this->helper('catalog/output');
+$_configurableSimple = $_cpspHelper->isEnable($_product);
+$_showLowestPrice = $_cpspHelper->isShowLowestPrice($_product);
+$_usePreselection = $_cpspHelper->isUsePreselection($_product);
+$_showMaxRegularPrice = $_cpspHelper->isShowMaxRegularPrice($_product);
+$_canUseParentTier = $_cpspHelper->isTierConfigurable($_product);
+$_cpsppriceFormate = $_cpspHelper->getCpspPriceFormate();
+$_cpsppriceLast = $_cpspHelper->showLastPrice($_product);
+$_isSwitchPriceVisibility = $_cpspHelper->isSwitchPriceVisibility();
+$_attributes = $_coreHelper->decorateArray($this->getAllowAttributes());
+$_useRadios = false; // replace DD with Radio button
+
+$taxHelper  = Mage::helper('tax');
+//$_simplePricesTax = Mage::getSingleton('tax/config')->priceIncludesTax();
+$taxCalculation = Mage::getSingleton('tax/calculation');
+if (!$taxCalculation->getCustomer() && Mage::registry('current_customer')) {
+	$taxCalculation->setCustomer(Mage::registry('current_customer'));
+}
+if($_showMaxRegularPrice || $_showLowestPrice){
+	$_cpspHelper->setUpStaticData($_product);
+}
+
+if($_showLowestPrice){
+	list($spID, $_minimalPriceValue) = $_cpspHelper->getMinimalProductPrice($_product->getId());
+	if(is_array($spID)) $spID = $spID[0];
+}
+
+$_cpspStocks = 1*$_cpspHelper->showCpspStock($_product);
+$cpbuFields = $_cpspHelper->getCpspUpdateFields($_product);
+array_push($cpbuFields, 'custom-options');
+
+array_push($cpbuFields, 'product-alert');
+$alertHelper = Mage::helper('productalert');
+
+$isDefaultSwatches = false;
+if(Mage::helper('core')->isModuleEnabled('Mage_ConfigurableSwatches')) {
+	if(Mage::helper('configurableswatches')->isEnabled()){
+		$isDefaultSwatches = true;
+	}
+}
+
+$isAcspEnabled = false;
+if(Mage::helper('core')->isModuleEnabled('Best4Mage_Acsp')) {
+	if(Mage::helper('acsp')->isEnabled()){
+		$isAcspEnabled = true;
+	}
+}
+
+$_isRedirectToCP = $_cpspHelper->isRedirectToCP();
+$_isChangeUrl = $_cpspHelper->isChangeUrl();
+$defaultConfig = Mage::getSingleton('core/session')->getDefaultConfig();
+//print_r(); die('-----');
+
+?>
+<?php if ($_product->isSaleable() && count($_attributes) && $_configurableSimple):?>
+    <?php 
+		// $colls = Mage::getModel('catalog/product_type_configurable')->getChildrenIds($_product->getId());
+		$colls = $_cpspHelper->getUsedProductCollection($_product);
+		$_expandShowPrices = $_cpspHelper->isShowPrices($_product);
+		$arrSimple = array();
+		
+		$arrSimpleData = array();
+		foreach($cpbuFields as $cpbuFLD){
+			if($cpbuFLD == 'image'){
+				$arrSimpleData[0][$cpbuFLD] = $this->getLayout()->createBlock('catalog/product_view_media')->setProduct($_product)->setTemplate('catalog/product/view/media.phtml')->toHtml();
+				$arrSimpleData[0]['thumb'] = $_product->getThumbnail();
+			}else if($cpbuFLD == 'custom-options') {
+				$arrSimpleData[0][$cpbuFLD] = '';
+			}else if($cpbuFLD == 'product-alert') {
+				$arrSimpleData[0][$cpbuFLD] = '';
+			}else if($cpbuFLD == 'attributes') {
+				$arrSimpleData[0][$cpbuFLD] = $this->getLayout()->createBlock('catalog/product_view_attributes')->setProduct($_product)->setTemplate('catalog/product/view/attributes.phtml')->toHtml();
+			}else {
+				$arrSimpleData[0][$cpbuFLD] = $_helper->productAttribute($_product, $_product->getData($cpbuFLD), $cpbuFLD);
+			}
+
+			$arrSimpleData[0]['url'] = $_product->getProductUrl();
+			$arrSimpleData[0]['title'] = $_helper->productAttribute($_product, $_product->getData('name'), 'name');
+		}
+
+		$simpleCustomOptions = clone $this->getLayout()->getBlock('product.info.options');
+
+		$confHasSpecialPrice = 0;
+		if($_product->getFinalPrice() < $_product->getPrice()) {
+			$confHasSpecialPrice = 1;
+		}
+		
+		//foreach($colls[0] as $spd){
+		foreach($colls as $confSimleProduct){
+			// $confSimleProduct = Mage::getModel('catalog/product')->load($spd);
+			//if($confSimleProduct->isDisabled()) continue;
+			$spd = $confSimleProduct->getId();
+			$finalTaxIncludedPrice = $taxHelper->getPrice($confSimleProduct, $confSimleProduct->getFinalPrice());
+
+			$arrSimple[$spd]['has_special_price'] = 0;
+			if($confSimleProduct->getFinalPrice() < $confSimleProduct->getPrice()) {
+				$arrSimple[$spd]['has_special_price'] = 1;
+			}
+			
+
+			$arrSimple[$spd]['orig_price'] = $_coreHelper->currency($confSimleProduct->getFinalPrice(),false,false);
+			$arrSimple[$spd]['price'] = $_coreHelper->currency($finalTaxIncludedPrice,false,false);
+
+			/* -------------- changelog 8.12.15 --------------- */
+			if(($confSimleProduct->getFinalPrice() < $confSimleProduct->getPrice()) && !$taxHelper->priceIncludesTax()) {
+				$arrSimple[$spd]['oldPrice'] = $_coreHelper->currency($confSimleProduct->getPrice(),false,false);
+			} 
+			/* -------------- changelog 15.2.16 --------------- */
+			else if(($confSimleProduct->getFinalPrice() < $confSimleProduct->getPrice()) && $taxHelper->priceIncludesTax() && $taxHelper->displayPriceExcludingTax()) {
+				$arrSimple[$spd]['oldPrice'] = $_coreHelper->currency($taxHelper->getPrice($confSimleProduct, $confSimleProduct->getPrice(),true),false,false);
+			} 
+			/* -------------- changelog 15.2.16 --------------- */
+			else {
+				/* -------------- changelog 23.12.15 --------------- */
+				if($taxHelper->displayBothPrices() || $taxHelper->displayPriceIncludingTax()) {
+					$arrSimple[$spd]['oldPrice'] = $_coreHelper->currency($taxHelper->getPrice($confSimleProduct, $confSimleProduct->getPrice(),true),false,false);
+				} else if($taxHelper->displayPriceExcludingTax()) {
+					$arrSimple[$spd]['oldPrice'] = $_coreHelper->currency($taxHelper->getPrice($confSimleProduct, $confSimleProduct->getPrice()),false,false);
+				}
+				/* -------------- changelog 23.12.15 --------------- */
+			}
+			/* -------------- changelog 8.12.15 --------------- */
+
+			$tierPrice = ($_canUseParentTier ? $_product->getTierPrice() : $confSimleProduct->getTierPrice());
+			$tierArr = array();
+			if(count($tierPrice)){
+				foreach($tierPrice as $tier){
+					$tierArr[(int)$tier['price_qty']]['orig_price'] = $_coreHelper->currency($tier['price'],false,false);
+					$tierArr[(int)$tier['price_qty']]['price'] = $_coreHelper->currency($taxHelper->getPrice($confSimleProduct, $tier['price']),false,false);
+				}
+			}
+			$arrSimple[$spd]['tier'] = $tierArr;
+			$arrSimple[$spd]['tier_qty'] = array_keys($tierArr);
+			$arrSimple[$spd]['tierprices'] = ($_canUseParentTier ? $this->getTierPriceHtml() : $this->getTierPriceHtml($confSimleProduct, $_product));
+			
+			
+			//$_request = $taxCalculation->getRateRequest(false, false, false);
+			
+			//new change - checking cross border trade
+			if(version_compare(Mage::getVersion(), '1.9.0.0', '<')===true) {
+				$_request = $taxCalculation->getRateRequest();
+			} else {
+				if($taxHelper->isCrossBorderTradeEnabled()) {
+					$_request = $taxCalculation->getRateRequest();
+				} else {
+					$_request = $taxCalculation->getRateOriginRequest();
+				}
+			}
+			$_request->setProductClassId($confSimleProduct->getTaxClassId());
+			$defaultTax = $taxCalculation->getRate($_request);
+	
+			$_request = $taxCalculation->getRateRequest();
+			$_request->setProductClassId($confSimleProduct->getTaxClassId());
+			$currentTax = $taxCalculation->getRate($_request);
+			
+			$taxConfig = array(
+				'includeTax'        => $taxHelper->priceIncludesTax(),
+				'showIncludeTax'    => $taxHelper->displayPriceIncludingTax(),
+				'showBothPrices'    => $taxHelper->displayBothPrices(),
+				'defaultTax'        => $defaultTax,
+				'currentTax'        => $currentTax,
+				'inclTaxTitle'      => Mage::helper('catalog')->__('Incl. Tax')
+			);
+			
+			$arrSimple[$spd]['taxConfig'] = $taxConfig;
+			
+			$_confOfSimpleProduct = array();
+			if($_showLowestPrice){
+				foreach($_attributes as $_attrB){
+					$_confOfSimpleProduct[$_attrB->getAttributeId()] = $confSimleProduct->getData($_attrB->getProductAttribute()->getAttributeCode());
+				}
+			}
+			$arrSimple[$spd]['simpleConfig'] = $_confOfSimpleProduct;
+			
+			if($_cpspStocks !== 0) {
+				$stockText = '';
+				$selectorClass = '';
+				$swatchSelector = '';
+				if($confSimleProduct->getIsSalable()) {
+					$arrSimple[$spd]['in_stock'] = true;
+					if($_cpspStocks === 2) {
+						$stockText = (int) $confSimleProduct->getStockItem()->getQty() . ' ';
+					}
+					$stockText .= Mage::helper('core')->__('In Stock');
+				} else {
+					$stockText = Mage::helper('core')->__('Out of Stock');
+					foreach($_attributes as $_attrB){
+						$selectorClass = 'select#attribute'.$_attrB->getAttributeId().' option[value='.$confSimleProduct->getData($_attrB->getProductAttribute()->getAttributeCode()).']';
+						$swatchSelector = '#option'.$confSimleProduct->getData($_attrB->getProductAttribute()->getAttributeCode());
+					}
+					$arrSimple[$spd]['in_stock'] = false;
+				}
+				
+				$arrSimple[$spd]['selector_class'] = $selectorClass;
+				$arrSimple[$spd]['swatch_selector'] = $swatchSelector;
+				$arrSimple[$spd]['stock'] = $stockText;
+			}
+			
+			foreach($cpbuFields as $cpbuFLD){
+				if($cpbuFLD == 'image'){
+					$arrSimpleData[$spd][$cpbuFLD] = $this->getLayout()->createBlock('catalog/product_view_media')->setProduct($confSimleProduct)->setTemplate('catalog/product/view/media.phtml')->toHtml();
+					$arrSimpleData[$spd]['thumb'] = $confSimleProduct->getThumbnail();
+				}else if($cpbuFLD == 'custom-options') {
+					$_simOpVal = $confSimleProduct->processBuyRequest($_objBuyReq);
+					$_simOpVal->setQty($_objBuyReq->getQty());
+					$confSimleProduct->setPreconfiguredValues($_simOpVal);
+					$arrSimpleData[$spd][$cpbuFLD] = $simpleCustomOptions->setProduct($confSimleProduct)->setTemplate('configurableproductssimpleprices/simpleoptions.phtml')->toHtml();
+				}else if($cpbuFLD == 'product-alert') {
+					$arrSimpleData[$spd][$cpbuFLD] = '';
+					if($alertHelper->isStockAlertAllowed() && !$confSimleProduct->isSalable()){
+						$alertUrl = $alertHelper->setProduct($confSimleProduct)->getSaveUrl('stock');
+						$arrSimpleData[$spd][$cpbuFLD] = '<p class="alert-stock link-stock-alert"><a href="'.$this->escapeHtml($alertUrl).'" title="'.$this->escapeHtml($this->__('Sign up to get notified when this product is back in stock')).'">'.$this->escapeHtml($this->__('Sign up to get notified when this product is back in stock')).'</a></p>';
+					}
+				}else if($cpbuFLD == 'attributes') {
+					$arrSimpleData[$spd][$cpbuFLD] = $this->getLayout()->createBlock('catalog/product_view_attributes')->setProduct($confSimleProduct)->setTemplate('catalog/product/view/attributes.phtml')->toHtml();
+				} else {
+					$arrSimpleData[$spd][$cpbuFLD] = $_helper->productAttribute($confSimleProduct, $confSimleProduct->getData($cpbuFLD), $cpbuFLD);
+				}
+				if($confSimleProduct->getVisibility() != 1) {
+					$arrSimpleData[$spd]['url'] = $confSimleProduct->getProductUrl();
+					$arrSimpleData[$spd]['title'] = $_helper->productAttribute($confSimleProduct, $confSimleProduct->getData('name'), 'name');
+				}
+			}
+		}
+		//$this->getLayout()->getBlock('product.info.options')->setProduct($_product);
+		$arrSimpleData['def_conf'] = $defaultConfig;
+    ?>
+    <input type="hidden" id="customprice" name="customprice"/>
+    <?php if(Mage::helper('core')->isModuleEnabled('Best4Mage_Cpbu')):?>
+		<?php if(count($this->helper('cpbu')->getUpdateFields()) == 0):?>
+			<input type="hidden" id="customname" name="customname"/>
+			<input type="hidden" id="customthumb" name="customthumb"/>
+		<?php endif;?>
+	<?php else:?>
+		<input type="hidden" id="customname" name="customname"/>
+		<input type="hidden" id="customthumb" name="customthumb"/>
+	<?php endif;?>
+    <script type="text/javascript">
+    //<![CDATA[
+        var simpleProducts  = <?php echo json_encode($arrSimple);?>, defOP = {};
+        var cpbuSPCpspData = <?php echo json_encode($arrSimpleData);?>;
+        
+        optionsPrice.priceFormat.precision = '<?php echo $_cpsppriceFormate['precision'];?>';
+		optionsPrice.priceFormat.requiredPrecision = '<?php echo $_cpsppriceFormate['requiredPrecision'];?>';
+		optionsPrice.priceFormat.decimalSymbol = ',';
+		optionsPrice.priceFormat.groupSymbol = '<?php echo $_cpsppriceFormate['groupSymbol'];?>';
+		optionsPrice.priceFormat.groupLength = '<?php echo $_cpsppriceFormate['groupLength'];?>';
+        
+        <?php if($_showMaxRegularPrice):?>
+			<?php 
+				list($maxSpID, $_maximumPriceValue) = $_cpspHelper->getMaximumProductPrice($_product->getId());
+				if(is_array($maxSpID)) $maxSpID = $maxSpID[0];
+			?>
+			var maxPriceProduct = simpleProducts[1*<?php echo $maxSpID ?>];
+			defOP.productPrice = maxPriceProduct.orig_price;
+			defOP.productOldPrice = maxPriceProduct.orig_price;
+			defOP.pricExclTax = maxPriceProduct.price;
+			defOP.defaultTax = maxPriceProduct.taxConfig.defaultTax;
+			defOP.currentTax = maxPriceProduct.taxConfig.currentTax;
+			var maxPriceInclTax = maxPriceProduct.price * (1 + (maxPriceProduct.taxConfig.currentTax/100));
+			defOP.priceInclTax = parseFloat(maxPriceInclTax.toFixed(1*<?php echo $_cpsppriceFormate['precision'];?>));
+			defOP.hasSpecialPrice = <?php echo $confHasSpecialPrice; ?>
+        <?php else:?>
+			defOP.productPrice = optionsPrice.productPrice;
+			defOP.productOldPrice = optionsPrice.productOldPrice;
+			defOP.priceInclTax = optionsPrice.priceInclTax;
+			defOP.priceExclTax = optionsPrice.priceExclTax;
+			defOP.defaultTax = optionsPrice.defaultTax;
+			defOP.currentTax = optionsPrice.currentTax;
+			defOP.hasSpecialPrice = <?php echo $confHasSpecialPrice ?>;
+		<?php endif;?>
+		
+		if(typeof spConfig != 'undefined') spConfig.memorizeIndex = 0;
+		
+		<?php 
+		if(!$isAcspEnabled && version_compare(Mage::getVersion(), '1.9.0.1', '>')===true && $isDefaultSwatches):?>
+
+		Product.Config.prototype.initialize = function(config){
+	        this.config     = config;
+	        this.taxConfig  = this.config.taxConfig;
+	        this.configureObservers = [];
+	        if (config.containerId) {
+	            this.settings   = $$('#' + config.containerId + ' ' + '.super-attribute-select');
+	        } else {
+	            this.settings   = $$('.super-attribute-select');
+	        }
+	        this.state      = new Hash();
+	        this.priceTemplate = new Template(this.config.template);
+	        this.prices     = config.prices;
+
+	        // Set default values from config
+	        if (config.defaultValues) {
+	            this.values = config.defaultValues;
+	        }
+
+	        // Overwrite defaults by url
+	        var separatorIndex = window.location.href.indexOf('#');
+	        if (separatorIndex != -1) {
+	            var paramsStr = window.location.href.substr(separatorIndex+1);
+	            var urlValues = paramsStr.toQueryParams();
+	            if (!this.values) {
+	                this.values = {};
+	            }
+	            for (var i in urlValues) {
+	                this.values[i] = urlValues[i];
+	            }
+	        }
+
+	        // Overwrite defaults by inputs values if needed
+	        if (config.inputsInitialized) {
+	            this.values = {};
+	            this.settings.each(function(element) {
+	                if (element.value) {
+	                    var attributeId = element.id.replace(/[a-z]*/, '');
+	                    this.values[attributeId] = element.value;
+	                }
+	            }.bind(this));
+	        }
+
+	        // Put events to check select reloads
+	        this.settings.each(function(element){
+	        	Event.observe(element, 'change', this.configure.bind(this));
+	        	<?php if($_useRadios):?>
+		        	element.insert({before:'<ul></ul>'});
+		        	element.hide();
+	        	<?php endif;?>
+	        }.bind(this));
+
+	        // fill state
+	        this.settings.each(function(element){
+	            var attributeId = element.id.replace(/[a-z]*/, '');
+	            if(attributeId && this.config.attributes[attributeId]) {
+	                element.config = this.config.attributes[attributeId];
+	                element.attributeId = attributeId;
+	                this.state[attributeId] = false;
+	            }
+	        }.bind(this))
+
+	        // Init settings dropdown
+	        var childSettings = [];
+	        for(var i=this.settings.length-1;i>=0;i--){
+	            var prevSetting = this.settings[i-1] ? this.settings[i-1] : false;
+	            var nextSetting = this.settings[i+1] ? this.settings[i+1] : false;
+	            if (i == 0){
+	                this.fillSelect(this.settings[i])
+	            } else {
+	                this.settings[i].disabled = true;
+	            }
+	            $(this.settings[i]).childSettings = childSettings.clone();
+	            $(this.settings[i]).prevSetting   = prevSetting;
+	            $(this.settings[i]).nextSetting   = nextSetting;
+	            childSettings.push(this.settings[i]);
+	        }
+
+	        // Set values to inputs
+	        this.configureForValues();
+	        document.observe("dom:loaded", this.configureForValues.bind(this));
+	        try {
+	        	this.loadOptions();
+	        } catch(e) {
+
+	        }
+	    }
+		
+		Product.Config.prototype.fillSelect = function (element) {
+			var attributeId = element.id.replace(/[a-z]*/, '');
+			var options = this.getAttributeOptions(attributeId);
+			this.clearSelect(element);
+			element.options[0] = new Option('', '');
+			element.options[0].innerHTML = this.config.chooseText;
+
+			var prevConfig = false;
+			if(element.prevSetting){
+				prevConfig = element.prevSetting.options[element.prevSetting.selectedIndex];
+			}
+
+			if(options) {
+				var index = 1;
+				for(var i=0;i<options.length;i++){
+					var allowedProducts = [];
+					if(prevConfig) {
+						for(var j=0;j<options[i].products.length;j++){
+							if(prevConfig.config.allowedProducts
+								&& prevConfig.config.allowedProducts.indexOf(options[i].products[j])>-1){
+								allowedProducts.push(options[i].products[j]);
+							}
+						}
+					} else {
+						allowedProducts = options[i].products.clone();
+					}
+
+					if(allowedProducts.size()>0){
+						options[i].allowedProducts = allowedProducts;
+						var newOPtionLabel = this.getOptionLabel(options[i], options[i].price);
+
+						/* -------------- changelog 20.01.16 --------------- */
+						$op = new Option(newOPtionLabel, options[i].id);
+						if($('swatch'+options[i].id) && $('swatch'+options[i].id).readAttribute('title')) {
+							$op.setAttribute('data-label', $('swatch'+options[i].id).readAttribute('title').toLowerCase());
+						}
+						element.options[index] = $op;	
+						/* -------------- changelog 20.01.16 --------------- */
+						
+						if (typeof options[i].price != 'undefined') {
+							element.options[index].setAttribute('price', options[i].price);
+						}
+						element.options[index].config = options[i];
+						<?php if($_useRadios):?>
+						this.createRadios(element,newOPtionLabel,options[i]);
+						<?php endif;?>
+						index++;
+					}
+				}
+			}
+		};
+
+		Product.Config.prototype.resetChildren = function (element) {
+			if(element.childSettings) {
+				for(var i=0;i<element.childSettings.length;i++){
+					element.childSettings[i].selectedIndex = 0;
+					element.childSettings[i].disabled = true;
+					if(element.config){
+						this.state[element.config.id] = false;
+					}
+				}
+			}
+		};
+
+		Product.Config.prototype.configureForValues = function(){
+			if (this.values) {
+				this.settings.each(function(element){
+					var attributeId = element.attributeId;
+					element.value = (typeof(this.values[attributeId]) == 'undefined')? '' : this.values[attributeId];
+					this.configureElement(element);
+				}.bind(this));
+			}
+		};
+
+		if(typeof Product.ConfigurableSwatches == 'function')
+		{
+			Product.ConfigurableSwatches.prototype.run = Product.ConfigurableSwatches.prototype.run.wrap(
+	            function(parentMethod)
+				{
+					this.productConfig.configSwatches = this;
+					<?php if(Mage::app()->getRequest()->getControllerName() == 'cart'):?>
+					if(this.productConfig.values){
+						var presetDataToSave = this.productConfig.values;
+						this.productConfig.values = {};
+						parentMethod();
+						this.productConfig.values = presetDataToSave;
+					} else {
+						parentMethod();
+					}
+					return this;
+					<?php else:?>
+					return parentMethod();
+					<?php endif;?>
+				}
+			);
+		}
+		<?php endif;?>
+		
+		<?php if($_expandShowPrices || $_cpspStocks !== 0):?>
+		Product.Config.prototype.configureElement  = Product.Config.prototype.configureElement.wrap(
+            function(parentMethod,element)
+			{
+				if(element.value){
+					this.state[element.config.id] = element.value;
+					if(element.nextSetting){
+						for(var k=this.settings.length-1;k>this.settings.indexOf(element);k--) this.state[this.settings[k].config.id] = false;
+						element.nextSetting.disabled = false;
+						<?php if($_useRadios):?>
+							this.clearRadios(element.nextSetting); // add for radios
+						<?php endif;?>
+						this.fillSelect(element.nextSetting);
+						this.resetChildren(element.nextSetting);
+						/* -------------- changelog 10.12.15 --------------- */
+						<?php if($isDefaultSwatches): ?>
+							this.reloadConfigSwatches(element); // new changes here
+						<?php endif; ?>
+						/* -------------- changelog 10.12.15 --------------- */
+					}
+				}
+				else {
+					this.resetChildren(element);
+					this.proConfigSwatchReload(); // new changes here
+				}
+
+				this.reloadPrice();
+			}
+        );
+        
+        Product.Config.prototype.formatPrice  = Product.Config.prototype.formatPrice.wrap(
+            function(parentMethod, price, showSign)
+			{
+				var str = '';
+				price = parseFloat(price);
+				if(showSign){
+					if(price<0){
+						str+= '-';
+						price = -price;
+					}
+					else{
+						str+= '+';
+					}
+				}
+		
+				var roundedPrice = (Math.round(price*100)/100).toString();
+		
+				if (this.prices && this.prices[roundedPrice]) {
+					str+= this.prices[roundedPrice];
+				}
+				else {
+					str+= formatCurrency(price, optionsPrice.priceFormat);
+				}
+				return str;
+			}
+        );
+        
+        Product.Config.prototype.getOptionLabel  = Product.Config.prototype.getOptionLabel.wrap(
+            function(parentMethod,option, price)
+			{
+				var str = option.label;
+				if(option._f != undefined){
+					if(option._f.active == false){
+						if(option.attr._e.optionSelect.down('[value='+option.id+']'))
+							return option.attr._e.optionSelect.down('[value='+option.id+']').innerHTML;
+					}
+				}
+
+				var lastAttr = Object.keys(this.config.attributes).last();
+				lastAttr = this.config.attributes[lastAttr].options;
+				var selPrds = option.products, arrPrices = [], isLastOption = false;
+				for(var j=0;j<lastAttr.length;j++){
+					if(this.compare2Objects(lastAttr[j],option) == true){
+						isLastOption = true;
+						break;
+					}
+				}
+
+				for(var i in this.state)
+				{
+					if(isNaN(parseInt(i))) break;
+					if(this.state[i] != false){
+						var tsStPrdsArr = this.config.attributes[i].options;
+						for(var j=0;j<tsStPrdsArr.length;j++){
+							if(tsStPrdsArr[j].id == this.state[i]){
+								selPrds = selPrds.intersect(tsStPrdsArr[j].products);
+								break;
+							}
+						}
+					}
+				}
+
+				var highest = lowest = 0;
+				var highestIndex = lowestIndex = 0;
+				for(var i=0;i<selPrds.length;i++){
+					var selPrd = parseInt(selPrds[i]);
+					if(typeof simpleProducts[selPrd] != 'undefined'){
+						var tempPrice = this.calcSimpleTierPrice(simpleProducts[selPrd]);
+						arrPrices.push(tempPrice);
+						if(i == 0) {
+							highest = lowest = tempPrice;
+							highestIndex = lowestIndex = selPrd;
+							continue;
+						}
+						if(tempPrice > highest) {
+							highest = tempPrice;
+							highestIndex = selPrd;
+						}
+						if(tempPrice < lowest) {
+							lowest = tempPrice;
+							lowestIndex = selPrd;
+						}
+					}
+				}
+
+				
+				<?php if($_expandShowPrices):?>
+					<?php if($_cpsppriceLast):?>
+					if(isLastOption){
+						var price = arrPrices[0];
+						str += ' ['+this.applyMyTaxToPrice(price, simpleProducts[highestIndex])+']';
+						<?php if($_cpspStocks !== 0):?>
+						str += ' (' + simpleProducts[highestIndex].stock + ')';
+						if(highestIndex != 0)
+						{
+							if(simpleProducts[highestIndex].selector_class != ''){
+								setTimeout(function(){
+									$$(simpleProducts[highestIndex].selector_class).invoke('setAttribute','disabled','disabled');
+								}, 500);
+							}
+						}
+						<?php endif;?>
+					}
+					<?php else:?>
+					if(arrPrices.length > 1){
+						var maxPrice = highest;
+						var minPrice = lowest;
+						str += ' ['+this.applyMyTaxToPrice(minPrice, simpleProducts[lowestIndex])+' -'+this.applyMyTaxToPrice(maxPrice, simpleProducts[highestIndex])+']';
+					} else if(arrPrices.length == 1){
+						var price = arrPrices[0];
+						str += ' ['+this.applyMyTaxToPrice(price, simpleProducts[highestIndex])+']';
+						<?php if($_cpspStocks !== 0):?>
+						str += ' (' + simpleProducts[highestIndex].stock + ')';
+						if(highestIndex != 0)
+						{
+							if(simpleProducts[highestIndex].selector_class != ''){
+								setTimeout(function(){
+									$$(simpleProducts[highestIndex].selector_class).invoke('setAttribute','disabled','disabled');
+								}, 500);
+							}
+						}
+						<?php endif;?>
+					}
+					<?php endif;?>
+				<?php elseif($_cpspStocks !== 0):?>
+				if(arrPrices.length == 1){
+					str += ' (' + simpleProducts[highestIndex].stock + ')';
+					if(highestIndex != 0)
+					{
+						if(simpleProducts[highestIndex].selector_class != ''){
+							setTimeout(function(){
+								$$(simpleProducts[highestIndex].selector_class).invoke('setAttribute','disabled','disabled');
+							}, 500);
+						}
+					}
+				}
+				<?php endif;?>
+				
+				return str;
+				
+            }
+        );
+		<?php else:?>
+		Product.Config.prototype.getOptionLabel  = Product.Config.prototype.getOptionLabel.wrap(
+            function(parentMethod,option, price)
+			{
+				return option.label;
+			}
+		);
+        <?php endif;?>
+		
+		Product.Config.prototype.reloadPrice  = Product.Config.prototype.reloadPrice.wrap(
+            function(parentMethod){
+                if (this.config.disablePriceReload) {
+                    return;
+                }
+                <?php if($_useRadios):?>
+                this.preSelectRadios();
+                <?php endif;?>
+                var price    = 0;
+                var oldPrice = 0;
+				var resultSame = [];
+                for(var i=this.settings.length-1;i>=0;i--){
+                    var selected = this.settings[i].options[this.settings[i].selectedIndex], arrPrices = [];
+                    if(selected.config){
+						if(resultSame.length == 0) resultSame = selected.config.products;
+						else resultSame = resultSame.intersect(selected.config.products);
+						price    += parseFloat(selected.config.price);
+						oldPrice += parseFloat(selected.config.oldPrice);
+					}
+                }
+                var hasSpecialPrice = 0;
+                if(resultSame.length==1)
+				{				
+
+					hasSpecialPrice = simpleProducts[parseInt(resultSame[0])].has_special_price;
+
+					this.applyChangeOfProductCpsp(parseInt(resultSame[0]));
+					
+					<?php if($_isChangeUrl): ?>
+						if(cpbuSPCpspData[parseInt(resultSame[0])].title) {
+							title = cpbuSPCpspData[parseInt(resultSame[0])].title;
+							History.pushState(null, title, cpbuSPCpspData[parseInt(resultSame[0])].url);
+						}
+					<?php endif; ?>
+
+					oldPrice = parseFloat(simpleProducts[parseInt(resultSame[0])].oldPrice);
+					simpleProductId = parseInt(resultSame[0]);
+					price = parseFloat(this.calcSimpleTierPrice(simpleProducts[parseInt(resultSame[0])], simpleProducts[parseInt(resultSame[0])].taxConfig.includeTax));
+					if(simpleProducts[parseInt(resultSame[0])].taxConfig.currentTax > 0){
+						price = parseFloat(this.calcSimpleTierPrice(simpleProducts[parseInt(resultSame[0])], true));
+					}
+					if($('customprice')) $('customprice').value = simpleProducts[parseInt(resultSame[0])].orig_price;
+					optionsPrice.productPrice = price;
+					optionsPrice.productOldPrice = oldPrice;
+					optionsPrice.defaultTax = simpleProducts[parseInt(resultSame[0])].taxConfig.defaultTax;
+					optionsPrice.currentTax = simpleProducts[parseInt(resultSame[0])].taxConfig.currentTax;
+					
+					if (simpleProducts[parseInt(resultSame[0])].taxConfig.includeTax) {
+						var tax = price / (100 + simpleProducts[parseInt(resultSame[0])].taxConfig.defaultTax) * simpleProducts[parseInt(resultSame[0])].taxConfig.defaultTax;
+						optionsPrice.priceExclTax = price - tax;
+						optionsPrice.priceInclTax = price;
+					} else {
+						var tax = price * (simpleProducts[parseInt(resultSame[0])].taxConfig.currentTax / 100);
+						optionsPrice.priceExclTax = price;
+						optionsPrice.priceInclTax = price + tax;
+					}
+				} else {
+
+					<?php if($_isChangeUrl): ?>
+						title = cpbuSPCpspData[0].title;
+						History.pushState(null, title, cpbuSPCpspData[0].url);
+					<?php endif; ?>
+					if($$('.super-attribute-select').size() <= 0) {
+						hasSpecialPrice = defOP.hasSpecialPrice;
+						//this.applyChangeOfProductCpsp(0);
+						optionsPrice.productPrice = defOP.productPrice;
+						optionsPrice.productOldPrice = defOP.productOldPrice;
+						optionsPrice.priceInclTax = defOP.priceInclTax;
+						optionsPrice.priceExclTax = defOP.priceExclTax;
+						optionsPrice.defaultTax = defOP.defaultTax;
+						optionsPrice.currentTax = defOP.currentTax;
+						$$('.tier-prices').each(function(eleT) {
+							eleT.hide();
+						});
+					}
+				}
+
+				//to display special price, when available.
+				if(hasSpecialPrice == 1) {
+					if($$('.price-box .old-price').size() <= 0) {
+						if(this.taxConfig.showBothPrices) {
+							$priceHtml = '<p class="old-price"><span class="promocao-preco fs-14" id="old-price-'+this.config.productId+'"></span></p><p class="special-price"><span class="price-excluding-tax"><span class="label"></span><span class="price" id="price-excluding-tax-'+this.config.productId+'"></span></span><span class="price-including-tax"><span class="label">Inc. VAT: </span><span class="price" id="price-including-tax-'+this.config.productId+'"></span></span></p>';
+							$('price-excluding-tax-'+this.config.productId).up('.price-box').innerHTML = $priceHtml;
+						} else {
+							$priceHtml = '<p class="old-price"><span id="old-price-'+this.config.productId+'" class="promocao-preco fs-14"></span></p><p class="special-price"><span id="product-price-'+this.config.productId+'" class="price"></span></p>';
+							$('product-price-'+this.config.productId).up('.price-box').innerHTML = $priceHtml;
+						}						
+					}
+				} else { 
+					if($$('.price-box .old-price').size() > 0) {
+						if(this.taxConfig.showBothPrices) {
+							$priceHtml = '<span class="price-excluding-tax"><span class="label"></span><span class="price" id="price-excluding-tax-'+this.config.productId+'"></span></span><span class="price-including-tax"><span class="label">'+this.taxConfig.inclTaxTitle+'</span><span class="price" id="price-including-tax-'+this.config.productId+'"></span></span>';
+							$('price-excluding-tax-'+this.config.productId).up('.price-box').innerHTML = $priceHtml;
+						} else {
+							$priceHtml = '<span class="regular-price" id="product-price-'+this.config.productId+'"><span class="price"></span></span>';
+							$('product-price-'+this.config.productId).up('.price-box').innerHTML = $priceHtml;
+						}
+					}
+				}
+				
+				optionsPrice.reload();
+				if (this.taxConfig.showIncludeTax || this.taxConfig.showBothPrices) {
+					price = optionsPrice.priceInclTax;
+				} else {
+					price = optionsPrice.priceExclTax;
+				}
+
+				if(resultSame.length==1){
+					if(simpleProductId){
+						$$('.tier-prices').invoke('remove');
+						if(simpleProducts[simpleProductId].tierprices != '' && simpleProducts[simpleProductId].tierprices != '\n') {
+							$$('.product-shop .price-box<?php if($_showLowestPrice):?>+.price-box<?php endif;?>').first().insert({after: simpleProducts[simpleProductId].tierprices});
+						}
+					}
+				}
+				
+                return price;
+        
+                if($('product-price-'+this.config.productId)){
+                    $('product-price-'+this.config.productId).innerHTML = price;
+                }
+                this.reloadOldPrice();
+            }
+        );
+		
+		Product.Config.addMethods({
+			createRadios: function(element, label, option){
+				if(element.previous('ul')) {
+					element.previous('ul')
+					.insert(
+						'<li><label for="radio_'+element.attributeId+'_'+option.id+'">'+label+'</label>'+
+						'<input class="radio" name="radio'+element.id+'" id="radio_'+element.attributeId+
+						'_'+option.id+'" type="radio" onclick="spConfig.selectSuperAttribute(this);" '
+						+'value="'+option.id+'" attribute="'+element.id+'"/></li>'
+					);
+				}
+			},
+
+			selectSuperAttribute: function(radio){
+				var attr = radio.getAttribute('attribute');
+				var option = radio.value;
+				if($(attr)){
+					$(attr).value = option;
+					this.configureElement($(attr));
+				}
+			},
+
+			clearRadios: function(element){
+				if(element.previous('ul')){
+					element.previous('ul').update(''); // add for radios reset
+				}
+			},
+
+			preSelectRadios: function(){
+				for(var i in this.state){
+					if (!isNaN(parseInt(i))) {
+						if(this.state[i] != false){
+							var selectorRadios = 'radio_'+i+'_'+this.state[i];
+							if($(selectorRadios)){
+								$(selectorRadios).checked = true;
+							}
+						}
+					}
+				}
+			},
+
+			applyMyTaxToPrice: function(price, product){
+				var price = parseFloat(price);
+				price = 1*this.calcSimpleTierPrice(product, (product.taxConfig.includeTax || product.taxConfig.showIncludeTax));
+				if (product.taxConfig.includeTax) {
+					var tax = price / (100 + product.taxConfig.defaultTax) * product.taxConfig.defaultTax;
+					var excl = price - tax;
+					var incl = excl*(1+(product.taxConfig.currentTax/100));
+				} else {
+					var tax = price * (product.taxConfig.currentTax / 100);
+					var excl = price;
+					var incl = excl + tax;
+				}
+		
+				if (product.taxConfig.includeTax || product.taxConfig.showIncludeTax) {
+					price = incl;
+				} else {
+					price = excl;
+				}
+		
+				var str='';
+				if(price){
+					if (product.taxConfig.showBothPrices) {
+						str+= ' ' + this.formatPrice(excl, false) + ' (' + this.formatPrice(incl, false) + ' ' + this.taxConfig.inclTaxTitle + ')';
+					} else {
+						str+= ' ' + this.formatPrice(price, false);
+					}
+				}
+				return str;
+			},
+			
+			calcSimpleTierPrice: function(product, tex){
+				var unitPriceTier = product.price;
+				if(tex){
+					unitPriceTier = product.orig_price;	
+				}
+				var $qty = $('qty');
+				if($qty == null) return unitPriceTier;
+				
+				var tierPriceMatrix = product.tier;
+				var tirQty = product.tier_qty;
+				
+				if(product.tier_qty.length > 0){
+					tirQty = tirQty.sort(function(a, b){return b-a});
+					for(var i=0;i<tirQty.length;i++)
+					{
+						if($qty.value >= tirQty[i]){
+							if(tex){
+								unitPriceTier = tierPriceMatrix[tirQty[i]].orig_price;
+							} else {
+								unitPriceTier = tierPriceMatrix[tirQty[i]].price;
+							}
+							break;	
+						}
+					}
+				}
+				return unitPriceTier;
+			},
+			applyChangeOfProductCpsp: function(productId){
+				if(cpbuSPCpspData[productId] && productId != this.memorizeIndex){
+					var cpbuCSPD = cpbuSPCpspData[productId];
+					for(var key in cpbuCSPD)
+					{
+						switch(key){
+							case 'name':
+								$$('.product-name h1, .product-name .h1').each(function(item){
+									item.update(cpbuCSPD[key]);
+								});
+								if($('customname')) $('customname').value = cpbuCSPD[key];
+							break;
+							case 'short_description':
+								$$('.short-description .std').each(function(item){
+									item.update(cpbuCSPD[key]);
+								});
+							break;
+							case 'description':
+								$$('.box-description .std, #collateral-tabs dd:first .std').each(function(item){
+									item.update(cpbuCSPD[key]);
+								});
+							break;
+							case 'attributes':
+								$$('#collateral-tabs #product-attribute-specs-table, #product-attribute-specs-table').invoke('up').each(function(item){
+									item.update(cpbuCSPD[key]);
+								});
+							break;
+							case 'sku':
+								$$('.product-shop .sku').each(function(item){
+									item.update(cpbuCSPD[key]);
+								});
+							break;
+							case 'product-alert':
+								if($$('.product-shop .link-stock-alert').size() > 0) {
+									$$('.product-shop .link-stock-alert').each(function(item){
+										item.replace(cpbuCSPD[key]);
+									});
+								} else {
+									$$('.product-shop .availability').each(function(item){
+										item.insert({before: cpbuCSPD[key]});
+									});
+								}
+							break;
+							case 'custom-options':
+								if($('dl-simple-product-options'))
+								{
+									$('dl-simple-product-options').remove();
+									optionsPrice.customPrices = {};
+								}
+								var simpleOptionsHtml = cpbuCSPD[key].trim();
+								if(typeof opConfig != 'undefined')
+								{
+									if(productId != 0 && simpleOptionsHtml != '')
+									{
+											$$('#product-options-wrapper dl.last').invoke('removeClassName', 'last');
+											$('product-options-wrapper').insert('<dl id="dl-simple-product-options" class="last">'+simpleOptionsHtml+'</dl>');
+										
+									} else {
+										if(!$('product-options-wrapper').down('dl:last').hasClassName('last'))
+										{
+											$('product-options-wrapper').down('dl:last').addClassName('last');
+										}
+									}
+								}
+							break;
+							case 'image':
+								$$('.product-img-box').each(function(item){
+									<?php if(version_compare(Mage::getVersion(), '1.9.0.1', '<')===true):?>
+										item.update(cpbuCSPD[key]);
+										setTimeout(function() { product_zoom = new Product.Zoom('image', 'track', 'handle', 'zoom_in', 'zoom_out', 'track_hint');}, 1000);
+									<?php else:?>
+										item.update(cpbuCSPD[key]);
+										setTimeout(function() { ProductMediaManager.init();}, 500);
+									<?php endif;?>
+								});
+							break;
+							case 'thumb':
+								if($('customthumb')) $('customthumb').value = cpbuCSPD[key];
+							break;
+						}
+					}
+					this.memorizeIndex = productId;
+				}
+			},
+			reloadConfigSwatches: function(element){
+				// Magento Default Swatches Compatibility
+				if(element.nextSetting)
+				{
+					if(element.nextSetting.next('ul.configurable-swatch-list'))
+					{
+						//this.proConfigSwatchReload();
+					}
+				}
+				// ends here
+			},
+			proConfigSwatchReload: function(){
+				if(this.configSwatches == undefined) return;
+				this.configSwatches._F.hasPresetValues = false;
+				//this.configSwatches.setStockData();
+				this.configSwatches._E.allConfigurableOptions = [];
+		        this.configSwatches.configurableAttributes.each(function(attr, i){
+		            attr.options.each(function(opt, j){
+		            	this.configSwatches.setOptData(opt, attr, j);
+		                this.configSwatches._E.allConfigurableOptions.push( opt );
+		            }.bind(this));
+		        }.bind(this));
+			},
+			compare2Objects: function(a, b) {
+				// Create arrays of property names
+			    var aProps = Object.getOwnPropertyNames(a);
+			    var bProps = Object.getOwnPropertyNames(b);
+
+			    // If number of properties is different,
+			    // objects are not equivalent
+			    if (aProps.length != bProps.length) {
+			        return false;
+			    }
+
+			    for (var i = 0; i < aProps.length; i++) {
+			        var propName = aProps[i];
+
+			        // If values of same property are not equal,
+			        // objects are not equivalent
+			        if (a[propName] !== b[propName]) {
+			            return false;
+			        }
+			    }
+
+			    // If we made it this far, objects
+			    // are considered equivalent
+			    return true;
+			}
+		});
+
+
+		<?php if(Mage::app()->getRequest()->getControllerName() == 'product' && $_isRedirectToCP):?>
+		document.observe("dom:loaded", function(){
+			<?php if(version_compare(Mage::getVersion(), '1.9.1', '>=')===true && $isDefaultSwatches):?>
+				var rememberValues = [];
+				<?php foreach($arrSimpleData['def_conf'] as $lAttrId => $lAttrVal):?>
+				rememberValues[<?php echo $lAttrId;?>] = <?php echo $lAttrVal;?>;
+				<?php endforeach;?>
+				for(var k=spConfig.settings.length-1;k>=0;k--){
+					spConfig.settings[k].value = '';
+					spConfig.state[spConfig.settings[k].config.id] = false;
+				}
+				spConfig.settings.each(function(element){
+					if(rememberValues[element.attributeId]) {
+						spConfig.configureElement(element);
+						<?php if($_useRadios):?>
+							spConfig.clearRadios(element); // add for radios
+						<?php endif;?>
+
+						spConfig.fillSelect(element);
+						if(element.hasClassName('swatch-select')) { 
+							if(spConfig.configSwatches != undefined) {
+								fireEvent($('swatch'+rememberValues[element.attributeId]), 'click');
+							}
+						}
+						element.value = rememberValues[element.attributeId];
+						spConfig.state[element.attributeId] = rememberValues[element.attributeId];
+						element.disabled = false;
+					}
+				});
+				spConfig.reloadPrice();
+			<?php else:?>
+				if (!spConfig.values) {
+					spConfig.values = {};
+				} 
+				<?php foreach($arrSimpleData['def_conf'] as $lAttrId => $lAttrVal):?>
+				spConfig.values[<?php echo $lAttrId;?>] = <?php echo $lAttrVal;?>;
+				<?php endforeach;?>
+			<?php endif;?> 
+		});
+		document.observe('dom:ready',function(){
+			setTimeout(function(){
+				spConfig.reloadPrice();
+			}, 5000);
+		})
+		<?php endif;?>
+
+		
+		<?php if(Mage::app()->getRequest()->getControllerName() == 'product' && $_showLowestPrice && $_usePreselection && $arrSimple[$spID]['simpleConfig'] && !$_isRedirectToCP):?>
+		Event.observe(window,"load", function(){
+			<?php if(version_compare(Mage::getVersion(), '1.9.1', '>=')===true && $isDefaultSwatches):?>
+				var rememberValues = [];
+				<?php foreach($arrSimple[$spID]['simpleConfig'] as $lAttrId => $lAttrVal):?>
+				rememberValues[<?php echo $lAttrId;?>] = <?php echo $lAttrVal;?>;
+				<?php endforeach;?>
+				for(var k=spConfig.settings.length-1;k>=0;k--){
+					spConfig.settings[k].value = '';
+					spConfig.state[spConfig.settings[k].config.id] = false;
+				}
+				spConfig.settings.each(function(element){
+					if(rememberValues[element.attributeId]) {
+						spConfig.configureElement(element);
+						<?php if($_useRadios):?>
+							spConfig.clearRadios(element); // add for radios
+						<?php endif;?>
+
+						spConfig.fillSelect(element);
+						if(element.hasClassName('swatch-select')) { 
+							if(spConfig.configSwatches != undefined) {
+								fireEvent($('swatch'+rememberValues[element.attributeId]), 'click');
+							}
+						}
+						element.value = rememberValues[element.attributeId];
+						spConfig.state[element.attributeId] = rememberValues[element.attributeId];
+						element.disabled = false;
+					}
+				});
+				spConfig.reloadPrice();
+			<?php else:?>
+				if (!spConfig.values) {
+					spConfig.values = {};
+				}
+				<?php foreach($arrSimple[$spID]['simpleConfig'] as $lAttrId => $lAttrVal):?>
+				spConfig.values[<?php echo $lAttrId;?>] = <?php echo $lAttrVal;?>;
+				<?php endforeach;?>
+			<?php endif;?> 
+		});
+		document.observe('dom:ready',function(){
+			setTimeout(function(){
+				spConfig.reloadPrice();
+			}, 5000);
+		})
+		<?php endif;?>
+		
+		//$$('.tier-prices').invoke('remove');
+
+		document.observe("dom:loaded", function(){
+
+			<?php if($_isSwitchPriceVisibility && $_showLowestPrice): ?>
+				// hide Starting price when option selected.
+				if($('product-price-<?php echo $_product->getId()?>')) {
+					$$('.super-attribute-select').each(function(el){ 
+						setTimeout(function(){ 
+							if(el.selectedIndex > 0) { 
+								$('product-price-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('product-price-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+								$('product-minimal-price-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('product-minimal-price-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+							} else {
+								$('product-price-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('product-price-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+								$('product-minimal-price-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('product-minimal-price-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+							}
+						},1000);
+						Event.observe(el, 'change', function(){
+							if(el.selectedIndex > 0) { 
+								$('product-price-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('product-price-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+								$('product-minimal-price-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('product-minimal-price-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+							} else {
+								$('product-price-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('product-price-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+								$('product-minimal-price-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('product-minimal-price-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+							}
+						});
+					});
+				}
+				if($('price-excluding-tax-<?php echo $_product->getId()?>') ) {
+					$$('.super-attribute-select').each(function(el){ 
+						setTimeout(function(){ 
+							if(el.selectedIndex > 0) { 
+								$('price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+							} else {
+								$('price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+							}
+						},1000);
+						Event.observe(el, 'change', function(){
+							if(el.selectedIndex > 0) { 
+								$('price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+							} else {
+								$('price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').hide();
+								$('price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').show();
+								$('minimal-price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+							}
+						});
+					});
+				}
+			<?php endif; ?>
+			
+
+			$('qty').observe('keyup',function(ele){
+				<?php if($_expandShowPrices  || $_cpspStocks !== 0):?>
+				var rememberValues = [];
+				for(var k=spConfig.settings.length-1;k>=0;k--){
+					rememberValues[spConfig.settings[k].attributeId] = spConfig.settings[k].value;
+					spConfig.settings[k].value = '';
+					spConfig.state[spConfig.settings[k].config.id] = false;
+				}
+				spConfig.settings.each(function(element){
+					if(rememberValues[element.attributeId]) {
+						spConfig.configureElement(element);
+						<?php if($_useRadios):?>
+							spConfig.clearRadios(element); // add for radios
+						<?php endif;?>
+						spConfig.fillSelect(element);
+						element.value = rememberValues[element.attributeId];
+						spConfig.state[element.attributeId] = rememberValues[element.attributeId];
+						element.disabled = false;
+					}
+				});
+				spConfig.proConfigSwatchReload();
+				<?php endif;?>
+				spConfig.reloadPrice();
+			});
+		});
+
+		/* -------------- changelog 28.1.16 --------------- */
+		<?php if($isDefaultSwatches): ?>
+		try {
+			Product.ConfigurableSwatches.prototype.onOptionClick  = Product.ConfigurableSwatches.prototype.onOptionClick.wrap(
+	            function(parentMethod,attr)
+				{
+					//parentMethod();
+					var opt = attr._e.selectedOption;
+					
+			        if (opt) {
+			            if (opt != attr._e._last.selectedOption) {
+			                // Set the attribute's label
+			                attr._e.attrLabel.innerHTML = this.getOptionLabel(opt);
+
+			                if (opt._f.isSwatch) {
+			                    // Clear .selected from any other li for this attr
+			                    opt._e.ul.select('li').invoke('removeClassName','selected');
+			                    // Add selected class to swatch's li
+			                    opt._e.li.addClassName('selected');
+
+			                    /* ----- START B4M changes ----- */
+			                    if(opt._e.ul.up('dd').next('dd')) {
+			                    	clearSwatchSelection(opt._e.ul.up('dd').next('dd'));
+			                    }
+			                    if(opt._e.ul.up('dd').next('dt')) {
+			                    	clearSwatchLabel(opt._e.ul.up('dd').next('dt'));
+			                    }
+			                    /* ------ END B4M changes ----- */
+
+			                    // Add validation styling to label
+			                    var inputBox = attr._e.optionSelect.up();
+			                    if (inputBox.hasClassName('validation-error')) {
+			                        inputBox.removeClassName('validation-error');
+			                        inputBox.down('.validation-advice').remove();
+			                    }
+			                };
+
+			                // Mark last option as no longer active
+			                if (attr._e._last.selectedOption) attr._e._last.selectedOption._f.active = false;
+			                // Mark this option as active
+			                opt._f.active = true;
+
+			                // remove last active option from activeConfigurableOptions
+			                var pos = this._E.activeConfigurableOptions.indexOf( attr._e._last.selectedOption );
+			                if (pos !== -1) this._E.activeConfigurableOptions.splice(pos, 1);
+
+			                // add active option to activeConfigurableOptions
+			                this._E.activeConfigurableOptions.push( opt );
+
+			                // Set what other configurable options are available now this option was selected
+			                this.setAvailableOptions();
+			                // preview available after clicking to show the mouseover state
+			                if (opt._f.isSwatch && !attr._f.isCustomOption && this._F.firstOptionSelected) {
+			                    this.previewAvailableOptions();
+			                };
+			            }/* ----- START B4M changes ----- */
+			            else {
+			            	if(opt._e.ul.up('dd').next('dd')) {
+		                    	clearSwatchSelection(opt._e.ul.up('dd').next('dd'));
+		                    }
+		                    if(opt._e.ul.up('dd').next('dt')) {
+		                    	clearSwatchLabel(opt._e.ul.up('dd').next('dt'));
+		                    }
+
+			            	opt._e.li.addClassName('selected');
+			            }
+			            /* ------ END B4M changes ----- */
+			            
+			        } else { // opt is null (e.g. the first option in a select "--Please Select--")
+			            // remove last active option from activeConfigurableOptions
+			            var pos = this._E.activeConfigurableOptions.indexOf( attr._e._last.selectedOption );
+			            if (pos !== -1) this._E.activeConfigurableOptions.splice(pos, 1);
+			            // Make last option no longer active
+			            if (attr._e._last.selectedOption) attr._e._last.selectedOption._f.active = false;
+			            // loop through all options and set available
+			            this.setAvailableOptions();
+			        }
+			        
+
+			        // Make sure all the selected options are actually selected in their hidden select elements
+			        this._E.activeConfigurableOptions.each(function(selectedOpt){
+
+			        	/*------- START fix for option=false -------*/
+
+			        	setSwatchSelectedIndex(selectedOpt.attr.id,selectedOpt.id);
+			        	
+			        	/*------- END fix for option=false -------*/
+
+			            var oldDisabledValue = selectedOpt._e.option.disabled;
+			            selectedOpt._e.option.disabled = false;
+			            selectedOpt._e.option.selected = true;
+			            selectedOpt._e.option.disabled = oldDisabledValue;
+			        });
+
+			        // check and set stock status
+			        this.checkStockStatus();
+
+			        // update select
+			        if ((this._O.selectFirstOption && !this._F.firstOptionSelected) ||
+			            (this._F.hasPresetValues && !this._F.presetValuesSelected) ||
+			            (!windowLoaded)) {
+			            Event.observe(window, 'load', function() {
+			                window.setTimeout(function() {
+			                    this.updateSelect( attr );
+			                    this._F.firstOptionSelected = true;
+			                }.bind(this), 200);
+			            }.bind(this));
+			        } else {
+			            this.updateSelect(attr);
+			            this._F.firstOptionSelected = true;
+			        }
+
+			        <?php if($_isSwitchPriceVisibility && $_showLowestPrice): ?>
+						// hide Starting price when option selected.
+						if($('product-price-<?php echo $_product->getId()?>')) {
+							$$('.super-attribute-select').each(function(el){ 
+								//setTimeout(function(){ 
+									if(el.selectedIndex > 0) { 
+										$('product-price-<?php echo $_product->getId()?>').up('.price-box').show();
+										$('product-price-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+										$('product-minimal-price-<?php echo $_product->getId()?>').up('.price-box').hide();
+										$('product-minimal-price-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+									} else {
+										$('product-price-<?php echo $_product->getId()?>').up('.price-box').hide();
+										$('product-price-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+										$('product-minimal-price-<?php echo $_product->getId()?>').up('.price-box').show();
+										$('product-minimal-price-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+									}
+								//},1000);
+							});
+						}
+						if($('price-excluding-tax-<?php echo $_product->getId()?>') ) {
+							$$('.super-attribute-select').each(function(el){ 
+								//setTimeout(function(){ 
+									if(el.selectedIndex > 0) { 
+										$('price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').show();
+										$('price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+										$('minimal-price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').hide();
+										$('minimal-price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+									} else {
+										$('price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').hide();
+										$('price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').hide();
+										$('minimal-price-excluding-tax-<?php echo $_product->getId()?>').up('.price-box').show();
+										$('minimal-price-excluding-tax-<?php echo $_product->getId()?>_clone').up('.price-box').show();
+									}
+								//},1000);
+							});
+						}
+					<?php endif; ?>
+				}
+			);
+
+			Product.ConfigurableSwatches.prototype.setAvailableOptions = Product.ConfigurableSwatches.prototype.setAvailableOptions.wrap(
+				function(parentMethod) {
+			        var args = arguments;
+			        // Allows to check one specific option instead of having to loop through all of them
+			        var loopThroughOptions = (args.length > 1) ? args[1] : this._E.allConfigurableOptions;
+			        loopThroughOptions.each( function(loopingOption) {
+			            var productArrays = [ loopingOption.products ];
+			            // If the attr of the looping swatch has a selection
+			            if (loopingOption.attr._e.selectedOption) {
+			                this._E.activeConfigurableOptions.without( loopingOption.attr._e.selectedOption ).each(function(selectedOpt) {
+			                    productArrays.push( selectedOpt.products );
+			                });
+			            } else {
+			                this._E.activeConfigurableOptions.each(function(selectedOpt){
+			                    productArrays.push( selectedOpt.products );
+			                });
+			            }
+			            var result = this._u.intersectAll( productArrays ); 
+			            if(result.length) {
+			                result.each(function(pid){
+			                    if(simpleProducts[pid].swatch_selector) {
+			                        if(simpleProducts[pid].swatch_selector == '#option'+loopingOption.id){
+			                            result = [];
+			                        }
+			                    }
+			                });
+			            }
+			            this.setOptionStatus(loopingOption, result.length);
+			        }.bind(this));	
+			    }
+			);
+
+			Product.ConfigurableSwatches.prototype.previewAvailableOptions = Product.ConfigurableSwatches.prototype.previewAvailableOptions.wrap(
+				function(parentMethod) {
+			        var opt = this._E.optionOver;
+			        if (!opt) {
+			            return; // Exit if there is no option currently being hovered
+			        }
+
+			        var attr = opt.attr;
+
+			        this._E.allConfigurableOptions.each( function(loopingOption, i) {
+			            var productArrays = [ loopingOption.products, opt.products ];
+
+			            // keep all swatches in the same attribute as they were
+			            if (attr.id == loopingOption.attr.id) {
+			                return;
+			            }
+			            // if loop attribute has no selection, then add selected swatches that are not in the hover swatch's attribute
+			            if (!loopingOption.attr._e.selectedOption) {
+			                this._E.activeConfigurableOptions.each(function(selectedOpt){
+			                    if (selectedOpt.attr.id != opt.attr.id) {
+			                        productArrays.push( selectedOpt.products );
+			                    };
+			                });
+			            };
+			            var result = this._u.intersectAll( productArrays );
+			            if(result.length) {
+			                result.each(function(pid){
+			                    if(simpleProducts[pid].swatch_selector) {
+			                        if(simpleProducts[pid].swatch_selector == '#option'+loopingOption.id){
+			                            result = [];
+			                        }
+			                    }
+			                });
+			            }
+			            this.setOptionStatus(loopingOption, result.length);
+			        }.bind(this));
+			    }
+			);
+
+			/*------- START fix for option=false -------*/
+			function setSwatchSelectedIndex(attrId, optId) {
+				$$('#attribute'+attrId+' option').each(function(opt, index) {
+					if(opt.value == optId) {
+						opt.selected = true;
+						$('attribute'+attrId).selectedIndex = index;
+
+					} else if(opt.selected){
+						opt.selected = false;
+					}
+				});
+			}
+			/*------- END fix for option=false -------*/
+
+			function clearSwatchSelection(ddEl) {
+				if(ddEl.hasClassName('swatch-attr')) {
+					ddEl.select('li').invoke('removeClassName','selected');
+				}
+				if(ddEl.next('dd')) {
+					clearSwatchSelection(ddEl.next('dd'));
+				}
+			}
+
+			function clearSwatchLabel(dtEl) {
+				if(dtEl.hasClassName('swatch-attr')) {
+					dtEl.select('span').first().update('');
+				}
+				if(dtEl.next('dt')) {
+					clearSwatchLabel(dtEl.next('dt'));
+				}
+			}
+		} catch(e) {
+			
+		}
+		<?php endif; ?>
+		/* -------------- changelog 28.1.16 --------------- */
+		
+	//]]>
+	</script>
+<?php endif;?>

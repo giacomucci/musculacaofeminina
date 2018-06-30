@@ -1,0 +1,25 @@
+<!--@subject Aviso de limpeza de log @-->
+<!--@vars
+{"var warnings":"Log Cleanup Warnings"}
+@-->
+{{template config_path="design/email/header"}}
+
+<table width="580" cellspacing="0" cellpadding="0" style="border-collapse: collapse; border-spacing: 0; margin-top:30px; background-color:#FFF;">
+  <tbody>
+  <tr>
+      <td valign="top" style="border:none; background-color:#823486; color:#FFF; font-size:25px; font-weight:bold; text-align:center; padding: 40px 0;" colspan="2">
+          Aviso de limpeza de log
+      </td>
+  </tr>
+    <tr align="center">
+      <td valign="top" style="border:none;" colspan="2">
+	  	<p style="color:#9E9E9E; font-family:Arial; font-weight:normal; font-size:14px; margin:20px 0px 20px; padding:0 90px;">
+	  		Alertas de limpeza do log:<br /><br />	  		
+	  		{{var warnings}}
+	  	</p>
+   </td>
+    </tr>
+  </tbody>
+</table>
+
+{{template config_path="design/email/footer"}}

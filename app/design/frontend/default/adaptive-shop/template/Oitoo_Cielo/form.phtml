@@ -1,0 +1,205 @@
+<?php
+/**
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Open Software License (OSL 3.0)
+ * that is available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/osl-3.0.php
+ *
+ * @title      Cielo pagamento com cartão de crédito (Brazil)
+ * @category   payment
+ * @package    Oitoo_Cielo
+ * @copyright  Copyright (c) 2014 Oitoo (www.oitoo.com.br)
+ * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ * @author     Oitoo <www.oitoo.com.br>
+ */
+?>
+
+    <ul id="payment_form_apelidocielo" class="oitoo_cielo" style="display: none;">
+            <li class="card-logo">
+                <?php if(in_array('visa',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_visa"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Visa.png'); ?>"><br>
+                            <input  name="payment[bandeira_cielo]" type="radio" value="visa" id="apelidocielo_cartao_visa" class="validate-one-required-by-name cartao16digitos">
+                        </label>
+                <?php endif; ?>
+                <?php if(in_array('mastercard',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_mastercard"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Master.png'); ?>"><br>
+                            <input name="payment[bandeira_cielo]" type="radio" value="mastercard" id="apelidocielo_cartao_mastercard" class="validate-one-required-by-name cartao16digitos">
+                        </label>
+                <?php endif; ?>
+                <?php if(in_array('diners',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_diners"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Diners.png'); ?>"><br>
+                            <input name="payment[bandeira_cielo]" type="radio" value="diners" id="apelidocielo_cartao_diners" class="validate-one-required-by-name diners">
+                        </label>
+                <?php endif; ?>
+                <?php if(in_array('discover',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_discover"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Discover.png'); ?>"><br>
+                            <input name="payment[bandeira_cielo]" type="radio" value="discover" id="apelidocielo_cartao_discover" class="validate-one-required-by-name cartao16digitos">
+                        </label>
+                <?php endif; ?>
+                <?php if(in_array('elo',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_elo" style="clear:both;"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Elo.png'); ?>"><br>
+                            <input name="payment[bandeira_cielo]" type="radio" value="elo" id="apelidocielo_cartao_elo" class="validate-one-required-by-name cartao16digitos">
+                        </label>
+                <?php endif; ?>
+                <?php if(in_array('amex',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_amex"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Amex.png'); ?>"><br>
+                            <input name="payment[bandeira_cielo]" type="radio" value="amex" id="apelidocielo_cartao_amex" class="validate-one-required-by-name amex">
+                        </label>
+                <?php endif; ?>
+                <?php if(in_array('jcb',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_jcb"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Jcb.png'); ?>"><br>
+                            <input name="payment[bandeira_cielo]" type="radio" value="jcb" id="apelidocielo_cartao_jcb" class="validate-one-required-by-name cartao16digitos">
+                        </label>
+                <?php endif; ?>
+                <?php if(in_array('aura',$this->getBandeiras())): ?>
+                        <label for="apelidocielo_cartao_aura"><img src="<?php echo $this->getSkinUrl('images/oitoo_cielo/Aura.png'); ?>"><br>
+                            <input name="payment[bandeira_cielo]" type="radio" value="discover" id="apelidocielo_cartao_aura" class="validate-one-required-by-name aura">
+                        </label>
+                <?php endif; ?>
+        </li>
+        <li>
+                <label for="apelidocielo_numero_cartao_cielo">
+                    <span class="required fs-14 txt"><?php echo $this->__('Número do Cartão') ?>*</span>
+                </label>
+                <input type="text" title="<?php echo $this->__('Número do cartão') ?>" class="d-b op-i txt fs-14 required-entry input-text validate-cc-number" id="apelidocielo_numero_cartao_cielo" name="payment[numero_cartao_cielo]" value=""/>
+        </li>
+        <li>
+                <label for="apelidocielo_portador_cielo">
+                    <span class="required fs-14 txt"><?php echo $this->__('Name on Card') ?>*</span>
+                </label>
+                <input type="text" title="<?php echo $this->__('Name on Card') ?>" class="d-b op-i txt fs-14 required-entry input-text" id="apelidocielo_portador_cielo" name="payment[portador_cielo]" value=""/>
+        </li>
+
+        <li>
+                <label for="apelidocielo_expiracao_mes_cielo">
+                    <span class="required fs-14 txt"><?php echo $this->__('Data de expiração') ?>*</span>
+                </label>
+                    <select id="apelidocielo_expiracao_mes_cielo"  name="payment[expiracao_mes_cielo]" class="clear f-l required-entry" style="margin-right:10px;">
+                  
+                        <?php foreach ($this->getCcMonths() as $k=>$v): ?>
+                            <option value="<?php echo $k?$k:'' ?>"><?php echo $v ?></option>
+                        <?php endforeach ?>
+                    </select>
+
+
+                    
+                    <select id="apelidocielo_expiracao_ano_cielo" name="payment[expiracao_ano_cielo]" class="f-l required-entry">
+                        <?php foreach ($this->getCcYears() as $k=>$v): ?>
+                            <option value="<?php echo $k?$k:'' ?>"><?php echo $v ?></option>
+                        <?php endforeach ?>
+                    </select>
+        </li>
+
+        <li>
+                <label for="apelidocielo_codigo_seguranca_cielo">
+                    <span class="required fs-14 txt"><?php echo $this->__('Card Verification Number') ?>*</span>
+                </label>
+                <input type="text" title="<?php echo $this->__('Card Verification Number') ?>" class="clear d-b op-i txt fs-14 required-entry input-text" id="apelidocielo_codigo_seguranca_cielo" name="payment[codigo_seguranca_cielo]" style="width:3em;" value=""/>
+
+                <a href="#" class="cvv-what-is-this fs-12 cor f-l bold" style="margin:8px 0 0 10px;"><?php echo $this->__('What is this?') ?></a>
+          
+        </li>
+
+
+        <li>
+            <label for="apelidocielo_parcelas_cielo">
+                <span class="required fs-14 txt"><?php echo $this->__('Parcelas') ?></span>
+            </label>
+            <select id="apelidocielo_parcelas_cielo" name="payment[parcelas_cielo]">
+            </select><?php //var_dump($this->getParcelas()); ?>
+        </li>
+    </ul>
+
+
+
+<script>
+    //avisa que os valores estão sendo atualizados
+    $('apelidocielo_parcelas_cielo').update('Calculando valores... Aguarde!');
+    //busca o valor total ajualizado
+    <?php 
+    $PATHGRANDTOTAL = Mage::getUrl('', array('_secure' => Mage::app()->getFrontController()->getRequest()->isSecure()));
+    ?>
+    new Ajax.Request('<?php echo $PATHGRANDTOTAL ?>/frontendcielo/ajax/getGrandTotal/', {
+      method:'get',
+      onSuccess: function(transport) {
+        var response = transport.responseText;
+          //Cria uma insância do objeto js do módulo
+            var valor               =   response; //'<?php echo $this->getValorTotal();  ?>';
+            var parcelas            =   '<?php echo $this->getMaximoParcelas(); ?>';
+            var juros               =   '<?php echo $this->getJurosParcela(); ?>';
+            var parcelassemjuros    =   '<?php echo $this->getParcelassemJuros(); ?>';
+            var valorminimo         =   '<?php echo $this->getValorMinimoParcela(); ?>';
+            var descontoavista      =   '<?php echo $this->getDescontoaVista(); ?>';
+
+            $('apelidocielo_parcelas_cielo').update(OitooCielo.getParcelasHtml(valor, parcelas, juros, parcelassemjuros,valorminimo,descontoavista));
+      },
+      onFailure: function() { alert('Ocorreu um erro ao carregar o valor para pagamento'); }
+    });
+
+
+  
+
+
+
+    mascaraCartao   =   new MaskedInput('#apelidocielo_numero_cartao_cielo', '9999 9999 9999 9999');
+    mascaraCod      =   new MaskedInput('#apelidocielo_codigo_seguranca_cielo', '999');
+
+
+    $$('.cartao16digitos').each(function(element) {
+        element.observe('click', function ()
+        {  
+            mascaraCartao.unmask().mask('9999 9999 9999 9999');
+            mascaraCod.unmask().mask('999');
+            $('apelidocielo_numero_cartao_cielo').setValue('');
+            $('apelidocielo_portador_cielo').setValue('');
+            $('apelidocielo_expiracao_mes_cielo').setValue('');
+            $('apelidocielo_expiracao_ano_cielo').setValue('');
+            $('apelidocielo_codigo_seguranca_cielo').setValue('');
+        });
+    })
+
+    $$('.amex').each(function(element) {
+        element.observe('click', function ()
+        {
+            mascaraCartao.unmask().mask('999999999999999');
+            mascaraCod.unmask().mask('9999');
+            $('apelidocielo_numero_cartao_cielo').setValue('');
+            $('apelidocielo_portador_cielo').setValue('');
+            $('apelidocielo_expiracao_mes_cielo').setValue('');
+            $('apelidocielo_expiracao_ano_cielo').setValue('');
+            $('apelidocielo_codigo_seguranca_cielo').setValue('');
+        });
+    })
+
+    $$('.diners').each(function(element) {
+        element.observe('click', function ()
+        {
+            mascaraCartao.unmask().mask('99999999999999');
+            mascaraCod.unmask().mask('999');
+            $('apelidocielo_numero_cartao_cielo').setValue('');
+            $('apelidocielo_portador_cielo').setValue('');
+            $('apelidocielo_expiracao_mes_cielo').setValue('');
+            $('apelidocielo_expiracao_ano_cielo').setValue('');
+            $('apelidocielo_codigo_seguranca_cielo').setValue('');
+        });
+    });
+
+    $$('.aura').each(function(element) {
+        element.observe('click', function ()
+        {
+            mascaraCartao.unmask().mask('9999999999999999999');
+            mascaraCod.unmask().mask('999');
+            $('apelidocielo_numero_cartao_cielo').setValue('');
+            $('apelidocielo_portador_cielo').setValue('');
+            $('apelidocielo_expiracao_mes_cielo').setValue('');
+            $('apelidocielo_expiracao_ano_cielo').setValue('');
+            $('apelidocielo_codigo_seguranca_cielo').setValue('');
+        });
+    });
+
+
+
+</script>
+

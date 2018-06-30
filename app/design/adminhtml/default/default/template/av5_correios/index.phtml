@@ -1,0 +1,136 @@
+<?php 
+$helper = Mage::helper("av5_correios");
+?>
+<div class="content-header">
+    <table class="grid-header">
+        <tr>
+            <td><h3>Atualiza&ccedil;&otilde;es Correios</h3></td>
+            <td class="a-right">
+				<button onclick="top.location.href='<?php echo $this->getUrl('*/*/clean')?>';" class="scalable delete" type="button"><span>Limpar Base</span></button>
+            	<button onclick="top.location.href='<?php echo $this->getUrl('*/*/populate')?>';" class="scalable save" type="button"><span>Popular Base</span></button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="entry-edit">
+	<div class="grid">
+		<table class="data" cellspacing="0" cellpadding="0">
+			<colgroup>
+	            <col>
+                <col width="120" class="a-center">
+                <col width="180" class="a-center">
+                <col width="180" class="a-center">
+                <col width="180" class="a-center">
+            	<col width="180" class="a-center">
+            </colgroup>
+			<thead>
+	            <tr class="headings">
+		            <th>Servi&ccedil;o</th>
+		            <th class="a-center">Status</th>
+		            <th class="a-center">Total de registros</th>
+		            <th class="a-center">Registros atualizados</th>
+		            <th class="a-center">Registros para atualizar</th>
+		        	<th class="a-center">Ações</th>
+	        	</tr>
+	        </thead>
+	        <tbody>
+	        <?php 
+            $even = true;
+            foreach($helper->allServices() as $service):
+            	$toUpdate = $helper->hasToUpdate($service);
+            	$updated = $helper->updatedCount($service);
+            	$name = $helper->getServiceName($service);
+            ?>
+			<tr class="<?php echo ($even) ? "even" : ""; $even = !$even;?>">
+                <td><label for="servico_id_<?php echo $service; ?>"><?php echo $name . " ( " . $service . " )"; ?></label></td>
+                <td align="center"><?php 
+	                    	if ($toUpdate['total']) {
+								$class = "critical";
+								$text = "Atualizar";
+    						} else {
+								$class = "notice";
+								$text = "Atualizado";
+            				}
+	            	?><span class="grid-severity-<?php echo $class; ?>"><span><?php echo $text; ?></span></span></td>
+                <td align="center"><b><?php echo $updated['total'] + $toUpdate['total']; ?></b></td>
+                <td align="center"><b><?php echo $updated['total']; ?></b></td>
+                <td align="center"><b><?php echo $toUpdate['total']; ?></b></td>
+            	<td align="center">
+            	<?php if ($toUpdate['total']): ?>
+            		<a href="javascript: startUpdate('<?php echo $service;?>','<?php echo $name; ?>',<?php echo $toUpdate['total']?>);">Atualizar</a>
+            	<?php endif; ?>
+            	</td>
+            </tr>
+        	<?php endforeach; ?>
+        	</tbody>
+    	</table>
+	</div>
+</div>
+<div id="atualizacao" style="display: none">
+	<div class="content-header">
+	    <table class="grid-header">
+	        <tr>
+	            <td><h3>Atualização de Valores</h3></td>
+	        </tr>
+	    </table>
+	</div>
+	<div class="entry-edit">
+	    <ul id="andamento"></ul>
+	    <div id="loading"><img src="<?php echo $this->getSkinUrl('images/rule-ajax-loader.gif');?>" class="v-middle" style="margin-right:5px"/> Processando atualização...</div>
+	</div>
+</div>
+<script type="text/javascript">
+//<![CDATA[
+    var editForm = new varienForm('edit_form');
+    var totalService = 0;
+    var updatedTotal = 0;
+    function startUpdate(service, name, total) {
+		$('atualizacao').show();
+		$('andamento').innerHTML = '';
+		$('andamento').insert('<li><img src="<?php echo $this->getSkinUrl('images/note_msg_icon.gif')?>" class="v-middle" style="margin-right:5px"/>Atualizando valores do seviço '+name+' ('+service+'), por favor aguarde... </li>');
+		totalService = total;
+		updateProgress(service);	
+    }
+    function updateProgress(service) {
+    	new Ajax.Request( '<?php echo $this->getUrl("*/*/post"); ?>service/' + service, {
+			method: 'GET',
+			evalScripts: true,
+			onLoading: function(transport) {
+				$('loading').show();
+			},
+			onComplete: function(transport) {
+				$('loading').hide();
+			},
+			onSuccess: function(transport) {
+				if (200 == transport.status) {
+					response = transport.responseText.split('|');
+					if(response[0] != 'ERRO' && response[0] != '' && response[0] != totalService) {
+						$('andamento').insert('<li style="background-color:#DDF;"><img src="<?php echo $this->getSkinUrl('images/fam_bullet_success.gif');?>" class="v-middle" style="margin-right:5px"/> Registros atualizados: '+response[1]+' - Erros: '+response[2]+' - Restam: '+response[0]+'</li>');
+						updatedTotal = updatedTotal + parseInt(response[1]);
+						percent = (updatedTotal / totalService) * 100;
+						$('loading').innerHTML = '<img src="<?php echo $this->getSkinUrl('images/rule-ajax-loader.gif');?>" class="v-middle" style="margin-right:5px"/> Atualizado ' + Math.round(percent) + '% de ' + totalService + ' registros. Processando atualização...'; 
+						updateProgress(service);
+					} else if(response[0] == '') {
+						$('andamento').insert('<li><img src="<?php echo $this->getSkinUrl('images/note_msg_icon.gif')?>" class="v-middle" style="margin-right:5px"/>Processo Finalizado</li>');
+					} else if(response[0] == totalService) {
+						$('andamento').insert('<li style="background-color:#FFD;"><img src="<?php echo $this->getSkinUrl('images/fam_bullet_error.gif');?>" class="v-middle" style="margin-right:5px"/> Não foi possível atualizar os registros, verifique as configuraçõs do módulo e tente novamente mais tarde!</li>');
+						$('andamento').insert('<li><img src="<?php echo $this->getSkinUrl('images/note_msg_icon.gif')?>" class="v-middle" style="margin-right:5px"/>Processo Finalizado</li>');
+					} else {
+						$('andamento').insert('<li style="background-color:#FFD;"><img src="<?php echo $this->getSkinUrl('images/fam_bullet_error.gif');?>" class="v-middle" style="margin-right:5px"/> Ocorreu um erro: '+response[1]+'</li>');
+					}
+				}
+			},
+			onFailure: function() { }
+		});
+    }
+//]]>
+</script>
+<style type="text/css" >
+	td.label {
+		text-align: right;
+		padding-right: 10px;
+	}
+    ul#andamento { list-style-type:none; padding:0; margin:0; }
+    ul#andamento li, #loading { margin-left:0; border:1px solid #ccc; margin:2px; padding:2px 2px 2px 2px; font:normal 12px sans-serif; }
+    ul#andamento li img, #loading img { margin-right:5px; }
+</style>

@@ -1,0 +1,226 @@
+<?php
+/**
+ *  ADAPTIVE SHOP - MUCCI ESTUDIO
+ *  @var Mage_Page_Block_Html_Header $this
+ */
+?>
+
+
+<link rel="stylesheet" type="text/css" href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>/menu/component.css" />
+<script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>/menu/modernizr.custom.js"></script>
+
+<div id="barra-topo" class="mob">
+
+    <div id="full" class="top-bar-bg white">
+        <div id="wrapper" style="width:100%;">
+            <div id="colunas12" class="no-bottom" style="width:100%;margin:0;position: relative">
+                <a href="<?php echo $this->getUrl('','_nosid') ?>" title="<?php echo $this->getLogoAlt() ?>" class="link-logotipo">
+                    <div class="logotipo opacity-1-5"></div>
+                </a>
+                <ul id="nav-top" class="f-l cor-sec fs-12">
+                    <?php echo $this->getChildHtml('cart_top') ?>
+                        <?php if ($this->helper('customer')->isLoggedIn() ) { ?>
+                            <li class="f-r no-p">
+                                <a class="bold cor-sec mob" href="<?php echo $this->getUrl('customer/account')?>" title="Minha conta" style="color: #823486 !important;">Minha conta</a>
+                            </li>
+                            <li class="f-r no-p">
+                                <a class="bold cor-sec mob" href="<?php echo Mage::helper('customer')->getLogoutUrl(); ?>" title="sair" style="color: #823486 !important;">Sair&nbsp;</a>
+                            </li>
+                        <?php } else { ?>
+                            <li class="f-r no-p tt-u bold fs-14 mob login">
+                                Olá! <a href="<?php echo $this->getUrl('customer/account/login')?>">Faça o seu login</a><br>
+                                ou <a href="<?php echo $this->getUrl('customer/account/create')?>">cadastre-se</a>
+                            </li>
+                        <?php } ?>
+                    <li class="f-l no-p mob">
+                        <?php echo $this->getChildHtml('topSearch') ?>
+                    </li>
+                    <li class="f-l mob list-atendimento">
+                        <div class="atendimento">
+                            <a class="fale_conosco_header chat_faleconosco" href="tel:+551631142231" title="Fale Conosco">
+                                <span class="title_tel_fale_conosco">(16) 3114-2231</span>
+                            </a>
+                            <a class="fale_conosco_header chat_faleconosco chat_whatsapp" href="https://api.whatsapp.com/send?phone=5516997537378&text=Ol%C3%A1%2C%20Muscula%C3%A7%C3%A3o%20Feminina!" target="_blank" title="WhatsApp">
+                                <span class="title_tel_fale_conosco title_whatsapp">WhatsApp</span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="nova-menu">
+            <div id="wrapper" style="width:100%;">
+                <div class="no-bottom" style="margin:0;">
+                    <div class="go_home" style="display: inline-block;float: left;padding: 13px 16px 7px 24px;margin-left: 193px;">
+                        <a href="http://www.musculacaofeminina.com.br/">
+                            <svg width="20px" height="20px" viewBox="406 66 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                                <g id="Group-6" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(406.000000, 66.000000)">
+                                    <path d="M16.8012879,9.9616 C15.9188879,9.9616 15.2012879,10.6792 15.2012879,11.5616 L15.2012879,17.9616 L4.00128786,17.9616 L4.00128786,11.5616 C4.00128786,10.6792 3.28288786,9.9616 2.40128786,9.9616 L1.57008786,9.9976 L9.63408786,1.6368 L12.5028879,4.6352 L14.8364879,7.0752 L17.5996879,9.9616 L16.8012879,9.9616 Z M18.7884879,8.892 L15.9924879,5.9688 L13.6588879,3.5296 L10.8228879,0.5664 C10.5180879,0.2064 10.0732879,0 9.60128786,0 C9.12928786,0 8.68368786,0.2064 8.41248786,0.5304 L0.381287861,8.928 C-0.0259121387,9.4096 -0.113912139,10.0632 0.150887861,10.6344 C0.416487861,11.2064 0.972487861,11.5616 1.60288786,11.5616 L2.40128786,11.5616 L2.40128786,17.9616 C2.40128786,18.844 3.11968786,19.5616 4.00128786,19.5616 L15.2012879,19.5616 C16.0828879,19.5616 16.8012879,18.844 16.8012879,17.9616 L16.8012879,11.5616 L17.5996879,11.5616 C18.2300879,11.5616 18.7860879,11.2064 19.0508879,10.6344 C19.3164879,10.0632 19.2284879,9.4096 18.7884879,8.892 L18.7884879,8.892 Z" id="Fill-1" fill="#823486"></path>
+                                    <path d="M11.2,19.2 L8,19.2 C7.1184,19.2 6.4,18.4824 6.4,17.6 L6.4,12 C6.4,11.1176 7.1184,10.4 8,10.4 L11.2,10.4 C12.0816,10.4 12.8,11.1176 12.8,12 L12.8,17.6 C12.8,18.4824 12.0816,19.2 11.2,19.2 L11.2,19.2 Z M8,12 L8,17.6 L11.2008,17.6 L11.2,12 L8,12 L8,12 Z" id="Fill-15" fill="#823486"></path>
+                                    <path d="M3.2,7.2 C2.7576,7.2 2.4,6.8416 2.4,6.4 L2.4,2.856 C2.4,1.7032 3.1032,0.8 4,0.8 L5.6,0.8 C6.4968,0.8 7.2,1.7032 7.2,2.856 L7.2,3.2 C7.2,3.6416 6.8424,4 6.4,4 C5.9576,4 5.6,3.6416 5.6,3.2 L5.6,2.856 C5.6,2.632 5.54,2.4744 5.4928,2.4 L4.1072,2.4 C4.06,2.4744 4,2.632 4,2.856 L4,6.4 C4,6.8416 3.6424,7.2 3.2,7.2" id="Fill-16" fill="#823486"></path>
+                                </g>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="mask_menu"></div>
+                    <div class="menu-desktop">
+                        <?php echo $this->getChildHtml('topMenuDesktop') ?>
+                    </div>
+                    <!--<div class="promo-1">
+                        <a href="/1abril-blackfriday-de-mentira" class="trans opacity-1-5">1º de Abril - Black Friday de Mentira</a>
+                    </div>-->
+                    <div class="promo-2">
+                        <a href="/promocoes-da-copa" class="trans opacity-1-5">Outlet</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="full" style="height:104px;"></div>
+
+    <script>
+        function showhide(){
+            var div = document.getElementById("menu");
+            if (div.style.display !== "none") {
+                div.style.display = "none";
+            }
+            else {
+                div.style.display = "block";
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        jQuery.noConflict();
+        jQuery(document).ready(function() {
+            jQuery('.question').click(function(event) {
+                if (!jQuery(this).hasClass('active')) {
+                    jQuery('.answer').slideUp();
+                    jQuery('.question').removeClass('active');
+                    jQuery(this).parents('.faq').find('.answer').slideDown();
+                    jQuery(this).addClass('active');
+                } else {
+                    jQuery('.answer').slideUp();
+                    jQuery('.question').removeClass('active');
+                    jQuery(this).removeClass('active');
+                }
+            });
+        });
+    </script>
+
+    <script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS);?>/menu/jquery.dlmenu.js"></script>
+    <script>
+
+        (function(){
+            var $jQuery = jQuery.noConflict();
+
+            $jQuery(document).ready(function() {
+                $jQuery('.menu-desktop, .menu-mobile' ).dlmenu({
+                    animationClasses : { classin : 'dl-animate-in-3', classout : 'dl-animate-out-3' }
+                });
+
+
+                $jQuery(".menu-desktop").on({
+                    mouseenter: function () {
+                        $jQuery(".menu-desktop").addClass('active');
+                        setTimeout(function(){
+                            if($jQuery(".menu-desktop").hasClass('active')){
+                                $jQuery(".menu-da-nutrii").slideDown(400);
+                                $jQuery(".mask_menu").fadeIn('600');
+                            }
+                        }, 600) ;
+                    },
+                    mouseleave: function () {
+                        $jQuery(".menu-desktop").removeClass('active');
+                        $jQuery(".menu-da-nutrii").slideUp(300);
+                        $jQuery(".mask_menu").fadeOut('300');
+                    }
+                });
+            });
+
+        }())
+
+    </script>
+
+</div>
+
+<div id="topo-mobile" style="display: none;">
+    <div class="logo-mobile">
+        <a href="<?php echo $this->getUrl('','_nosid') ?>" title="<?php echo $this->getLogoAlt() ?>" class="link-logotipo">
+            <div class="logotipo opacity-1-5"></div>
+        </a>
+    </div>
+    <div class="atendimento-mobile">
+        <div class="atendimento">
+            <a class="fale_conosco_header chat_faleconosco chat_whatsapp"  href="https://api.whatsapp.com/send?phone=5516997537378&text=Ol%C3%A1%2C%20Muscula%C3%A7%C3%A3o%20Feminina!" target="_blank" title="WhatsApp">
+                <span class="title_tel_fale_conosco title_whatsapp">WhatsApp</span>
+            </a>
+        </div>
+    </div>
+    <div class="barra-mobile">
+        <div id="dl-menu" class="dl-menuwrapper menu-mobile">
+            <button class="dl-trigger" id="clickmenu"></button>
+            <ul class="dl-menu fs-15 cor f-l">
+                <li class="carrinho_menu">
+                    <a href="<?php echo Mage::getBaseUrl(); ?>checkout/cart/">CARRINHO</a>
+                </li>
+                <?php echo $this->getChildHtml('topMenu') ?>
+                <div class="log-mob1">
+                    <?php if ($this->helper('customer')->isLoggedIn() ) { ?>
+                        <a class="log-mob1a" href="<?php echo $this->getUrl('customer/account')?>" title="Minha conta">Minha conta</a>
+                        <a class="log-mob2a" href="<?php echo Mage::helper('customer')->getLogoutUrl(); ?>" title="sair">Sair&nbsp;</a>
+                    <?php } else { ?>
+                        <a class="log-mob1a" href="<?php echo Mage::getBaseUrl(); ?>customer/account/login/" title="login">LOGIN</a>
+                        <a class="log-mob2a" href="<?php echo Mage::getBaseUrl(); ?>customer/account/create/" title="Cadastre-se">CADASTRE-SE</a>
+                    <?php } ?>
+                </div>
+            </ul>
+        </div>
+        <div class="busca-mobile">
+            <?php echo $this->getChildHtml('topSearch') ?>
+        </div>
+    </div>
+</div>
+<?php
+$routeName = Mage::app()->getRequest()->getRouteName();
+$identifier = Mage::getSingleton('cms/page')->getIdentifier();
+?>
+
+<?php if($routeName == 'cms' && ($identifier == 'home' || $identifier == 'no-route')) { ?>
+
+    <link rel="stylesheet" type="text/css" href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>owl-carousel/owl.carousel.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>owl-carousel/owl.theme.css" />
+    <script type="text/javascript" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>owl-carousel/owl.carousel.min.js"></script>
+
+    <script type="text/javascript">
+        (function($) {
+            $(document).ready(function() {
+                $('#carousel-home .wrapper-categoria').owlCarousel({
+                    nav: true,
+                    dots: true,
+                    items: 4,
+                    slideBy : 4,
+                    loop: true,
+                    responsive:{
+                        0:{
+                            items:2,
+                            slideBy : 2
+
+                        },
+                        767:{
+                            items:3,
+                            slideBy : 3
+                        },
+                        1024:{
+                            items:4,
+                            slideBy : 4
+                        }
+                    }
+                });
+            });
+        }) (jQuery);
+    </script>
+
+<?php } ?>

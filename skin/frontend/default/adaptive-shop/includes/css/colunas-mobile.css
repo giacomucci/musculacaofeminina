@@ -1,0 +1,262 @@
+/**
+ * Colunas Mobile
+ */
+#full {
+  clear: both;
+  display: inline-block;
+  float: left;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+#wrapper {
+  clear: both;
+  height: auto;
+  margin: 0 auto;
+  padding: 0;
+  width: 320px;
+}
+
+#colunas12, #wrapper-colunas9, #colunas9, #wrapper-colunas8, #colunas8, #colunas6, #colunas4, #colunas3 {
+  display: inline-block;
+  float: left;
+  margin: 0 15px 15px;
+}
+
+#colunas12 {
+  width: 290px;
+}
+
+#wrapper-colunas9 {
+  margin: 0 0 0px !important;
+  width: 320px;
+}
+
+#colunas9 {
+  width: 290px;
+}
+
+#wrapper-colunas8 {
+  margin: 0 0 0px !important;
+  width: 320px;
+}
+
+#colunas8, #colunas6, #colunas4, #colunas3 {
+  width: 290px;
+}
+
+.no-h-margin {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+#shopping-cart-table thead, #shopping-cart-table tfoot {
+  display: none !important;
+}
+#shopping-cart-table td.a-center, #shopping-cart-table td.a-right {
+  display: none !important;
+}
+#shopping-cart-table td.last {
+  display: block !important;
+  margin-top: 25px;
+}
+
+#topo-mobile {
+  display: block !important;
+  background: #FFF;
+  z-index: 999999;
+  width: 100%;
+}
+
+#nav-top li div.atendimento {
+  display: none;
+}
+
+.form_out_of_stock input[type="text"] {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 767px) {
+  .wrapper-categoria .product-image {
+    max-width: 80px;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .bt-nova a, .list-qtd {
+    display: block !important;
+  }
+
+  .prod {
+    width: 50% !important;
+    float: left !important;
+    margin: 0px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .owl-item .prod {
+    width: 100% !important;
+  }
+
+  .prod .nova-h {
+    padding: 5px;
+  }
+  .prod .product-image {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .wrapper-categoria .prod #info-prod {
+    min-height: 32px !important;
+  }
+
+  .prod #info-prod > a {
+    font-size: 14px;
+    color: #4A4A4A;
+    letter-spacing: 0.2px;
+    height: 60px !important;
+  }
+
+  .tag-brinde .aviso.oferta {
+    font-size: 9px !important;
+    background-position: 80px 3px !important;
+    background-size: 15px !important;
+  }
+
+  .tag-brinde .oferta-imperdivel {
+    top: 32px !important;
+    font-size: 10px !important;
+  }
+
+  .ratings a, .no-rating a, .ratings span, .no-rating span {
+    font-size: 12px !important;
+  }
+
+  ul.avaliacao-form label {
+    width: 80px !important;
+    justify-content: flex-start !important;
+  }
+
+  .label-avaliacao {
+    width: 80px !important;
+    justify-content: flex-start !important;
+    width: 60px !important;
+  }
+
+  .value.item-stars {
+    margin-right: 4px !important;
+  }
+
+  #review-form button {
+    margin-left: 50px !important;
+  }
+
+  .horario-de-atendimento {
+    border: 0px !important;
+    padding: 0px !important;
+    padding-right: 5px !important;
+  }
+  .horario-de-atendimento .dir-atendimento {
+    max-width: 90px !important;
+  }
+
+  body.checkout-cart-index .shipping-form input[type="text"] {
+    margin-right: 11px !important;
+  }
+  body.checkout-cart-index .shipping-form .buttons-set button {
+    padding: 9px 10px !important;
+  }
+}
+@media (max-width: 767px) {
+  /*
+     * Edit Cart
+     */
+  table#shopping-cart-table tbody {
+    border: 0px !important;
+  }
+
+  table#shopping-cart-table tr {
+    display: inline-block;
+    border-top: 1px solid #CCC !important;
+  }
+
+  table#shopping-cart-table tr.first {
+    border: 0px !important;
+  }
+
+  table#shopping-cart-table td.boxImg {
+    padding: 10px 0px;
+  }
+
+  table#shopping-cart-table td.boxQtd {
+    width: 50%;
+    display: inline-block !important;
+    float: left;
+    padding: 14px 0px !important;
+  }
+
+  table#shopping-cart-table td.boxQtd .lblQtd {
+    display: block !important;
+    float: left;
+    margin-top: 10px;
+    margin-right: 7px;
+  }
+
+  table#shopping-cart-table td.boxExcluir {
+    width: 50%;
+    display: inline-block !important;
+    float: left;
+    padding: 14px 0px !important;
+    margin: 0px auto !important;
+    text-align: right !important;
+  }
+
+  table#shopping-cart-table td.boxExcluir a {
+    width: 20px;
+    float: right;
+  }
+
+  table#shopping-cart-table tfoot {
+    display: block !important;
+    text-align: center;
+  }
+
+  table#shopping-cart-table tfoot td {
+    margin: 0 !important;
+  }
+
+  table#shopping-cart-table tfoot .btn-continue,
+  table#shopping-cart-table tfoot .btn-empty {
+    display: none;
+  }
+
+  table#shopping-cart-table tfoot .btn-update {
+    margin: 0 auto;
+  }
+}
+@media (max-width: 360px) {
+  .horario-de-atendimento .esq-atendimento, .horario-de-atendimento .dir-atendimento {
+    display: none !important;
+  }
+
+  .contact-phones-mobile .contact-info span {
+    display: none !important;
+  }
+  .contact-phones-mobile .contact-icon-mobile {
+    width: calc(20% - 8px) !important;
+  }
+
+  .horario-de-atendimento .dir-atendimento {
+    max-width: 105px !important;
+  }
+  .horario-de-atendimento span {
+    max-width: 70px;
+  }
+}
+.promo-1,
+.promo-2 {
+  display: none !important;
+}

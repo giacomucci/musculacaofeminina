@@ -1,0 +1,283 @@
+<?php
+/**
+ *
+ * @category   Inovarti
+ * @package    Inovarti_Onestepcheckout
+ * @author     Suporte <suporte@inovarti.com.br>
+ */
+?>
+
+<div id="auth-show" style="display:none;" class="op_login_area">
+   	<div class='close_la' onclick='close_login();'></div>
+	<?php echo $this->getChildHtml('auth'); ?>
+</div>
+<div id="cover-box" style="display: none;"></div>
+<div class="col3-set">
+    <form id="onestepcheckout-general-form" method="post" action="#" autocomplete="off">
+        <div id="colunas4" class="col-1">
+			<?php 
+		    $logged = $this->isCustomerLoggedIn(); 
+			if ($logged): ?>
+			<p class="onepagecheckout_loginarea fs-16 cor bold">
+			Ol&aacute;, <?php echo $customerName = Mage::helper('customer')->getCustomerName(); ?>!<br />
+			</p>
+			<div class="h-r f-l d-b"></div>
+			<br />
+			<?php else: ?>		    
+		    <p class="onepagecheckout_loginarea"><a href="javascript:void(0)" class="onepagecheckout_loginlink" onclick="open_login();">Já é cliente? Clique aqui e poupe tempo!</a></p>
+			<div class="h-r f-l d-b"></div>
+			<br />
+			<p class="txt bold fs-14">Se for sua primeira vez, por favor, preencha os campos abaixo:</p>
+			<br />
+			<?php endif; ?>		    
+            <div class="opc">
+                <div class="section allow active">
+                    <?php echo $this->getChildHtml('address'); ?>
+                </div>
+            </div>
+        </div>
+        <div id="colunas4" class="col-2">
+            <div class="opc">
+                <div class="section allow active">
+                    <div id="onestepcheckout-shipping-method-wrapper">
+                        <?php echo $this->getChildHtml('shippingmethod'); ?>
+                    </div>
+                    <br />
+                    <div class="h-r f-l d-b"></div>
+                    <br />
+                    <div id="tipo-pedido" style="display:none;">
+                    <?php echo $this->getChildHtml('deliverydate') ?>
+                    <br />
+                    <div class="h-r f-l d-b"></div>
+                    <br />
+                    </div>
+                    <div id="onestepcheckout-payment-method-wrapper">
+                        <?php echo $this->getChildHtml('paymentmethod'); ?>
+                    </div>
+                    <br />
+                    <div class="h-r f-l d-b"></div>
+                    <br />
+                    <div id="onestepcheckout-order-review-coupon-wrapper">
+                        <?php echo $this->getChildHtml('review.coupon'); ?>
+                    </div>
+                    <br />
+                    <div class="h-r f-l d-b"></div>
+                    <br />
+                    <div id="onestepcheckout-order-review-comments-wrapper">
+                        <?php echo $this->getChildHtml('review.comments'); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="colunas4" class="col-3">
+            <div class="opc">
+                <div class="section allow active">
+                    <?php $blockNumberClass = (!is_null($this->getBlockNumber(false))) ? "onestepcheckout-number-4" : ""; ?>
+                    <?php if(Mage::getStoreConfig('onestepcheckout/general/is_show_titles')): ?><div class="step-title"><h2><?php echo $this->__('ORDER REVIEW'); ?></h2></div><?php endif; ?>
+                    <div class="step a-item">
+                        <div id="onestepcheckout-order-review">
+                            <div id="onestepcheckout-order-review-cart-wrapper">
+                                <?php echo $this->getChildHtml('review.cart'); ?>
+                            </div>
+                            <div id="onestepcheckout-order-review-terms-wrapper">
+                                <?php echo $this->getChildHtml('review.terms'); ?>
+                            </div>
+                            <div id="onestepcheckout-order-review-extra-wrapper">
+                                <?php echo $this->getChildHtml('review.extra'); ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section allow">
+                    <div id="onestepcheckout-order-review-newsletter-wrapper">
+                        <?php echo $this->getChildHtml('review.newsletter'); ?>
+                    </div>
+                    <div id="onestepcheckout-place-order">
+                        <button type="button" class="f-r bt fs-16 d-b cor-sec bold tt-u radius td-n btn-proceed-checkout btn-checkout" title="<?php echo $this->__('Place Order Now'); ?>" id="onestepcheckout-place-order-button"><?php echo $this->__('Place Order'); ?></button>
+                        <div class="onestepcheckout-place-order-please-wait"><img src="<?php echo $this->getSkinUrl('onestepcheckout/images/ajax-loader.gif') ?>" /><?php echo $this->__('Please wait, processing your order...') ?></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div id="onestepcheckout-popup" class="onestepcheckout-popup" style="display:none">
+        <div id="onestepcheckout-popup-content" class="onestepcheckout-popup-content"></div>
+        <div id="onestepcheckout-popup-accept" class="onestepcheckout-popup-accept">
+            <button type="button"><?php echo $this->__('ACCEPT'); ?></button>
+            <a href="javascript:void(0)"><?php echo $this->__('Close'); ?></a>
+        </div>
+    </div>
+    <div id="onestepcheckout-overlay" class="onestepcheckout-popup-overlay" style="display:none"></div>
+    <script type="text/javascript">
+        var OSCForm = new OnestepcheckoutForm({
+            formId: 'onestepcheckout-general-form',
+            cartContainerSelector: "#onestepcheckout-order-review-cart-wrapper",
+            // validate shipping and payment
+            shippingMethodName: 'shipping_method',
+            shippingMethodAdvice: '#onestepcheckout-shipping-method .validation-advice',
+            shippingValidationMessage: '<?php echo $this->__('Please specify shipping method.'); ?>',
+            shippingMethodWrapperSelector: '#onestepcheckout-shipping-method .sp-methods',
+            paymentMethodName: 'payment[method]',
+            paymentMethodAdvice: '#onestepcheckout-payment-method dl+.validation-advice',
+            paymentValidationMessage: '<?php echo $this->__('Please specify payment method.'); ?>',
+            paymentMethodWrapperSelector: '#onestepcheckout-payment-method .sp-methods',
+            //place order functionality
+            placeOrderUrl: '<?php echo $this->getPlaceOrderUrl(); ?>',
+            successUrl: '<?php echo $this->getUrl('checkout/onepage/success'); ?>',
+            placeOrderButtonSelector: 'onestepcheckout-place-order-button',
+            pleaseWaitNoticeSelector: '.onestepcheckout-place-order-please-wait',
+            overlayId: 'onestepcheckout-place-order-overlay',
+            disabledClassName: 'onestepcheckout-place-order-button-disabled',
+            popup: {
+                overlaySelector: "#onestepcheckout-overlay",
+                containerSelector: "#onestepcheckout-popup",
+                contentContainerSelector: "#onestepcheckout-popup-content",
+                acceptContainerSelector: "#onestepcheckout-popup-accept",
+                buttons: {
+                    accept:{
+                        selector: "#onestepcheckout-popup-accept button",
+                        enabled: false
+                    },
+                    close:{
+                        selector: "#onestepcheckout-popup-accept a",
+                        enabled: false
+                    }
+                }
+            }
+        });
+    </script>
+</div>
+<script type="text/javascript">
+    OnestepcheckoutCore.updateNumbers();
+    OnestepcheckoutCore.updater.setConfig({
+        loaderConfig: {
+            //'48px': 'onestepcheckout-overlay onestepcheckout-overlay-48',
+            //'24px': 'onestepcheckout-overlay onestepcheckout-overlay-24',
+            '16px': 'onestepcheckout-overlay onestepcheckout-overlay-16'
+        },
+        map: <?php echo Zend_Json::encode($this->getBlockMap()); ?>,
+        blocks: [
+            ['shipping_method', '#onestepcheckout-shipping-method-wrapper'],
+            ['payment_method', '#onestepcheckout-payment-method-wrapper'],
+            ['review_cart', '#onestepcheckout-order-review-cart-wrapper'],
+            ['review_coupon', '#onestepcheckout-order-review-coupon-wrapper'],
+            ['review_points', '#onestepcheckout-order-review-points-wrapper'],
+            ['review_referafriend', '#onestepcheckout-order-review-referafriend-wrapper']
+        ],
+        loaderToBlockCssClass: 'onestepcheckout-add-loader-into-this-block'
+    });
+    
+    
+	/*document.observe( 'click', function( event )
+	{
+	var elem = event.element();
+	if ( elem.match( '#p_method_apelidocielo' ) )
+	{
+		console.log('clicou');
+	}
+	});*/
+	
+      
+	function open_login() {
+	    $('auth-show').show();
+	    $('cover-box').show();
+	    
+	}function close_login() {
+	    $('auth-show').hide();
+	    $('cover-box').hide();
+	}
+	
+	
+	jQuery("#single").change(function(){
+		if(jQuery(this).val() == "1")
+		{
+			jQuery('#shipping_arrival_comments').val('1');
+		}
+		else if(jQuery(this).val() == "")
+		{
+			jQuery('#shipping_arrival_comments').val('');
+		}
+		else
+		{
+			jQuery('#shipping_arrival_comments').val('0');
+		}
+	});
+
+</script>
+
+<?php $logged = $this->isCustomerLoggedIn(); if ($logged): ?>
+
+	<?php
+	$attribute = Mage::getModel('eav/config')->getAttribute('customer', 'tipopessoa');
+	$_tipopessoaLabel = $attribute->getSource()->getOptionText($this->getCustomer()->getTipopessoa());
+	//echo $_tipopessoaLabel;
+	if (($_tipopessoaLabel) == "Jurídica"): ?>
+	<script>
+		jQuery("#tipo-pedido").show();
+	</script>
+	<?php else: ?>
+	<script>
+		jQuery("#tipo-pedido").hide();
+		jQuery("#single").val("1");
+		jQuery('#shipping_arrival_comments').val('1');	
+	</script>
+	<?php endif; ?>
+		
+<?php else: ?>		    
+	<script>
+		jQuery('#shipping_arrival_comments').val('1');
+		
+		jQuery(".tpj").click(function() {
+			jQuery("#tipo-pedido").show();
+			jQuery("#single").val("");
+			jQuery('#shipping_arrival_comments').val('');		
+		});	
+	
+		jQuery(".tpf").click(function() {
+			jQuery("#tipo-pedido").hide();
+			jQuery("#single").val("1");
+			jQuery('#shipping_arrival_comments').val('1');
+		});	
+	
+		jQuery(".tpi").click(function() {
+			jQuery("#single").val("1");
+			jQuery('#shipping_arrival_comments').val('1');
+		});
+		
+		//jQuery( "#p_method_apelidocielo" ).click(function() {
+	
+		//});
+	</script>
+<?php endif; ?>		    
+
+<div id="colunas12">
+	<div class="checkout-info">
+		<p class="txt fs-13">
+			Voc&ecirc; est&aacute; prestes a realizar uma compra sob as condi&ccedil;&otilde;es acima. Seu pedido passar&aacute; por aprova&ccedil;&atilde;o da Musculação Feminina, podendo ser cancelado em caso de: 
+			<br /><br />
+			1) N&atilde;o pagamento do pedido, o n&atilde;o pagamento do boleto ou insufici&ecirc;ncia de saldo ou cr&eacute;dito no cart&atilde;o.<br />
+			2) Inconsist&ecirc;ncia de dados ou informa&ccedil;&otilde;es de cadastro.<br />
+			3) Erros do dispositivo do consumidor durante o fechamento do pedido.<br />
+			4) Motivos outros que impossibilitem o cumprimento do pedido.<br />
+			5) O consumidor tem 7 dias, contados a partir do recebimento do produto, para exercer o direito de arrependimento. 
+			<br /><br />
+			Os pre&ccedil;os e condi&ccedil;&otilde;es deste site s&atilde;o v&aacute;lidos apenas para compras no site e n&atilde;o se aplicam para nossas lojas. 
+			<br /><br />
+			Aten&ccedil;&atilde;o REVENDEDOR - PESSOA JUR&Iacute;DICA: Fique atento ao ICMS &ndash; ST de sua regi&atilde;o. A venda de alguns de nossos produtos est&atilde;o sujeitas a cobran&ccedil;a complementar de ICMS ST nas opera&ccedil;&otilde;es interestaduais, com valor n&atilde;o embutido no pre&ccedil;o apresentado no site. Por essa raz&atilde;o, a Musculação Feminina pode contatar seus cliente para o pagamento desse valor adicional antes do envio dos produtos. 
+			<br /><br />
+			Demais condi&ccedil;&otilde;es aplic&aacute;veis a esta compra e venda est&atilde;o dispon&iacute;veis nos <a href="http://www.nutrii.com.br/termos-de-uso" target="_blank" title="Termos de Uso">Termos de Uso</a>.
+		</p>
+	</div>
+</div>
+<script>
+	jQuery(document).ready(function(){
+		jQuery('#onestepcheckout-payment-method-wrapper input').change(function(){
+			if(jQuery(this).val() == 'paypal_express'){
+				jQuery('#onestepcheckout-order-review-comments-wrapper').hide();
+			} else {
+				jQuery('#onestepcheckout-order-review-comments-wrapper').show();
+			}
+		})
+	});
+</script>	
+	

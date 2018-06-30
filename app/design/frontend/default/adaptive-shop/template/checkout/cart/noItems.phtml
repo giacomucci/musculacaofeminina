@@ -1,0 +1,47 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2014 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<div id="colunas6" class="cart-empty1 m-top">
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getChildHtml('checkout_cart_empty_widget'); ?>
+    <p class="bold fs-25">OPS!</p>
+    <p class="txt fs-20">Nenhum item <span class="bold">encontrado!</span></p>
+    <?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
+</div>
+
+<div id="colunas6" class="cart-empty2 m-top">
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <?php echo $this->getChildHtml('checkout_cart_empty_widget'); ?>
+    <p class="cor bold fs-20">Voc&ecirc; possui zero itens no carrinho!</p>
+    <br />
+    <p class="fs-18"><a class="bold txt" href="<?php echo $this->getContinueShoppingUrl() ?>">Clique aqui</a> e continue comprando
+    <br />
+    ou siga o menu de buscas acima.</p>
+    <br />
+    <?php echo $this->getChildHtml('shopping.cart.table.after'); ?>
+</div>
+
+<div id="colunas12"></div>
