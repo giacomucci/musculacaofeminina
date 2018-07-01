@@ -34,6 +34,9 @@
 /media/xmlconnect/system/*
 !/media/xmlconnect/system/ok.gif
 
+media/dhl/*
+media/xmlconnect/*
+
 /var/*
 !/var/.htaccess
 
@@ -41,3 +44,4 @@
 /var/package/*
 !/var/package/*.xml
 
+skin/frontend/default/adaptive-shop/node_modules/*
