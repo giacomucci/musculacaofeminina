@@ -47,50 +47,49 @@
 	                        </a>
 	                   
 	                        <div id="info-prod">
-	                            <a class="fs-19 txt d-b bold" href="<?php /* @noEscape */ echo $product->getProductUrl() ?>" title="<?php echo $this->escapeHtml($product->getName()) ?>"><h2><?php echo $this->escapeHtml($product->getName()) ?></h2></a>
-	                            <div class="mob">
 	                            <div class="list-rating"></div>
-
-	                            <?php echo $this->getPriceHtml($product, true) ?>
-	                                <p class="txt fs-14" style="display:inline-block;">
-	                                
-	                                    <?php 
-	                                        if($product->isConfigurable()){
-												$_coreHelper = $this->helper('core');
-												$_id = $product->getId();
-												$_cpspHelper = Mage::helper('configurableproductssimpleprices');
-												list($spID, $_minimalPriceValue) = $_cpspHelper->getMinimalProductPrice($_id);
-												
-												$Preco = $_minimalPriceValue;
-											} else {
-												
-												$Preco = $product->getMinimalPrice();
-			
-											}
-	                                        $boleto = $Preco/100;
-	                                        $desc_boleto = $Preco - (6*$boleto);
-	                                                                    
-	                                        if($Preco > 0.00 and $Preco <= 59.99){
-	                                            $Parcelamento = 1;
-	                                        }
-	                                        else if($Preco >= 60 and $Preco <= 89.99){
-	                                            $Parcelamento = 2; 
-	                                            $Resultado = $Preco/ $Parcelamento;
-	                                            echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
-	                                        }
-	                                        else if($Preco >= 90 and $Preco <= 119.99){
-	                                            $Parcelamento = 3; 
-	                                            $Resultado = $Preco/ $Parcelamento;
-	                                            echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
-	                                        }
-	                                        else if($Preco >= 120){
-	                                            $Parcelamento = 4; 
-	                                            $Resultado = $Preco/ $Parcelamento;
-	                                            echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
-	                                        }
-	                                        //echo '<p class="fs-14"><span class="cor bold">R$'.number_format($desc_boleto, 2, ',', '').'</span> no boleto banc&aacute;rio ou transfer&ecirc;ncia banc&aacute;ria</p>';
-	                                    ?>                                              
-	                                </p>    
+	                            <a class="fs-19 txt d-b bold" href="<?php /* @noEscape */ echo $product->getProductUrl() ?>" title="<?php echo $this->escapeHtml($product->getName()) ?>"><h2><?php echo $this->escapeHtml($product->getName()) ?></h2></a>
+								<?php echo $this->getPriceHtml($product, true) ?>
+								<p class="txt fs-14" style="display:inline-block;">
+								
+									<?php 
+										if($product->isConfigurable()){
+											$_coreHelper = $this->helper('core');
+											$_id = $product->getId();
+											$_cpspHelper = Mage::helper('configurableproductssimpleprices');
+											list($spID, $_minimalPriceValue) = $_cpspHelper->getMinimalProductPrice($_id);
+											
+											$Preco = $_minimalPriceValue;
+										} else {
+											
+											$Preco = $product->getMinimalPrice();
+		
+										}
+										$boleto = $Preco/100;
+										$desc_boleto = $Preco - (6*$boleto);
+																	
+										if($Preco > 0.00 and $Preco <= 59.99){
+											$Parcelamento = 1;
+										}
+										else if($Preco >= 60 and $Preco <= 89.99){
+											$Parcelamento = 2; 
+											$Resultado = $Preco/ $Parcelamento;
+											echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+										}
+										else if($Preco >= 90 and $Preco <= 119.99){
+											$Parcelamento = 3; 
+											$Resultado = $Preco/ $Parcelamento;
+											echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+										}
+										else if($Preco >= 120){
+											$Parcelamento = 4; 
+											$Resultado = $Preco/ $Parcelamento;
+											echo $Parcelamento .'x R$'.number_format($Resultado, 2, ',', '').' sem juros';
+										}
+										//echo '<p class="fs-14"><span class="cor bold">R$'.number_format($desc_boleto, 2, ',', '').'</span> no boleto banc&aacute;rio ou transfer&ecirc;ncia banc&aacute;ria</p>';
+									?>                                              
+								</p>    
+	                            <div class="mob">
 	                                <?php if(!$product->isGrouped()): ?>
 	                                <form action="<?php echo $this->getAddToCartUrl($product) ?>" method="post" id="product_addtocart_form_<?php echo $product->getId()?>"<?php if($product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
 	                                     <div class="list-qtd">
