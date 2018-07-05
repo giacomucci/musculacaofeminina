@@ -23,7 +23,7 @@ class Inovarti_Pagarme_Model_Quote_Address_Total_Fee extends Mage_Sales_Model_Qu
         $quote = $address->getQuote();
         $paymentMethod = $quote->getPayment()->getMethod();
 
-        $baseSubtotalWithDiscount = $quote->getBaseSubtotalWithDiscount();
+        $baseSubtotalWithDiscount = $address->getSubtotalWithDiscount();
         $shippingAmount = $quote->getShippingAddress()->getShippingAmount();
         $total = $baseSubtotalWithDiscount + $shippingAmount;
 
@@ -88,21 +88,11 @@ class Inovarti_Pagarme_Model_Quote_Address_Total_Fee extends Mage_Sales_Model_Qu
     public function getInstallmentConfig($paymentMethod)
     {
         if ($paymentMethod == 'pagarme_checkout') {
-            return $this->getPagarMeCheckoutInstallmentConfig();
+            return Mage::getModel('pagarme/checkout')->getPagarMeCheckoutInstallmentConfig();
         } elseif ($paymentMethod == 'pagarme_cc') {
             return Mage::getModel('pagarme/cc')->getPagarMeCcInstallmentConfig();
         }
         return null;
-    }
-
-    private function getPagarMeCheckoutInstallmentConfig()
-    {
-        $config = new Varien_Object();
-        $config->setMaxInstallments((int) Mage::getStoreConfig('payment/pagarme_checkout/max_installments'));
-        $config->setFreeInstallments((int) Mage::getStoreConfig('payment/pagarme_checkout/free_installments'));
-        $config->setInterestRate((float) Mage::getStoreConfig('payment/pagarme_checkout/interest_rate'));
-
-        return $config;
     }
 
     /**

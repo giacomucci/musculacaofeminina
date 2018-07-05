@@ -34,9 +34,6 @@
 /media/xmlconnect/system/*
 !/media/xmlconnect/system/ok.gif
 
-media/dhl/*
-media/xmlconnect/*
-
 /var/*
 !/var/.htaccess
 

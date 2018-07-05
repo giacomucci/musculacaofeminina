@@ -82,25 +82,32 @@ abstract class Inovarti_Pagarme_Model_Abstract extends Inovarti_Pagarme_Model_Sp
     private function prepareRequestParams($payment, $amount, $requestType, $customer, $checkout)
     {
         $splitRules = $this->prepareSplit($payment->getOrder()->getQuote());
+        $orderAmount = Mage::helper('pagarme')->formatAmount($amount);
+
+        $installments = $payment->getInstallments();
+        $cardHash = $payment->getPagarmeCardHash();
+        $paymentMethod = Inovarti_Pagarme_Model_Api::PAYMENT_METHOD_CREDITCARD;
+
+        if($checkout) {
+          $installments = $payment->getPagarmeCheckoutInstallments();
+          $cardHash = $payment->getPagarmeCheckoutHash();
+          $paymentMethod = $payment->getPagarmeCheckoutPaymentMethod();   
+        }
+        
+        $transactionAmount = $this->getAmountWithInterestRate($orderAmount, $installments, $checkout);
+
         $requestParams = new Varien_Object();
 
-        $requestParams->setAmount(Mage::helper('pagarme')->formatAmount($amount))
-                ->setCapture($requestType == self::REQUEST_TYPE_AUTH_CAPTURE)
+        $requestParams->setCapture($requestType == self::REQUEST_TYPE_AUTH_CAPTURE)
                 ->setCustomer($customer);
 
+        $requestParams->setAmount($transactionAmount);
+        $requestParams->setPaymentMethod($paymentMethod);
+        $requestParams->setCardHash($cardHash);
+        $requestParams->setInstallments($installments);
 
         if ($splitRules) {
             $requestParams->setSplitRules($splitRules);
-        }
-
-        if ($checkout) {
-            $requestParams->setPaymentMethod($payment->getPagarmeCheckoutPaymentMethod());
-            $requestParams->setCardHash($payment->getPagarmeCheckoutHash());
-            $requestParams->setInstallments($payment->getPagarmeCheckoutInstallments());
-        } else {
-            $requestParams->setPaymentMethod(Inovarti_Pagarme_Model_Api::PAYMENT_METHOD_CREDITCARD);
-            $requestParams->setCardHash($payment->getPagarmeCardHash());
-            $requestParams->setInstallments($payment->getInstallments());
         }
 
         if ($this->getConfigData('async')) {
@@ -199,6 +206,17 @@ abstract class Inovarti_Pagarme_Model_Abstract extends Inovarti_Pagarme_Model_Sp
         return $payment->getOrder()->getGrandTotal();
     }
 
+    public function getAvailableInstallments($amount, $installmentConfig, $api)
+    {
+        $data = new Varien_Object();
+        $data->setMaxInstallments($installmentConfig->getMaxInstallments());
+        $data->setFreeInstallments($installmentConfig->getFreeInstallments());
+        $data->setInterestRate($installmentConfig->getInterestRate());
+        $data->setAmount($amount);
+
+        return $api->calculateInstallmentsAmount($data)->getInstallments();
+    }
+
     /**
      * @param $transaction
      */
@@ -249,4 +267,17 @@ abstract class Inovarti_Pagarme_Model_Abstract extends Inovarti_Pagarme_Model_Sp
         return Mage::helper('pagarme')->__('Transaction failed, please try again or contact the card issuing bank.') . PHP_EOL
                . Mage::helper('pagarme')->__($result);
     }
+
+    protected function getAmountWithInterestRate($amount, $chosenInstallment, $checkout) {
+        $api = Mage::getModel('pagarme/api');
+        $installmentConfig = Mage::getModel('pagarme/cc')->getPagarMeCcInstallmentConfig();
+        if($checkout) {
+            $installmentConfig = Mage::getModel('pagarme/checkout')->getPagarMeCheckoutInstallmentConfig();
+        }
+
+        $installments = $this->getAvailableInstallments($amount, $installmentConfig, $api);
+
+        return $installments[$chosenInstallment]->getAmount();
+    }
+
 }

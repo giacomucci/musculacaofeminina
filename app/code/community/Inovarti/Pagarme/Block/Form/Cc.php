@@ -43,38 +43,14 @@ class Inovarti_Pagarme_Block_Form_Cc extends Mage_Payment_Block_Form_Cc
         return Mage::getModel('pagarme/api');
     }
 
-    public function getSalesRuleCollection()
-    {
-        return Mage::getResourceModel('salesrule/rule_collection')->load();
-    }
-
-    public function hasCreditCardDiscountRules()
-    {
-        $ruleCollection = $this->getSalesRuleCollection();
-        $checkoutPaymentMethod = $this->getCheckoutQuote()->getPayment()->getMethod();
-
-        foreach ($ruleCollection as $rule) {
-            $ruleIsValid = $rule->validate(Mage::helper('checkout'));
-            $isPaymentMethodEqual = ($checkoutPaymentMethod == self::PAYMENT_METHOD_TYPE);
-            if ($ruleIsValid && $isPaymentMethodEqual) {
-                return true;
-            }  
-        } 
-
-        return false;
-    }
-
     public function getCheckoutTotalAmount()
     {
-        $hasDiscountRules = $this->hasCreditCardDiscountRules();
         $checkoutQuote = $this->getCheckoutQuote();
-        $totalAmount = $checkoutQuote->getBaseSubtotal();
 
-        if ($hasDiscountRules) {
-            $totalAmount = $checkoutQuote->getBaseSubtotalWithDiscount();
-        }
+        $subTotalAmount = $checkoutQuote->getSubtotalWithDiscount();
+        $shippingAmount = $checkoutQuote->getShippingAddress()->getShippingAmount();
 
-        return $totalAmount + $checkoutQuote->getShippingAddress()->getShippingAmount();
+        return $subTotalAmount + $shippingAmount;
     }
 
     private function getInstallmentsOptions($collection, $pagarmeHelper, $installmentConfig)

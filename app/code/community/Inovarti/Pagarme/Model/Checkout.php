@@ -39,15 +39,13 @@ class Inovarti_Pagarme_Model_Checkout extends Inovarti_Pagarme_Model_Abstract
 
     public function authorize(Varien_Object $payment)
     {
-        $amount = $this->getGrandTotalFromPayment($payment);
-
-        $this->_place($payment, $amount, self::REQUEST_TYPE_AUTH_ONLY, true);
+        $this->_place($payment, $payment->getBaseAmountAuthorized(), self::REQUEST_TYPE_AUTH_ONLY, true);
         return $this;
     }
 
     public function capture(Varien_Object $payment)
     {
-        $amount = $this->getGrandTotalFromPayment($payment);
+        $amount = $payment->getBaseAmountAuthorized();
 
         if ($payment->getPagarmeTransactionId()) {
             $this->_place($payment, $amount, self::REQUEST_TYPE_CAPTURE_ONLY, true);
@@ -74,5 +72,16 @@ class Inovarti_Pagarme_Model_Checkout extends Inovarti_Pagarme_Model_Abstract
         }
 
         return $maxInstallments;
+    }
+
+    public function getPagarMeCheckoutInstallmentConfig()
+    {
+        $config = new Varien_Object();
+        $config->setMaxInstallments((int) Mage::getStoreConfig('payment/pagarme_checkout/max_installments'));
+        $config->setMinInstallments((int) Mage::getStoreConfig('payment/pagarme_checkout/min_installment_value'));
+        $config->setFreeInstallments((int) Mage::getStoreConfig('payment/pagarme_checkout/free_installments'));
+        $config->setInterestRate((float) Mage::getStoreConfig('payment/pagarme_checkout/interest_rate'));
+
+        return $config;
     }
 }
