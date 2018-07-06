@@ -33,7 +33,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <config>
   <modules>
     <Cm_RedisSession>
-      <active>true</active>
+      <active>false</active>
       <codePool>local</codePool>
     </Cm_RedisSession>
   </modules>
