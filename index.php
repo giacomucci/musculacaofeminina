@@ -20,7 +20,7 @@
  *
  * @category    Mage
  * @package     Mage
- * @copyright  Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @copyright  Copyright (c) 2006-2018 Magento, Inc. (http://www.magento.com)
  * @license    http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -64,14 +64,13 @@ if (file_exists($maintenanceFile)) {
 require MAGENTO_ROOT . '/app/bootstrap.php';
 require_once $mageFilename;
 
-/* Ambient Development */
+#Varien_Profiler::enable();
 
-# Varien_Profiler::enable();
+if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
+    Mage::setIsDeveloperMode(true);
+}
 
-//if (isset($_SERVER['MAGE_IS_DEVELOPER_MODE'])) {
- #  Mage::setIsDeveloperMode(true);
-//}
- ini_set('display_errors', 1);
+#ini_set('display_errors', 1);
 
 umask(0);
 
