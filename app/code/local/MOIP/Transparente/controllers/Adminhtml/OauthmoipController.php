@@ -16,7 +16,46 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 			Mage::app()->getFrontController()->getResponse()->setRedirect($redirect_url);
 			return $this;
     }
+    public function KillWebhooksAction(){
+    	$data = $this->getRequest()->getParams();
+    	$documento = 'Content-Type: application/json; charset=utf-8';
+        
+        if ($data['environment'] == "teste") {
+            $url = MOIP_Transparente_Model_Api::ENDPOINT_TEST."preferences/notifications/".$data['id'];
+            $header = "Authorization: OAuth " . Mage::getSingleton('transparente/standard')->getConfigData('oauth_dev');
+            
+        } else {
+            $url = MOIP_Transparente_Model_Api::ENDPOINT_PROD."preferences/notifications/".$data['id'];
+            $header = "Authorization: OAuth " . Mage::getSingleton('transparente/standard')->getConfigData('oauth_prod');
+        }
 
+
+
+            $res = array();
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL,$url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+            curl_setopt($ch, CURLOPT_NOBODY, true); 
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array($header, $documento));
+            curl_setopt($ch,CURLOPT_USERAGENT,'MoipMagento/2.0.0');
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $res = curl_exec($ch);
+            curl_close($ch);
+         
+
+			Mage::app()->cleanCache();
+			Mage::getSingleton('core/session')->addSuccess('Preferência apagada.');
+			$redirect_url = (Mage::helper('core/http')->getHttpReferer() ? Mage::helper('core/http')->getHttpReferer() : Mage::helper("adminhtml")->getUrl("*/system_config/edit/section/moipall/"));
+			
+			Mage::app()->getFrontController()->getResponse()->setRedirect($redirect_url);
+			
+
+
+        return $this;
+
+    }
     public function EnableWebhooksAction(){
 
 			$model = new Mage_Core_Model_Config();
@@ -84,22 +123,8 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 	}
 	
 	public function ClearMoipAction(){
-		$model = new Mage_Core_Model_Config();
-		
-		
-			if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
-				$model->deleteConfig('payment/moip_transparente_standard/webhook_key_dev');
-				$model->deleteConfig('payment/moip_transparente_standard/oauth_dev');
-
-			} else {
-				$model->deleteConfig('payment/moip_transparente_standard/webhook_key_prod');
-				$model->deleteConfig('payment/moip_transparente_standard/oauth_prod');
-				
-			}
-			Mage::app()->cleanCache();
-			Mage::getSingleton('core/session')->addSuccess("Configurações atuais foram apagadas. Por favor, repita o processo de instalação.");
-			$redirect_url = (Mage::helper('core/http')->getHttpReferer() ? Mage::helper('core/http')->getHttpReferer() : Mage::helper("adminhtml")->getUrl("*/system_config/edit/section/payment/"));
-			Mage::app()->getFrontController()->getResponse()->setRedirect($redirect_url);
+			
+		return Mage::helper('transparente')->ClearMoip();
 		
 	}
 
@@ -113,12 +138,19 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 		$json_log = json_encode($data);
 		$api->generateLog($json_log, 'MOIP_Oauth.log');
 		
-			$store_code = 'default';
+			$store_id = $data['store_id'];
+
+			if($data['store_id']){
+				$store_code = $data['store_id'];
+			} else {
+				$store_code = 'default';
+			}
 			if (Mage::getSingleton('transparente/standard')->getConfigData('ambiente') == "teste") {
 				$oauth =  $this->getOauthAcess($data['code']);
 				$oauth_decode = json_decode($oauth, true);
 				$api->generateLog($oauth_decode['accessToken'], 'MOIP_Oauth.log');
 				$model->saveConfig('payment/moip_transparente_standard/oauth_dev', $oauth_decode['access_token'], 'default', 0);
+				$model->saveConfig('payment/moip_transparente_standard/mpa_dev', $oauth_decode['moipAccount']['id'], 'default', 0);
 				$public_key = $this->getKeyPublic($oauth_decode['access_token']);
 				$model->saveConfig('payment/moip_transparente_standard/publickey_dev', $public_key, 'default', 0);
 			} else {
@@ -127,6 +159,7 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 				$oauth_decode = json_decode($oauth, true);
 				$api->generateLog($oauth_decode['accessToken'], 'MOIP_Oauth.log');
 				$model->saveConfig('payment/moip_transparente_standard/oauth_prod', $oauth_decode['access_token'], 'default', 0);
+				$model->saveConfig('payment/moip_transparente_standard/mpa_prod', $oauth_decode['moipAccount']['id'], 'default', 0);
 				$public_key = $this->getKeyPublic($oauth_decode['access_token']);
 				
 				$model->saveConfig('payment/moip_transparente_standard/publickey_prod', $public_key, 'default', 0);
@@ -149,8 +182,8 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 	          	$url = "https://connect-sandbox.moip.com.br/oauth/token";
 	        	$header = "Authorization: Basic " . base64_encode(MOIP_Transparente_Model_Api::TOKEN_TEST . ":" . MOIP_Transparente_Model_Api::KEY_TEST);
 	        	$array_json = array(
-		        	'client_id' => 'APP-9MUFQ39Y4CQU', //Alterar aqui tb....
-		        	'client_secret' => '26xa86dbc7mhdyqq2w69vscvhz47cri', //Alterar aqui tb....
+		        	'client_id' => $this->getApi()->getAppId("teste"),
+		        	'client_secret' => $this->getApi()->getClienteSecret("teste"),
 					'redirect_uri' => 'http://moip.o2ti.com/magento/redirect/',
 					'grant_type' => 'authorization_code',
 					'code' => $code
@@ -161,8 +194,8 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
               	$url = "https://connect.moip.com.br/oauth/token";
 		        $header = "Authorization: Basic " . base64_encode(MOIP_Transparente_Model_Api::TOKEN_PROD . ":" . MOIP_Transparente_Model_Api::KEY_PROD);
 		        $array_json = array(
-			        	'client_id' => 'APP-AKYBMMVU1FL1', //Alterar aqui tb....
-			        	'client_secret' => 'db9pavx8542khvsyn3s0tpxyu2gom2m', //Alterar aqui tb....
+			        	'client_id' =>  $this->getApi()->getAppId("prod"),
+			        	'client_secret' => $this->getApi()->getClienteSecret("prod"),
 						'redirect_uri' => 'http://moip.o2ti.com/magento/redirect/',
 						'grant_type' => 'authorization_code',
 						'code' => $code
@@ -210,6 +243,8 @@ class MOIP_Transparente_Adminhtml_OauthmoipController extends  Mage_Adminhtml_Co
 		    $api->generateLog($public_key, 'MOIP_Oauth.log');
 		return $public_key;
 	}
+
+
 	public function getApi()
     {
         $api = Mage::getModel('transparente/api');

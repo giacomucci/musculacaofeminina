@@ -13,10 +13,11 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
         
 		if($this->getRequest()->getParams()){
 			$data = $this->getRequest()->getParams();
-			$model = Mage::getModel('transparente/write');
+			$model = Mage::getModel('transparente/transparente');
 			$model->load($data['cofre_remove'], 'moip_card_id');
-			$model->setMoipCardId();
+			$model->setMoipCardId(null);
 			$model->save();
+			$this->_redirect('*/*/');
 			return true;
 		}
 	}
@@ -242,7 +243,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 		$additionaldata = array(
 		 	'method' => 'moip_cc',
            	'moip_cc_count_cofre' => $datapost['moip_cc_count_cofre'],
-            'moip_cc_payment_in_cofre' => '0',
+            'moip_cc_payment_in_cofre' => '1',
             'moip_cc_use_cofre' => '1',
             'moip_cc_cofre_nb' => $datapost['moip_cc_cofre_nb'],
             'moip_cc_cofre_id' => $datapost['moip_cc_cofre_id'],
@@ -262,7 +263,7 @@ class MOIP_Transparente_IndexController extends Mage_Checkout_CartController
 		    }
 		   	$this->getQuote()->save();
 			$mensage['_status'] = "SUCCESS";
-			$mensage['url_redirect'] = $quote->getPayment()->getOrderPlaceRedirectUrl();
+			$mensage['url_redirect'] = Mage::getUrl('checkout/onepage/success');
 			$this->getResponse()->setBody(Mage::helper('core')->jsonEncode($mensage));
 			return;
 		}
