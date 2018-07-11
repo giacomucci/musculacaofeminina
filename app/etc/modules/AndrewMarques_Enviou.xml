@@ -2,7 +2,7 @@
 <config>
     <modules>
         <AndrewMarques_Enviou>
-            <active>true</active>
+            <active>false</active>
             <codePool>community</codePool>
         </AndrewMarques_Enviou>
     </modules>
