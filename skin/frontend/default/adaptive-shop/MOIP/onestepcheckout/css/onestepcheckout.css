@@ -101,6 +101,10 @@ input[type=text] {
     cursor: pointer;
 }
 
+.pagarme-payment-icons li {
+    display: none !important;
+}
+
 
 /* Itens gerais para CreateAccount */
 
