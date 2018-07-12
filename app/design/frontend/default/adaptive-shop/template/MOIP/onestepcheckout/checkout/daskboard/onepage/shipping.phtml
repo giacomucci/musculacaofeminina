@@ -1,0 +1,17 @@
+<div class="result-address">
+
+	<div class="page-title">
+		<h2>Endereço de <strong><?php echo Mage::helper('onestepcheckout')->__('Envio'); ?></strong></h2>
+	</div>
+	
+	<div class="address-buttons" data-toggle="buttons">
+		<?php echo $this->getAddressesHtmlInput('shipping', null) ?>
+	</div>
+
+	<div class="btn-new-address">
+		<button type="button" onclick="EditAddress(0,'shipping')" class="btn btn-default btn-block">
+			<span><span><?php echo Mage::helper('onestepcheckout')->__('Novo Endereço'); ?></span></span>
+		</button>
+	</div>
+	
+</div>

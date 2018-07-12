@@ -123,7 +123,7 @@ button#singlebutton {
 }
 
 
-/* Itens gerais validação erro e sucesso */
+/* Itens gerais validaÃ§Ã£o erro e sucesso */
 
 .validation-advice {
     font-size: 1rem !important;
@@ -141,7 +141,7 @@ button#singlebutton {
 }
 
 
-/* botões gerais, o alinhamento padrão do bs é center por isto setamos em left */
+/* botÃµes gerais, o alinhamento padrÃ£o do bs Ã© center por isto setamos em left */
 
 .btn-payment,
 .btn-shipping-availble,
@@ -151,7 +151,7 @@ button#singlebutton {
 }
 
 
-/*Alinhamento para texto nos botões de seleção do endereço*/
+/*Alinhamento para texto nos botÃµes de seleÃ§Ã£o do endereÃ§o*/
 
 #address-info {
     margin-bottom: 30px;
@@ -217,7 +217,7 @@ span.line-address {
 }
 
 
-/* Controle de itens selecionados em endreço e envio */
+/* Controle de itens selecionados em endreÃ§o e envio */
 
 label.btn.btn-default.btn-address:before {
     position: absolute;
@@ -297,7 +297,7 @@ dl#checkout-shipping-method-loadding dt {
 }
 
 
-/*Controles da sessão de pagamento*/
+/*Controles da sessÃ£o de pagamento*/
 
 label.btn.btn-block.btn-group.btn-payment-available img {
     display: inline-block !important;
@@ -383,6 +383,7 @@ img.img-thumbnail-review {
 .img-modal-secure {
     border-radius: 5px;
     margin: 25px 0px;
+    float: right;
 }
 
 div#checkout-moip {
