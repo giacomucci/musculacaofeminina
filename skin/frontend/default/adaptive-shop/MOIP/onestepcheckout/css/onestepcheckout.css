@@ -10,8 +10,12 @@ h3,
 .h2 {
     font-family: 'Open Sans', sans-serif!important;
     -webkit-font-smoothing: antialiased!important;
-    -moz-osx-font-smoothing: grayscale!important;
+    font-size: 24px !important;
+    padding-bottom: 5px;
+    color: #989898 !important;
 }
+
+h2 {}
 
 span {
     color: inherit;
@@ -19,6 +23,19 @@ span {
 
 .no-display {
     display: none !important;
+}
+
+#view-table-prices tr,
+#view-table-prices td,
+#view-table-prices thead,
+#view-table-prices tfoot {
+    background: #FFF;
+    border: 0px !important;
+}
+
+#view-table-prices table {
+    background-color: #fff;
+    border: 1px solid #ddd;
 }
 
 
@@ -123,7 +140,7 @@ button#singlebutton {
 }
 
 
-/* Itens gerais validaÃ§Ã£o erro e sucesso */
+/* Itens gerais validaÃƒÂ§ÃƒÂ£o erro e sucesso */
 
 .validation-advice {
     font-size: 1rem !important;
@@ -141,7 +158,7 @@ button#singlebutton {
 }
 
 
-/* botÃµes gerais, o alinhamento padrÃ£o do bs Ã© center por isto setamos em left */
+/* botÃƒÂµes gerais, o alinhamento padrÃƒÂ£o do bs ÃƒÂ© center por isto setamos em left */
 
 .btn-payment,
 .btn-shipping-availble,
@@ -151,7 +168,7 @@ button#singlebutton {
 }
 
 
-/*Alinhamento para texto nos botÃµes de seleÃ§Ã£o do endereÃ§o*/
+/*Alinhamento para texto nos botÃƒÂµes de seleÃƒÂ§ÃƒÂ£o do endereÃƒÂ§o*/
 
 #address-info {
     margin-bottom: 30px;
@@ -217,7 +234,7 @@ span.line-address {
 }
 
 
-/* Controle de itens selecionados em endreÃ§o e envio */
+/* Controle de itens selecionados em endreÃƒÂ§o e envio */
 
 label.btn.btn-default.btn-address:before {
     position: absolute;
@@ -297,7 +314,7 @@ dl#checkout-shipping-method-loadding dt {
 }
 
 
-/*Controles da sessÃ£o de pagamento*/
+/*Controles da sessÃƒÂ£o de pagamento*/
 
 label.btn.btn-block.btn-group.btn-payment-available img {
     display: inline-block !important;
@@ -743,4 +760,16 @@ button#buscarcep {
 
 .grand-total {
     text-align: center;
+}
+
+.grand-total p {
+    margin: 0px;
+    color: #989898;
+}
+
+.grand-total span.price {
+    font-size: 35px;
+    font-weight: 900;
+    padding-bottom: 20px;
+    display: inline-block;
 }
