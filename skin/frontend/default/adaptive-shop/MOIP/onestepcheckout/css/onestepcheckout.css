@@ -17,6 +17,10 @@ span {
     color: inherit;
 }
 
+.no-display {
+    display: none !important;
+}
+
 
 /* Itens gerais para CreateAccount e onepage */
 
