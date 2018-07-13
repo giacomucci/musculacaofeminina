@@ -107,9 +107,9 @@
 						<div class="input-group">
 								<input type="tel" pattern="[0-9]*"  pattern="\d*" title="Código de Seguranção do Seu Cartão" class="d-b op-i txt fs-14 input-text form-control cvv validate-length minimum-length-3 maximum-length-4 required-entry" id="<?php echo $_code ?>_cid"  value="" maxlength="4" minlength="3">
 								<span class="input-group-addon">
-									<a href="javascript:void(0)" title="Código de Segurança" tabindex="-1" data-trigger="click" data-toggle="popover" data-placement="top" data-content="O código de segurança fica localizado no verso do seu cartão e são os 3 últimos dígitos" class="cvv-help">	
+									<!-- <a href="javascript:void(0)" title="Código de Segurança" tabindex="-1" data-trigger="click" data-toggle="popover" data-placement="top" data-content="O código de segurança fica localizado no verso do seu cartão e são os 3 últimos dígitos" class="cvv-help">	
 										<img src='<?php echo $this->getSkinUrl('MOIP/transparente/imagem/cvv.png') ?>' id="cvv-help" width="16px"/>
-									</a>
+									</a> -->
 								</span>
 						</div>
 					</div>
@@ -123,7 +123,7 @@
 						<?php echo $this->__('Data de validade') ?>
 					</label>
 					<div class="row">
-						<div class="col-md-6 col-xs-6" style="display: inline-block;">
+						<div class="col-md-6 col-xs-6" style="display: inline-block;width: 150px;">
 							<select name="payment[<?php echo $_code ?>_exp_month]" id="<?php echo $_code ?>_expiration" class="validate-select d-b op-i txt fs-14 input-text form-control" title="Mês de Vencimento do seu Cartão">
 								<option value="">Mês</option>
 								<option value="01">01 - Janeiro</option>
@@ -140,7 +140,7 @@
 								<option value="12">12 - Dezembro</option>
 							</select>
 				    	</div>
-					    <div class="col-md-6 col-xs-6" style="display: inline-block;">
+					    <div class="col-md-6 col-xs-6" style="display: inline-block;width: 150px;">
 				           	<select name="payment[<?php echo $_code ?>_exp_year]" id="<?php echo $_code ?>_expiration_year" class="validate-select d-b op-i txt fs-14 input-text form-control" title="Ano de Vencimento do seu Cartão">
 								<option value="">Ano</option>
 								<option value="2018">18</option>

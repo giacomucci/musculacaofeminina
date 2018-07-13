@@ -17,9 +17,12 @@
     margin-right: 5%;
 }
 
-.form-list input.input-text,
 .form-list select {
-    width: 90%;
+    width: 100%;
+}
+
+.form-list input.input-text {
+    width: calc(100% - 24px);
 }
 
 .form-list li.wide .input-box {
@@ -151,9 +154,10 @@
 .onestepcheckout-overlay-24{background-image: url('../images/ajax-loader-24px.gif');background-repeat: no-repeat;background-position: center center;}*/
 
 .onestepcheckout-overlay-16 {
-    background-image: url('../images/ajax-loader.gif');
+    background-image: url('../images/loading.svg');
     background-repeat: no-repeat;
     background-position: center center;
+    background-size: 48px;
 }
 
 .onestepcheckout-timer {
