@@ -1485,6 +1485,7 @@ li.carrinho_menu a:before {
 #menu-footer-flag li {
     margin: 3px 10px 3px 0;
     float: left;
+    font-size: 0px;
 }
 
 .f-c p {
@@ -6116,39 +6117,69 @@ body.cms-index-index.cms-home.cms-home .flexslider .slides {
 
 
 /**
- * Footer Checkout
+ * Header e Footer Checkout
  */
 
-.footer-checkout {
-    display: inline-block !important;
-}
-
-.footer-checkout ul li {
-    font-size: 0px;
-}
-
+#header-checkout,
+.footer-checkout,
 .copyright-checkout {
+    display: none !important;
+}
+
+body.onestepcheckout-index-index #topo-mobile,
+body.onestepcheckout-index-index .hd-geral,
+body.onestepcheckout-index-index .ft-geral,
+body.onestepcheckout-index-index .breadcrumbs {
+    display: none !important;
+}
+
+body.onestepcheckout-index-index #header-checkout {
+    display: inline-block !important;
+    width: 100%;
+    padding: 15px 0px;
+    border-bottom: 1px solid #C3C3C3;
+}
+
+body.onestepcheckout-index-index #header-checkout .contentHeaderCheckout {
+    display: flex;
+    justify-content: space-between;
+}
+
+body.onestepcheckout-index-index #header-checkout .logoCheckout,
+body.onestepcheckout-index-index #header-checkout .atendimentoCheckout,
+body.onestepcheckout-index-index #header-checkout .ambienteSeguroCheckout,
+body.onestepcheckout-index-index #header-checkout .entregaCheckout {
+    display: flex !important;
+    align-items: center;
+    height: 68px;
+    transition: all 0.15s ease-in-out 0s !important;
+    -moz-transition: all 0.15s ease-in-out 0s !important;
+    -webkit-transition: all 0.15s ease-in-out 0s !important;
+    -o-transition: all 0.15s ease-in-out 0s !important;
+}
+
+body.onestepcheckout-index-index .footer-checkout,
+body.onestepcheckout-index-index .copyright-checkout {
     display: inline-block !important;
 }
 
-.footer-checkout {
+body.onestepcheckout-index-index .footer-checkout {
     width: 100%;
     float: left;
     border-top: 1px solid #C3C3C3;
     padding: 35px 0px;
 }
 
-.footer-checkout #menu-footer-flag {
+body.onestepcheckout-index-index .footer-checkout #menu-footer-flag {
     margin: 0 0;
 }
 
-.footer-checkout .formasPagamentoCheckout {
+body.onestepcheckout-index-index .footer-checkout .formasPagamentoCheckout {
     float: right;
 }
 
-.footer-checkout .faleComNutricionistas,
-.footer-checkout .enderecoNovaNutrii {
-    font-family: "Open Sans", sans-serif;
+body.onestepcheckout-index-index .footer-checkout .faleComNutricionistas,
+body.onestepcheckout-index-index .footer-checkout .enderecoNovaNutrii {
     font-style: normal;
     font-weight: 700;
     font-size: 13px;
@@ -6157,35 +6188,36 @@ body.cms-index-index.cms-home.cms-home .flexslider .slides {
     float: left;
 }
 
-.footer-checkout .faleComNutricionistas span.title,
-.footer-checkout .enderecoNovaNutrii span.title {
+body.onestepcheckout-index-index .footer-checkout .faleComNutricionistas span.title,
+body.onestepcheckout-index-index .footer-checkout .enderecoNovaNutrii span.title {
     color: #823486;
-    width: 100%;
-    display: inline-block;
 }
 
-.footer-checkout .faleComNutricionistas {
-    max-width: 240px;
+body.onestepcheckout-index-index .footer-checkout .faleComNutricionistas {
+    max-width: 228px;
     padding-right: 5px;
     border-right: 1px solid #823486;
 }
 
-.footer-checkout .enderecoNovaNutrii {
-    max-width: 405px;
+body.onestepcheckout-index-index .footer-checkout .enderecoNovaNutrii {
+    max-width: 396px;
     padding-left: 9px;
 }
 
 @media (max-width: 1024px) {
-    .footer-checkout {
+    body.onestepcheckout-index-index #header-checkout .entregaCheckout {
+        display: none !important;
+    }
+    body.onestepcheckout-index-index .footer-checkout {
         padding: 30px 0px;
     }
-    .contatoCheckout {
+    body.onestepcheckout-index-index .contatoCheckout {
         display: flex;
         justify-content: center;
         width: 100%;
         margin-bottom: 15px;
     }
-    .formasPagamentoCheckout {
+    body.onestepcheckout-index-index .formasPagamentoCheckout {
         display: flex;
         justify-content: center;
         width: 100%;
@@ -6193,10 +6225,19 @@ body.cms-index-index.cms-home.cms-home .flexslider .slides {
 }
 
 @media (max-width: 767px) {
-    .footer-checkout {
+    body.onestepcheckout-index-index #header-checkout .atendimentoCheckout {
+        display: none !important;
+    }
+    body.onestepcheckout-index-index #header-checkout #wrapper {
+        width: 100% !important;
+    }
+    body.onestepcheckout-index-index #header-checkout #wrapper #colunas12 {
+        width: calc(100% - 30px);
+    }
+    body.onestepcheckout-index-index .footer-checkout {
         padding: 10px 0px;
     }
-    .footer-checkout .faleComNutricionistas {
+    body.onestepcheckout-index-index .footer-checkout .faleComNutricionistas {
         border-bottom: 1px solid #823486;
         border-right: 0px;
         padding: 10px 0px;
@@ -6204,19 +6245,19 @@ body.cms-index-index.cms-home.cms-home .flexslider .slides {
         display: block;
         max-width: 100%;
     }
-    .footer-checkout .enderecoNovaNutrii {
+    body.onestepcheckout-index-index .footer-checkout .enderecoNovaNutrii {
         padding: 10px 0px;
         width: 100%;
         display: block;
         max-width: 100%;
     }
-    .footer-checkout .faleComNutricionistas span.title,
-    .footer-checkout .enderecoNovaNutrii span.title {
+    body.onestepcheckout-index-index .footer-checkout .faleComNutricionistas span.title,
+    body.onestepcheckout-index-index .footer-checkout .enderecoNovaNutrii span.title {
         width: 100%;
         display: block;
         max-width: 100%;
     }
-    .footer-checkout .contatoCheckout {
+    body.onestepcheckout-index-index .footer-checkout .contatoCheckout {
         display: inline-block;
     }
 }

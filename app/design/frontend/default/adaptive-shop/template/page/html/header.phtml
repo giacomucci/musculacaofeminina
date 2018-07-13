@@ -9,6 +9,14 @@
 <link rel="stylesheet" type="text/css" href="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>/menu/component.css" />
 <script src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_JS); ?>/menu/modernizr.custom.js"></script>
 
+
+<?php
+$routeName = Mage::app()->getRequest()->getRouteName();
+$identifier = Mage::getSingleton('cms/page')->getIdentifier();
+?>
+
+<?php if($routeName != 'onestepcheckout'): ?>
+
 <div id="barra-topo" class="mob">
 
     <div id="full" class="top-bar-bg white">
@@ -183,10 +191,9 @@
         </div>
     </div>
 </div>
-<?php
-$routeName = Mage::app()->getRequest()->getRouteName();
-$identifier = Mage::getSingleton('cms/page')->getIdentifier();
-?>
+
+<?php endif; ?>
+
 
 <?php if($routeName == 'cms' && ($identifier == 'home' || $identifier == 'no-route')) { ?>
 
@@ -224,3 +231,25 @@ $identifier = Mage::getSingleton('cms/page')->getIdentifier();
     </script>
 
 <?php } ?>
+
+<?php if($routeName == 'onestepcheckout'): ?>
+    <div id="header-checkout">
+        <div id="wrapper">
+            <div id="colunas12" class="no-bottom contentHeaderCheckout">
+                <div class="logoCheckout common">
+                    <a href="<?php echo $this->getUrl('','_nosid') ?>" title="<?php echo $this->getLogoAlt() ?>">
+                        <img src="<?php echo $this->getLogoSrc() ?>" alt="<?php echo $this->getLogoAlt() ?>" width="170"/>
+                    </a>
+                </div>
+
+                <div class="ambienteSeguroCheckout common">
+                    <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN); ?>frontend/default/adaptive-shop/images/ambiente_seguro_checkout.svg" alt="Ambiente Seguro">
+                </div>
+
+                <div class="entregaCheckout common">
+                    <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN); ?>frontend/default/adaptive-shop/images/entrega_rapida_checkout.svg" alt="Entrega Rápida">
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>

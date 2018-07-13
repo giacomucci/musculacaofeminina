@@ -180,7 +180,7 @@
             </ul>
         </li>    
         <?php if (!$this->isUseBillingAsShipping() && $this->canShip()): ?>
-            <li>
+            <li class="no-display" style="display:none;">
                 <label for="billing:use_for_shipping"> <input type="checkbox" name="billing[use_for_shipping]" value="1" title="<?php echo $this->__('Ship to same address') ?>" id="billing:use_for_shipping" <?php if ($this->isUseBillingAsShippingChecked()): ?> checked="checked"<?php endif; ?> class="checkbox" /><?php echo $this->__('Ship to same address') ?></label>
             </li>
         <?php else : ?>
