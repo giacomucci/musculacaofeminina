@@ -1,16 +1,15 @@
-input[type=text], input[type=tel] {
-     width: 100%; 
-}
 .checkbox {
     display: block;
     line-height: 20px;
     margin-top: 0px !important;
     margin-bottom: 0px !important;
 }
+
 .recommendation_off {
-  display: none;
+    display: none;
 }
-.recommendation{
+
+.recommendation {
     padding-left: 10px;
     background-color: transparent;
     border-left: 2px solid #ffeb8e;
@@ -18,63 +17,89 @@ input[type=text], input[type=tel] {
     width: 100%;
     margin-bottom: 10px;
 }
+
 .label-moip-pg {
     float: left;
     width: 100%;
     clear: both;
 }
-#moip_cc_brand {
-  display: none;
-  width: 37px;
-  height: 26px;
-  background: url('../imagem/moip_brands_card.png') transparent 0px 0px no-repeat;
-  margin: 0px;
-  overflow: hidden;
-  text-indent: -500em;
-  float: left;
-  -webkit-transition: all .2s;
-  -moz-transition: all .2s;
-  -ms-transition: all .2s;
-  -o-transition: all .2s;
-  transition: all .2s;
-  opacity: 1;
-  position: absolute;
-  right: 1px;
-  top: 2px;
-}
-.VI {background-position: 0px 0px !important}
-.MC {background-position: 0px -26px !important}
-.AE {background-position: 0px -53px !important}
-.DC {background-position: 0px -79px !important}
-.EO {background-position: 0px -105px !important}
-.HI {background-position: 0px -131px !important}
-.HP {background-position: 0px -158px !important}
 
-div#advice-required-entry-moip_cc_cid, div#advice-required-entry-moip_cc_number, div#advice-validate-number-moip_cc_number, div#advice-validate-length-moip_cc_number, div#advice-validate-length-moip_cc_cid {
+#moip_cc_brand {
+    display: none;
+    width: 37px;
+    height: 26px;
+    background: url('../imagem/moip_brands_card.png') transparent 0px 0px no-repeat;
+    margin: 0px;
+    overflow: hidden;
+    text-indent: -500em;
+    float: left;
+    -webkit-transition: all .2s;
+    -moz-transition: all .2s;
+    -ms-transition: all .2s;
+    -o-transition: all .2s;
+    transition: all .2s;
+    opacity: 1;
+    position: absolute;
+    right: 1px;
+    top: 2px;
+}
+
+.VI {
+    background-position: 0px 0px !important
+}
+
+.MC {
+    background-position: 0px -26px !important
+}
+
+.AE {
+    background-position: 0px -53px !important
+}
+
+.DC {
+    background-position: 0px -79px !important
+}
+
+.EO {
+    background-position: 0px -105px !important
+}
+
+.HI {
+    background-position: 0px -131px !important
+}
+
+.HP {
+    background-position: 0px -158px !important
+}
+
+div#advice-required-entry-moip_cc_cid,
+div#advice-required-entry-moip_cc_number,
+div#advice-validate-number-moip_cc_number,
+div#advice-validate-length-moip_cc_number,
+div#advice-validate-length-moip_cc_cid {
     position: absolute;
     top: 32px;
     background: #fff;
     z-index: 1;
 }
+
 .btn-cofre-save {
     font-size: 12px;
     background-color: #FFF;
     color: #333;
     border: 1px solid #8c8c8c !important;
-    
-
 }
 
-.btn-cofre-save.active{
+.btn-cofre-save.active {
     background-color: #d4d4d4;
     border-color: #8c8c8c;
     color: #35750b;
-      
 }
 
 .title-info-pay {
     margin-left: 15px;
 }
+
 .bg-destaque {
     background: #F7F7F7;
     float: left;
@@ -82,10 +107,12 @@ div#advice-required-entry-moip_cc_cid, div#advice-required-entry-moip_cc_number,
     padding: 10px;
     margin: 9px 0px;
 }
+
 .validation-failed-moip {
-  border: 2px solid #a94442 !important;
-  color: #ea1818;
+    border: 2px solid #a94442 !important;
+    color: #ea1818;
 }
+
 #cvv-help {
-  width: 16px;
+    width: 16px;
 }
