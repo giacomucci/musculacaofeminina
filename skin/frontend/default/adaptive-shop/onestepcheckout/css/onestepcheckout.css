@@ -291,7 +291,7 @@
 }
 
 #onestepcheckout-authentification-container {
-    height: 185px!important;
+    height: 190px!important;
     position: relative;
     top: 0px;
 }
@@ -312,7 +312,7 @@
 
 #onestepcheckout-login-form .form-list,
 #onestepcheckout-forgot-password-form .form-list {
-    height: 167px;
+    height: 180px;
 }
 
 #onestepcheckout-login-form .form-list,
