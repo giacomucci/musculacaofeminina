@@ -58,7 +58,7 @@
         <form id="co-shipping-method-form" action="<?php echo $this->getUrl('checkout/cart/estimateUpdatePost') ?>">
             <dl class="sp-methods">
                 <?php foreach ($_shippingRateGroups as $code => $_rates): ?>
-                    <dt class="cor fs-14"><?php echo $this->escapeHtml($this->getCarrierName($code)) ?></dt>
+                    <!-- <dt class="cor fs-14"><?php echo $this->escapeHtml($this->getCarrierName($code)) ?></dt> -->
                     <dd>
                         <ul>
                         <?php foreach ($_rates as $_rate): ?>

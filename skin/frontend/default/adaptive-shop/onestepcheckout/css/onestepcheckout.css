@@ -291,7 +291,7 @@
 }
 
 #onestepcheckout-authentification-container {
-    height: 180px!important;
+    height: 185px!important;
     position: relative;
     top: 0px;
 }
@@ -721,4 +721,33 @@ p.required {
 
 .disabled {
     background: #eee !important;
+}
+
+.checkout-onepage-success button {
+    font-size: 18px;
+    padding: 20px 30px;
+    margin: 0px auto 50px;
+    display: inherit;
+    border-bottom: 2px solid #9b5289;
+    border-radius: 3px;
+    color: #FFFFFF !important;
+    letter-spacing: 0;
+    line-height: 15px;
+    background-color: #bd74ab;
+    font-family: 'Open Sans', sans-serif;
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.checkout-onepage-success button span {
+    color: #FFFFFF !important;
+    letter-spacing: 0;
+    text-decoration: none;
+}
+
+.checkout-onepage-success button:hover {
+    text-decoration: none;
+    background-color: #9b5289;
 }
