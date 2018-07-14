@@ -286,7 +286,7 @@
 
 #onestepcheckout-authentification {
     overflow: hidden;
-    min-height: 165px;
+    min-height: 180px;
     width: 100%;
 }
 
@@ -312,7 +312,7 @@
 
 #onestepcheckout-login-form .form-list,
 #onestepcheckout-forgot-password-form .form-list {
-    height: 180px;
+    height: 190px;
 }
 
 #onestepcheckout-login-form .form-list,
