@@ -1,5 +1,5 @@
 <?php $_code=$this->getMethodCode() ?>
-<ul id="payment_form_<?php echo $_code ?>" class="form-list">
+<ul id="payment_form_<?php echo $_code ?>" class="form-list" style="display:none">
     <?php $cofre = false; ?>
     <?php if($cofre): ?>
     <li class="row">
@@ -256,7 +256,7 @@
 <?php if($cofre): ?>
 <script type="text/javascript">
     jQuery(document).ready(function() {
-        SetCofre();
+        // SetCofre();
     });
 </script>
 <?php endif; ?>
