@@ -68,7 +68,7 @@
                 <li class="short">
                     <div class="">
 	                    <label for="email_address_confirmation" class="txt fs-12 required"><em>*</em>Confirme o seu e-mail</label>
-                        <input type="text" name="email" id="email_address_confirmation" value="<?php echo $this->escapeHtml($this->getFormData()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="emailConfirmation d-b op-i txt fs-14 input-text validate-email-exist required-entry" />
+                        <input type="text" name="email" id="email_address_confirmation" value="<?php echo $this->escapeHtml($this->getFormData()->getEmail()) ?>" title="<?php echo $this->__('Email Address') ?>" class="emailConfirmation d-b op-i txt fs-14 input-text validate-cemail required-entry" />
                     </div>
                 </li>
                 <li class="short clear">
@@ -385,21 +385,5 @@
 	})
 	.keyup();
 	
-	
-	/* Validate Confirmation e-mail */
-    jQuery(".emailConfirmation").focusout(function(){
-        var emailClient = jQuery(".emailClient").val();
-        var emailConfirmation = jQuery(this).val();
-
-        if(emailClient != emailConfirmation){
-            if(!jQuery(this).parent('div').find('.validation-advice').length){
-                jQuery(this).parent('div').append('<div class="validation-advice">Os e-mails estão divergentes!</div>');
-            }
-            jQuery(this).val('');
-        } else {
-            jQuery(this).parent('div').find('.validation-advice').remove();
-        }
-
-    });
 
     </script>
